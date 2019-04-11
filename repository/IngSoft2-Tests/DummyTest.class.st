@@ -9,3 +9,9 @@ DummyTest >> testDummy [
 
 	self assert: Dummy new isDummy
 ]
+
+{ #category : #tests }
+DummyTest >> testTrueIsAlwaysTrue [
+
+	self assert: true equals: true
+]
