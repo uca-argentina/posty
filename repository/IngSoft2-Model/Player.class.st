@@ -29,27 +29,31 @@ Class {
 	#superclass : #Object,
 	#instVars : [
 		'playerName',
-		'position'
+		'position',
+		'playerDice',
+		'move'
 	],
 	#category : #'IngSoft2-Model'
 }
 
 { #category : #creation }
-Player class >> call: aName [
+Player class >> call: aName withDice: aDice [
 	^ self new
-		initializeWithName: aName;
+		initializeWithName: aName
+			withDice: aDice;
 		yourself
 ]
 
 { #category : #initialize }
-Player >> initializeWithName: aName [
+Player >> initializeWithName: aName withDice: aDice [
 	playerName := aName.
+	playerDice := aDice.
 	position := 0
 ]
 
 { #category : #actions }
 Player >> move: aNumberOfSteps [ 
-	 position := aNumberOfSteps
+	 position := position + aNumberOfSteps
 ]
 
 { #category : #description }
@@ -58,11 +62,11 @@ Player >> name [
 ]
 
 { #category : #actions }
-Player >> position [ 
-	^ position
+Player >> plays [
+	self move: (playerDice  roll).
 ]
 
 { #category : #actions }
-Player >> takeADiceWithFacesAndPlays: aNumberOfFaces [
-	^ 2
+Player >> position [ 
+	^ position
 ]

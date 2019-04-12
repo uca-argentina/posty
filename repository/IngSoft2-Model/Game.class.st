@@ -28,39 +28,49 @@ Internal Representation and Key Implementation Points.
     Implementation Points
 "
 Class {
-	#name : #Board,
+	#name : #Game,
 	#superclass : #Object,
 	#instVars : [
 		'stepsToWin',
 		'numberOfStepsToWin',
-		'numberOfPlayers',
+		'listOfPlayers',
 		'position'
 	],
 	#category : #'IngSoft2-Model'
 }
 
 { #category : #creation }
-Board class >> WithStepsToWin: aNumberOfStepsToWin andPlayers: aNumberOfplayers [
+Game class >> WithStepsToWin: aNumberOfStepsToWin andPlayers: aNumberOfplayers [
 	^ self new
 		initializeWithStepsToWin: aNumberOfStepsToWin
-			andPlayers: aNumberOfplayers;
+			and: aNumberOfplayers;
 		
 		yourself
 ]
 
 { #category : #initialize }
-Board >> initializeWithStepsToWin: aNumberOfStepsToWin andPlayers: aNumberOfPlayers [
+Game >> initializeWithStepsToWin: aNumberOfStepsToWin and: aListOfPlayers [
 	numberOfStepsToWin := aNumberOfStepsToWin .
-	numberOfPlayers := aNumberOfPlayers .
+	listOfPlayers := aListOfPlayers  .
 	position := 0.
 ]
 
-{ #category : #description }
-Board >> players [
-	^ numberOfPlayers
+{ #category : #actions }
+Game >> isOver [
+	^ self winner
 ]
 
 { #category : #description }
-Board >> stepsToWin [
+Game >> players [
+	^ listOfPlayers 
+]
+
+{ #category : #description }
+Game >> stepsToWin [
 	^ numberOfStepsToWin
+]
+
+{ #category : #actions }
+Game >> winner [
+	^ listOfPlayers detect: [ :p | p position == numberOfStepsToWin ]
 ]
