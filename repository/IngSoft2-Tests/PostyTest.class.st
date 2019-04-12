@@ -30,7 +30,7 @@ Class {
 PostyTest >> testAPlayerCalledRobert [
 	| player aDice|
 	aDice := RandomDice withFaces: 4.
-	player := Player call: 'Robert' withDice: aDice.
+	player := Player call: 'Robert' with: aDice.
 	self assert: player name equals: 'Robert'
 ]
 
@@ -38,7 +38,7 @@ PostyTest >> testAPlayerCalledRobert [
 PostyTest >> testAPlayerCalledRobertRollsARandomDiceWith4Faces [
 	| robert aDice|
 	aDice := RandomDice withFaces: 4.
-	robert := Player call: 'Robert' withDice: aDice.
+	robert := Player call: 'Robert' with: aDice.
 	robert plays.
 	self assert: (robert position between: 1 and: 4).
 ]
@@ -77,7 +77,7 @@ PostyTest >> testFourFaceDiceHasFourFaces [
 PostyTest >> testIfIGetAFourIMoveFourBlocks [
 	| fourFaceDice robert |
 	fourFaceDice := SameFaceDice withFaces: 4.
-	robert := Player call: 'Robert' withDice: fourFaceDice .
+	robert := Player call: 'Robert' with: fourFaceDice .
 	robert plays.
 	self assert: robert position equals: 4
 ]
@@ -86,7 +86,7 @@ PostyTest >> testIfIGetAFourIMoveFourBlocks [
 PostyTest >> testIfIRollTwoTimesASameFaceDiceMyPositionIncrease [
 	| robert aDice |
 	aDice := SameFaceDice withFaces: 4.
-	robert := Player call: 'Robert' withDice: aDice.
+	robert := Player call: 'Robert' with: aDice.
 	robert plays. 
 	robert plays. 
 	self assert: (robert position ) equals: 8.
@@ -96,8 +96,8 @@ PostyTest >> testIfIRollTwoTimesASameFaceDiceMyPositionIncrease [
 PostyTest >> testIfPlayerReachTheFinalPositionWinsTheGame [
 	| albert aDice aBoard |
 	aDice := SameFaceDice withFaces: 6.
-	albert := Player call: 'Albert' withDice: aDice.
-	aBoard := Game WithStepsToWin: 8 andPlayers: 3.
+	albert := Player call: 'Albert' with: aDice.
+	aBoard := Game WithStepsToWin: 8 andPlayers: albert.
 	albert plays.
 	albert plays.
 	self assert: (albert position)  equals: (aBoard stepsToWin ).
@@ -108,8 +108,8 @@ PostyTest >> testInThisTurnThePositionOfRobertIsFourAndAlbertIsEigth [
 	| aGame albert robert diceOne diceTwo players |
 	diceOne := SameFaceDice withFaces: 6.
 	diceTwo := SameFaceDice withFaces: 5.
-	albert := Player call: 'albert' withDice: diceOne.
-	robert := Player call: 'Robert' withDice: diceTwo.
+	albert := Player call: 'albert' with: diceOne.
+	robert := Player call: 'Robert' with: diceTwo.
 	players := OrderedCollection new: 2.
 	players add: albert.
 	players add: robert.
@@ -117,15 +117,15 @@ PostyTest >> testInThisTurnThePositionOfRobertIsFourAndAlbertIsEigth [
 	albert plays.
 	albert plays.
 	robert plays.
-	self assert: (albert position ) equals: ((aGame players at: 1) position ).
-	self assert: (robert position ) equals: ((aGame players at: 2) position ).
+	self assert: ((aGame players at: 1) position ) equals: 8.
+	self assert: ((aGame players at: 2) position ) equals: 4.
 ]
 
 { #category : #tests }
 PostyTest >> testInitialPositionOfRobertIsZero [
 	| robert aDice|
 	aDice := RandomDice withFaces: 4.
-	robert := Player call: 'Robert' withDice: aDice.
+	robert := Player call: 'Robert' with: aDice.
 	self assert: robert position equals: 0
 ]
 
@@ -134,8 +134,8 @@ PostyTest >> testTheWinnerIsAlbert [
 	| aGame albert robert diceOne diceTwo players |
 	diceOne := SameFaceDice withFaces: 6.
 	diceTwo := SameFaceDice withFaces: 5.
-	albert := Player call: 'albert' withDice: diceOne.
-	robert := Player call: 'Robert' withDice: diceTwo.
+	albert := Player call: 'albert' with: diceOne.
+	robert := Player call: 'Robert' with: diceTwo.
 	players := OrderedCollection new: 2.
 	players add: albert.
 	players add: robert.

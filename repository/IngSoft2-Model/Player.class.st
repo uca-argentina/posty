@@ -37,15 +37,15 @@ Class {
 }
 
 { #category : #creation }
-Player class >> call: aName withDice: aDice [
+Player class >> call: aName with: aDice [
 	^ self new
 		initializeWithName: aName
-			withDice: aDice;
+			with: aDice;
 		yourself
 ]
 
 { #category : #initialize }
-Player >> initializeWithName: aName withDice: aDice [
+Player >> initializeWithName: aName with: aDice [
 	playerName := aName.
 	playerDice := aDice.
 	position := 0
