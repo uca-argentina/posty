@@ -130,6 +130,39 @@ PostyTest >> testInitialPositionOfRobertIsZero [
 ]
 
 { #category : #tests }
+PostyTest >> testIsOverFalse [
+	| aGame albert robert diceOne diceTwo players |
+	diceOne := SameFaceDice withFaces: 6.
+	diceTwo := SameFaceDice withFaces: 5.
+	albert := Player call: 'albert' with: diceOne.
+	robert := Player call: 'Robert' with: diceTwo.
+	players := OrderedCollection new: 2.
+	players add: albert.
+	players add: robert.
+	aGame := Game WithStepsToWin: 8 andPlayers: players.
+	albert plays.
+	robert plays.
+	self assert: (aGame isOver) equals: false.
+]
+
+{ #category : #tests }
+PostyTest >> testIsOverTrue [
+	| aGame albert robert diceOne diceTwo players |
+	diceOne := SameFaceDice withFaces: 6.
+	diceTwo := SameFaceDice withFaces: 5.
+	albert := Player call: 'albert' with: diceOne.
+	robert := Player call: 'Robert' with: diceTwo.
+	players := OrderedCollection new: 2.
+	players add: albert.
+	players add: robert.
+	aGame := Game WithStepsToWin: 8 andPlayers: players.
+	albert plays.
+	albert plays.
+	robert plays.
+	self assert: (aGame isOver) equals: true.
+]
+
+{ #category : #tests }
 PostyTest >> testTheWinnerIsAlbert [
 	| aGame albert robert diceOne diceTwo players |
 	diceOne := SameFaceDice withFaces: 6.
