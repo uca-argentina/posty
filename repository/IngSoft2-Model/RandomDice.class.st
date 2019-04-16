@@ -23,8 +23,18 @@ Internal Representation and Key Implementation Points.
 Class {
 	#name : #RandomDice,
 	#superclass : #Dice,
+	#instVars : [
+		'random'
+	],
 	#category : #'IngSoft2-Model'
 }
+
+{ #category : #initialize }
+RandomDice >> initializeWithFaces: aNumberOfFaces [
+	super initializeWithFaces: aNumberOfFaces.
+	random := Random new.
+	
+]
 
 { #category : #actions }
 RandomDice >> roll [

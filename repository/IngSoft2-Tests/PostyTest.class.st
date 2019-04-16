@@ -62,8 +62,7 @@ PostyTest >> testDiceCantHaveLessThanFourFaces [
 PostyTest >> testDiceRollsAndReturnsAValidNumber [
 	| fourFaceDice |
 	fourFaceDice := RandomDice withFaces: 4.
-	self assert: fourFaceDice roll >= 1.
-	self assert: fourFaceDice roll <= 4
+	self assert: (fourFaceDice roll between: 1 and:  4)
 ]
 
 { #category : #tests }

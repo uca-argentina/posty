@@ -28,8 +28,7 @@ Class {
 	#name : #Dice,
 	#superclass : #Object,
 	#instVars : [
-		'numberOfFaces',
-		'random'
+		'numberOfFaces'
 	],
 	#category : #'IngSoft2-Model'
 }
@@ -50,8 +49,7 @@ Dice class >> withFaces: aNumberOfFaces [
 
 { #category : #initialize }
 Dice >> initializeWithFaces: aNumberOfFaces [
-	numberOfFaces := aNumberOfFaces.
-	random := Random new
+	numberOfFaces := aNumberOfFaces
 ]
 
 { #category : #actions }
