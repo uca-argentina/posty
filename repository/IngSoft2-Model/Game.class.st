@@ -57,7 +57,7 @@ Game >> initializeWithStepsToWin: aNumberOfStepsToWin and: aListOfPlayers [
 
 { #category : #actions }
 Game >> isOver [
-	^ listOfPlayers contains: [ :p | ((p position) ) ==  numberOfStepsToWin ]
+	^ listOfPlayers anySatisfy: [ :player | player position =  numberOfStepsToWin ]
 ]
 
 { #category : #description }
@@ -72,5 +72,5 @@ Game >> stepsToWin [
 
 { #category : #actions }
 Game >> winner [
-	^ listOfPlayers detect:  [ :p | p position == numberOfStepsToWin ]
+	^ listOfPlayers detect:  [ :player | player position = numberOfStepsToWin ]
 ]
