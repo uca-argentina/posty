@@ -74,6 +74,39 @@ PostyTest >> testFourFaceDiceHasFourFaces [
 ]
 
 { #category : #tests }
+PostyTest >> testGameIsOverFalse [
+	| aGame albert robert diceOne diceTwo players |
+	diceOne := SameFaceDice withFaces: 6.
+	diceTwo := SameFaceDice withFaces: 5.
+	albert := Player call: 'albert' with: diceOne.
+	robert := Player call: 'Robert' with: diceTwo.
+	players := OrderedCollection new: 2.
+	players add: albert.
+	players add: robert.
+	aGame := Game WithStepsToWin: 8 andPlayers: players.
+	albert plays.
+	robert plays.
+	self assert: (aGame isOver) equals: false.
+]
+
+{ #category : #tests }
+PostyTest >> testGameIsOverTrue [
+	| aGame albert robert diceOne diceTwo players |
+	diceOne := SameFaceDice withFaces: 6.
+	diceTwo := SameFaceDice withFaces: 5.
+	albert := Player call: 'albert' with: diceOne.
+	robert := Player call: 'Robert' with: diceTwo.
+	players := OrderedCollection new: 2.
+	players add: albert.
+	players add: robert.
+	aGame := Game WithStepsToWin: 8 andPlayers: players.
+	albert plays.
+	albert plays.
+	robert plays.
+	self assert: (aGame isOver) equals: true.
+]
+
+{ #category : #tests }
 PostyTest >> testIfIGetAFourIMoveFourBlocks [
 	| fourFaceDice robert |
 	fourFaceDice := SameFaceDice withFaces: 4.
@@ -127,39 +160,6 @@ PostyTest >> testInitialPositionOfRobertIsZero [
 	aDice := RandomDice withFaces: 4.
 	robert := Player call: 'Robert' with: aDice.
 	self assert: robert position equals: 0
-]
-
-{ #category : #tests }
-PostyTest >> testIsOverFalse [
-	| aGame albert robert diceOne diceTwo players |
-	diceOne := SameFaceDice withFaces: 6.
-	diceTwo := SameFaceDice withFaces: 5.
-	albert := Player call: 'albert' with: diceOne.
-	robert := Player call: 'Robert' with: diceTwo.
-	players := OrderedCollection new: 2.
-	players add: albert.
-	players add: robert.
-	aGame := Game WithStepsToWin: 8 andPlayers: players.
-	albert plays.
-	robert plays.
-	self assert: (aGame isOver) equals: false.
-]
-
-{ #category : #tests }
-PostyTest >> testIsOverTrue [
-	| aGame albert robert diceOne diceTwo players |
-	diceOne := SameFaceDice withFaces: 6.
-	diceTwo := SameFaceDice withFaces: 5.
-	albert := Player call: 'albert' with: diceOne.
-	robert := Player call: 'Robert' with: diceTwo.
-	players := OrderedCollection new: 2.
-	players add: albert.
-	players add: robert.
-	aGame := Game WithStepsToWin: 8 andPlayers: players.
-	albert plays.
-	albert plays.
-	robert plays.
-	self assert: (aGame isOver) equals: true.
 ]
 
 { #category : #tests }
