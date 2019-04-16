@@ -163,7 +163,7 @@ PostyTest >> testInitialPositionOfRobertIsZero [
 ]
 
 { #category : #tests }
-PostyTest >> testTheWinnerIsAlbert [
+PostyTest >> testTheWinnerOfTheGameIsAlbert [
 	| aGame albert robert diceOne diceTwo players |
 	diceOne := SameFaceDice withFaces: 6.
 	diceTwo := SameFaceDice withFaces: 5.
