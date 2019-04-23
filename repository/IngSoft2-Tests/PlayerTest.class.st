@@ -53,21 +53,18 @@ PlayerTest >> testAPlayerCalledRobert [
 
 { #category : #tests }
 PlayerTest >> testAfterAlbertPlaysItsRobertTurn [
-	self setUp .
 	albert plays: aGame with: diceOne.
 	self assert: robert turn equals: aGame actualTurn.
 ]
 
 { #category : #tests }
 PlayerTest >> testIfIGetAFourIMoveFourBlocks [
-	self setUp .
 	albert plays: aGame with: diceOne  .
 	self assert: albert position equals: 4
 ]
 
 { #category : #tests }
 PlayerTest >> testIfIRollTwoTimesASameFaceDiceMyPositionIncrease [
-	self setUp.
 	albert plays: aGame with: diceOne.
 	robert plays: aGame with: diceOne.
 	albert plays: aGame with: diceOne.
@@ -76,7 +73,6 @@ PlayerTest >> testIfIRollTwoTimesASameFaceDiceMyPositionIncrease [
 
 { #category : #tests }
 PlayerTest >> testInThisTurnThePositionOfRobertIsFourAndAlbertIsEigth [
-	self setUp.
 	albert plays: aGame with: diceOne.
 	robert plays: aGame with: diceTwo.
 	albert plays: aGame with: diceTwo.
@@ -92,14 +88,12 @@ PlayerTest >> testInitialPositionOfRobertIsZero [
 
 { #category : #tests }
 PlayerTest >> testItsNotAlbertTurn [
-	self setUp.
 	albert plays: aGame with: diceOne.
 	self should: [ albert plays: aGame with: diceOne  ] raise: Error
 ]
 
 { #category : #tests }
 PlayerTest >> testTheOrderInTurnsIsAlbertFirstRobertSecond [
-	self setUp .
 	self assert: albert turn equals: 1.
 	self assert: robert turn equals: 2.
 ]

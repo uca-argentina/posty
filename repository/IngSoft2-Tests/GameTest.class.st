@@ -47,7 +47,6 @@ GameTest >> setUp [
 
 { #category : #tests }
 GameTest >> testAfterAGameHasEndedNoOneCouldPlay [
-	self setUp .
 	albert plays: aGame with: diceOne.
 	robert plays: aGame with: diceTwo.
 	albert plays: aGame with: diceTwo.
@@ -57,14 +56,12 @@ GameTest >> testAfterAGameHasEndedNoOneCouldPlay [
 
 { #category : #tests }
 GameTest >> testGameHas5StepsAndIsPlayableBy2Players [
-	self setUp.
 	self assert: aGame stepsToWin equals: 8.
 	self assert: (aGame players size) equals: 2
 ]
 
 { #category : #tests }
 GameTest >> testGameIsOverFalse [
-	self setUp .
 	albert plays: aGame with: diceOne.
 	robert plays: aGame with: diceTwo.
 	self assert: aGame isOver equals: false
@@ -72,7 +69,6 @@ GameTest >> testGameIsOverFalse [
 
 { #category : #tests }
 GameTest >> testGameIsOverTrue [
-	self setUp .
 	albert plays: aGame with: diceOne.
 	robert plays: aGame with: diceTwo.
 	albert plays: aGame with: diceTwo.
@@ -81,7 +77,6 @@ GameTest >> testGameIsOverTrue [
 
 { #category : #tests }
 GameTest >> testTheWinnerOfTheGameIsAlbert [
-	self setUp .
 	albert plays: aGame with: diceOne.
 	robert plays: aGame with: diceTwo.
 	albert plays: aGame with: diceOne.
