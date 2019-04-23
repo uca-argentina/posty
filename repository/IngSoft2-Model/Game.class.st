@@ -48,50 +48,72 @@ Game class >> WithStepsToWin: aNumberOfStepsToWin withPlayers: aNumberOfplayers 
 
 { #category : #description }
 Game >> actualTurn [
-	^ turn 
+	"Because every player has a number of turn, actualTurn returns which player can play"
+
+	^ turn
 ]
 
 { #category : #initialize }
 Game >> initializeWithStepsToWin: aNumberOfStepsToWin with: aListOfPlayers [
-	numberOfStepsToWin := aNumberOfStepsToWin .
-	listOfPlayers := aListOfPlayers  .
+	"Create a game with n steps to win and list of players, then assign first turn number"
+
+	numberOfStepsToWin := aNumberOfStepsToWin.
+	listOfPlayers := aListOfPlayers.
 	turn := 1.
-	self start.
+	self start
 ]
 
 { #category : #actions }
 Game >> isOver [
-	^ listOfPlayers anySatisfy: [ :player | player position =  numberOfStepsToWin ]
+	"Looks if a player has reached the end of the game"
+
+	^ listOfPlayers
+		anySatisfy: [ :player | player position = numberOfStepsToWin ]
 ]
 
 { #category : #actions }
 Game >> nextTurn: aNumber [
-	turn := aNumber.
+	"Updates the collaborator turn with a new value"
+
+	turn := aNumber
 ]
 
 { #category : #description }
 Game >> numberOfPlayers [
-	^ listOfPlayers size .
+	"Returns the amount of players that are playing the game"
+
+	^ listOfPlayers size
 ]
 
 { #category : #description }
 Game >> players [
-	^ listOfPlayers 
+	"Return all the players of the game"
+
+	^ listOfPlayers
 ]
 
 { #category : #accessing }
-Game >> start [ 
+Game >> start [
+	"Everytime the game is created it assign turns to all players"
+
 	| turns |
-	turns := 1 to: (listOfPlayers size).
-	listOfPlayers with: turns do: [ :player :number | player assignTurn: number ]
+	turns := 1 to: listOfPlayers size.
+	listOfPlayers
+		with: turns
+		do: [ :player :number | player assignTurn: number ]
 ]
 
 { #category : #description }
 Game >> stepsToWin [
+	"Returns how long the game is"
+
 	^ numberOfStepsToWin
 ]
 
 { #category : #actions }
 Game >> winner [
-	^ listOfPlayers detect:  [ :player | player position = numberOfStepsToWin ]
+	"Returns a player that has already win"
+
+	^ listOfPlayers
+		detect: [ :player | player position = numberOfStepsToWin ]
 ]

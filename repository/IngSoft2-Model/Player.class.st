@@ -44,58 +44,77 @@ Player class >> called: aName [
 
 { #category : #assertions }
 Player >> assertGameIsOver: aGameStatus [
-	aGameStatus ifTrue: [ self error: 'Game has already ended' ]
+	"Assertion to detect if the game has ended"
+
+	aGameStatus
+		ifTrue: [ self error: 'Game has already ended' ]
 ]
 
 { #category : #assertions }
 Player >> assertIsMyTurn: gameTurn [
-	gameTurn  = myTurn 
+	"Assertion to know if it is the turn of the player"
+
+	gameTurn = myTurn
 		ifFalse: [ self error: 'Its not your turn' ]
 ]
 
 { #category : #actions }
 Player >> assignTurn: aNumber [
-	myTurn := aNumber.
+	"Give a player a turn number"
+
+	myTurn := aNumber
 ]
 
 { #category : #initialize }
 Player >> initializeWithName: aName [
+	"Create a player with a name and locate him at the begining of the game"
+
 	playerName := aName.
 	position := 0
 ]
 
 { #category : #actions }
-Player >> move: aNumberOfSteps [ 
-	 position := position + aNumberOfSteps
+Player >> move: aNumberOfSteps [
+	"Change position of the player in the game"
+
+	position := position + aNumberOfSteps
 ]
 
 { #category : #description }
 Player >> name [
+	"Show player name"
+
 	^ playerName
 ]
 
 { #category : #actions }
 Player >> plays: aGame with: aDice [
+	"When a player plays the game check if the game is still on, if it is its turn, roll the dice and update turn assignation"
+
 	self assertGameIsOver: aGame isOver.
 	self assertIsMyTurn: aGame actualTurn.
 	self updateTurn: aGame.
-	self move: aDice roll.
-	
-	
+	self move: aDice roll
 ]
 
 { #category : #actions }
-Player >> position [ 
+Player >> position [
+	"Return where is the player in the game"
+
 	^ position
 ]
 
 { #category : #description }
 Player >> turn [
+	"Return turn value of the player"
+
 	^ myTurn
 ]
 
 { #category : #updates }
 Player >> updateTurn: aGame [
-	aGame nextTurn: (myTurn + 1).
-	self assignTurn: (myTurn + (aGame numberOfPlayers)).
+	"After the player plays it has to update its turn in the queue"
+
+	aGame nextTurn: myTurn + 1.
+	self assignTurn: myTurn + aGame numberOfPlayers
 ]

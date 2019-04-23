@@ -1,0 +1,93 @@
+"
+Please comment me using the following template inspired by Class Responsibility Collaborator (CRC) design:
+""Here there are the tests that evaluates game behaviour""
+For the Class part:  State a one line summary. For example, ""I represent a paragraph of text"".
+
+For the Responsibility part: Three sentences about my main responsibilities - what I do, what I know.
+
+For the Collaborators Part: State my main collaborators and one line about how I interact with them. 
+
+Public API and Key Messages
+
+- message one   
+- message two 
+- (for bonus points) how to create instances.
+
+   One simple example is simply gorgeous.
+ 
+Internal Representation and Key Implementation Points.
+
+
+    Implementation Points
+"
+Class {
+	#name : #GameTest,
+	#superclass : #TestCase,
+	#instVars : [
+		'aGame',
+		'robert',
+		'albert',
+		'diceOne',
+		'diceTwo'
+	],
+	#category : #'IngSoft2-Tests'
+}
+
+{ #category : #running }
+GameTest >> setUp [
+	| players |
+	diceOne := SameFaceDice withFaces: 6.
+	diceTwo := SameFaceDice withFaces: 5.
+	albert := Player called: 'Albert'.
+	robert := Player called: 'Robert'.
+	players := OrderedCollection with: albert with: robert.
+	aGame := Game WithStepsToWin: 8 withPlayers: players.
+	
+]
+
+{ #category : #tests }
+GameTest >> testAfterAGameHasEndedNoOneCouldPlay [
+	self setUp .
+	albert plays: aGame with: diceOne.
+	robert plays: aGame with: diceTwo.
+	albert plays: aGame with: diceTwo.
+	self should: [ robert plays: aGame with: diceTwo ] raise: Error.
+	self should: [ albert plays: aGame with: diceTwo ] raise: Error.
+]
+
+{ #category : #tests }
+GameTest >> testGameHas5StepsAndIsPlayableBy2Players [
+	| aGame albert robert players|
+	albert := Player called: 'Albert'.
+	robert := Player called: 'Robert'.
+	players := OrderedCollection with: albert with: robert.
+	aGame := Game WithStepsToWin: 5 withPlayers: players.
+	self assert: aGame stepsToWin equals: 5.
+	self assert: (aGame players size) equals: 2
+]
+
+{ #category : #tests }
+GameTest >> testGameIsOverFalse [
+	self setUp .
+	albert plays: aGame with: diceOne.
+	robert plays: aGame with: diceTwo.
+	self assert: aGame isOver equals: false
+]
+
+{ #category : #tests }
+GameTest >> testGameIsOverTrue [
+	self setUp .
+	albert plays: aGame with: diceOne.
+	robert plays: aGame with: diceTwo.
+	albert plays: aGame with: diceTwo.
+	self assert: aGame isOver equals: true
+]
+
+{ #category : #tests }
+GameTest >> testTheWinnerOfTheGameIsAlbert [
+	self setUp .
+	albert plays: aGame with: diceOne.
+	robert plays: aGame with: diceTwo.
+	albert plays: aGame with: diceOne.
+	self assert: aGame winner name equals: 'Albert'
+]

@@ -28,5 +28,7 @@ Class {
 
 { #category : #actions }
 SameFaceDice >> roll [
+	"Whenever you roll the dice it returns 4"
+
 	^ 4
 ]

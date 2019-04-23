@@ -49,15 +49,21 @@ Dice class >> withFaces: aNumberOfFaces [
 
 { #category : #initialize }
 Dice >> initializeWithFaces: aNumberOfFaces [
+	"The number of faces of the dice is assigned"
+
 	numberOfFaces := aNumberOfFaces
 ]
 
 { #category : #actions }
 Dice >> numberOfFaces [
+	"Return how many faces does the dice has"
+
 	^ numberOfFaces
 ]
 
 { #category : #actions }
-Dice >> roll [ 
-	self subclassResponsibility 
+Dice >> roll [
+	"Abstract method so subclasses specify how the dice rolls"
+
+	self subclassResponsibility
 ]

@@ -32,11 +32,12 @@ Class {
 { #category : #initialize }
 RandomDice >> initializeWithFaces: aNumberOfFaces [
 	super initializeWithFaces: aNumberOfFaces.
-	random := Random new.
-	
+	random := Random new
 ]
 
 { #category : #actions }
 RandomDice >> roll [
+	"Roll returns a random value between 1 and the amount of faces of the dice"
+
 	^ (random next * numberOfFaces) floor + 1
 ]
