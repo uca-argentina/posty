@@ -30,24 +30,32 @@ Class {
 	#instVars : [
 		'playerName',
 		'position',
-		'playerDice',
-		'move'
+		'myTurn'
 	],
 	#category : #'IngSoft2-Model'
 }
 
 { #category : #creation }
-Player class >> call: aName with: aDice [
+Player class >> called: aName [
 	^ self new
-		initializeWithName: aName
-			with: aDice;
+		initializeWithName: aName;
 		yourself
 ]
 
+{ #category : #assertions }
+Player >> assertIsMyTurn: gameTurn [
+	gameTurn  = myTurn 
+		ifFalse: [ self error: 'Its not your turn' ]
+]
+
+{ #category : #actions }
+Player >> assignTurn: aNumber [
+	myTurn := aNumber.
+]
+
 { #category : #initialize }
-Player >> initializeWithName: aName with: aDice [
+Player >> initializeWithName: aName [
 	playerName := aName.
-	playerDice := aDice.
 	position := 0
 ]
 
@@ -62,11 +70,26 @@ Player >> name [
 ]
 
 { #category : #actions }
-Player >> plays [
-	self move: (playerDice  roll).
+Player >> plays: aGame with: aDice [
+	self assertIsMyTurn: aGame actualTurn.
+	self updateTurn: aGame.
+	self move: aDice roll.
+	
+	
 ]
 
 { #category : #actions }
 Player >> position [ 
 	^ position
+]
+
+{ #category : #description }
+Player >> turn [
+	^ myTurn
+]
+
+{ #category : #updates }
+Player >> updateTurn: aGame [
+	aGame nextTurn: (myTurn + 1).
+	self assignTurn: (myTurn + (aGame numberOfPlayers)).
 ]

@@ -31,28 +31,32 @@ Class {
 	#name : #Game,
 	#superclass : #Object,
 	#instVars : [
-		'stepsToWin',
 		'numberOfStepsToWin',
 		'listOfPlayers',
-		'position'
+		'turn'
 	],
 	#category : #'IngSoft2-Model'
 }
 
 { #category : #creation }
-Game class >> WithStepsToWin: aNumberOfStepsToWin andPlayers: aNumberOfplayers [
+Game class >> WithStepsToWin: aNumberOfStepsToWin withPlayers: aNumberOfplayers [
 	^ self new
 		initializeWithStepsToWin: aNumberOfStepsToWin
-			and: aNumberOfplayers;
-		
+			with: aNumberOfplayers;
 		yourself
 ]
 
+{ #category : #description }
+Game >> actualTurn [
+	^ turn 
+]
+
 { #category : #initialize }
-Game >> initializeWithStepsToWin: aNumberOfStepsToWin and: aListOfPlayers [
+Game >> initializeWithStepsToWin: aNumberOfStepsToWin with: aListOfPlayers [
 	numberOfStepsToWin := aNumberOfStepsToWin .
 	listOfPlayers := aListOfPlayers  .
-	position := 0.
+	turn := 1.
+	self start.
 ]
 
 { #category : #actions }
@@ -60,9 +64,26 @@ Game >> isOver [
 	^ listOfPlayers anySatisfy: [ :player | player position =  numberOfStepsToWin ]
 ]
 
+{ #category : #actions }
+Game >> nextTurn: aNumber [
+	turn := aNumber.
+]
+
+{ #category : #description }
+Game >> numberOfPlayers [
+	^ listOfPlayers size .
+]
+
 { #category : #description }
 Game >> players [
 	^ listOfPlayers 
+]
+
+{ #category : #accessing }
+Game >> start [ 
+	| turns |
+	turns := 1 to: (listOfPlayers size).
+	listOfPlayers with: turns do: [ :player :number | player assignTurn: number ]
 ]
 
 { #category : #description }
