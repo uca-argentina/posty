@@ -57,12 +57,8 @@ GameTest >> testAfterAGameHasEndedNoOneCouldPlay [
 
 { #category : #tests }
 GameTest >> testGameHas5StepsAndIsPlayableBy2Players [
-	| aGame albert robert players|
-	albert := Player called: 'Albert'.
-	robert := Player called: 'Robert'.
-	players := OrderedCollection with: albert with: robert.
-	aGame := Game WithStepsToWin: 5 withPlayers: players.
-	self assert: aGame stepsToWin equals: 5.
+	self setUp.
+	self assert: aGame stepsToWin equals: 8.
 	self assert: (aGame players size) equals: 2
 ]
 

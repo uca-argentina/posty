@@ -115,5 +115,5 @@ Game >> winner [
 	"Returns a player that has already win"
 
 	^ listOfPlayers
-		detect: [ :player | player position = numberOfStepsToWin ]
+		detect: [ :player | player position >= numberOfStepsToWin ]
 ]
