@@ -58,6 +58,22 @@ PostyTest >> testAPlayerCalledRobertRollsARandomDiceWith4Faces [
 ]
 
 { #category : #tests }
+PostyTest >> testAfterAGameHasEndedNoOneCouldPlay [
+	| aGame albert robert diceOne diceTwo players |
+	diceOne := SameFaceDice withFaces: 6.
+	diceTwo := SameFaceDice withFaces: 5.
+	albert := Player called: 'Albert'.
+	robert := Player called: 'Robert'.
+	players := OrderedCollection with: albert with: robert.
+	aGame := Game WithStepsToWin: 8 withPlayers: players.
+	albert plays: aGame with: diceOne.
+	robert plays: aGame with: diceTwo.
+	albert plays: aGame with: diceTwo.
+	self should: [ robert plays: aGame with: diceTwo ] raise: Error.
+	self should: [ albert plays: aGame with: diceTwo ] raise: Error.
+]
+
+{ #category : #tests }
 PostyTest >> testAfterAlbertPlaysItsRobertTurn [
 	| albert robert aGame aDice players|
 	albert := Player called: 'Albert'.

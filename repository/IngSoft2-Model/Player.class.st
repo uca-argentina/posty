@@ -43,6 +43,11 @@ Player class >> called: aName [
 ]
 
 { #category : #assertions }
+Player >> assertGameIsOver: aGameStatus [
+	aGameStatus ifTrue: [ self error: 'Game has already ended' ]
+]
+
+{ #category : #assertions }
 Player >> assertIsMyTurn: gameTurn [
 	gameTurn  = myTurn 
 		ifFalse: [ self error: 'Its not your turn' ]
@@ -71,6 +76,7 @@ Player >> name [
 
 { #category : #actions }
 Player >> plays: aGame with: aDice [
+	self assertGameIsOver: aGame isOver.
 	self assertIsMyTurn: aGame actualTurn.
 	self updateTurn: aGame.
 	self move: aDice roll.
