@@ -36,12 +36,12 @@ Class {
 { #category : #running }
 PlayerTest >> setUp [
 	| players |
+	diceOne := SameFaceDice withFaces: 6.
+	diceTwo := SameFaceDice withFaces: 4.
 	albert := Player called: 'Albert'.
 	robert := Player called: 'Robert'.
-	players := OrderedCollection with: albert with: robert .
-	diceOne := SameFaceDice withFaces: 4.
-	diceTwo := SameFaceDice withFaces: 5.
-	aGame := Game WithStepsToWin: 5 withPlayers: players.
+	players := OrderedCollection with: albert with: robert.
+	aGame := Game withStepsPerLap: 5 withNumberOfLaps: 2 withPlayers: players.
 ]
 
 { #category : #tests }

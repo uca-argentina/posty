@@ -30,6 +30,7 @@ Class {
 	#instVars : [
 		'playerName',
 		'position',
+		'lapNumber',
 		'myTurn'
 	],
 	#category : #'IngSoft2-Model'
@@ -70,13 +71,21 @@ Player >> initializeWithName: aName [
 	"Create a player with a name and locate him at the begining of the game"
 
 	playerName := aName.
-	position := 0
+	position := 0.
+	lapNumber:= 0
+]
+
+{ #category : #description }
+Player >> lap [
+	"Return lap value of the player"
+
+	^ lapNumber 
 ]
 
 { #category : #actions }
 Player >> move: aNumberOfSteps [
 	"Change position of the player in the game"
-
+	
 	position := position + aNumberOfSteps
 ]
 
@@ -90,14 +99,14 @@ Player >> name [
 { #category : #actions }
 Player >> plays: aGame with: aDice [
 	"When a player plays the game check if the game is still on, if it is its turn, roll the dice and update turn assignation"
-
 	self assertGameIsOver: aGame isOver.
 	self assertIsMyTurn: aGame actualTurn.
-	self updateTurn: aGame.
-	self move: aDice roll
+	self move: aDice roll.
+	self updateLap: aGame numberOfSlotsPerLap.
+	self updateTurn: aGame
 ]
 
-{ #category : #actions }
+{ #category : #description }
 Player >> position [
 	"Return where is the player in the game"
 
@@ -112,9 +121,17 @@ Player >> turn [
 ]
 
 { #category : #updates }
+Player >> updateLap: numberOfSlots [
+	"After the player plays it has to update its turn in the queue"
+	
+	position > numberOfSlots 
+		ifTrue: [( self position = (self position - numberOfSlots)  ) & (self lap = self lap + 1)]
+]
+
+{ #category : #updates }
 Player >> updateTurn: aGame [
 	"After the player plays it has to update its turn in the queue"
-
+	
 	aGame nextTurn: myTurn + 1.
 	self assignTurn: myTurn + aGame numberOfPlayers
 ]

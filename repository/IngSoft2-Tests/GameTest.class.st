@@ -37,11 +37,11 @@ Class {
 GameTest >> setUp [
 	| players |
 	diceOne := SameFaceDice withFaces: 6.
-	diceTwo := SameFaceDice withFaces: 5.
+	diceTwo := SameFaceDice withFaces: 4.
 	albert := Player called: 'Albert'.
 	robert := Player called: 'Robert'.
 	players := OrderedCollection with: albert with: robert.
-	aGame := Game WithStepsToWin: 8 withPlayers: players.
+	aGame := Game withStepsPerLap: 5 withNumberOfLaps: 2 withPlayers: players.
 	
 ]
 
@@ -50,13 +50,15 @@ GameTest >> testAfterAGameHasEndedNoOneCouldPlay [
 	albert plays: aGame with: diceOne.
 	robert plays: aGame with: diceTwo.
 	albert plays: aGame with: diceTwo.
+	robert plays: aGame with: diceTwo.
+	albert plays: aGame with: diceTwo.
 	self should: [ robert plays: aGame with: diceTwo ] raise: Error.
 	self should: [ albert plays: aGame with: diceTwo ] raise: Error.
 ]
 
 { #category : #tests }
 GameTest >> testGameHas5StepsAndIsPlayableBy2Players [
-	self assert: aGame stepsToWin equals: 8.
+	self assert: aGame stepsToWin equals: 10.
 	self assert: (aGame players size) equals: 2
 ]
 

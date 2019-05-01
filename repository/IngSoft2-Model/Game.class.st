@@ -31,7 +31,8 @@ Class {
 	#name : #Game,
 	#superclass : #Object,
 	#instVars : [
-		'numberOfStepsToWin',
+		'numberOfSlotsPerLap',
+		'numberOfLaps',
 		'listOfPlayers',
 		'turn'
 	],
@@ -46,6 +47,15 @@ Game class >> WithStepsToWin: aNumberOfStepsToWin withPlayers: aNumberOfplayers 
 		yourself
 ]
 
+{ #category : #creation }
+Game class >> withStepsPerLap: aNumberOfStepsPerLap withNumberOfLaps: aNumberOfLaps withPlayers: players [
+	^ self new
+		initializeWithStepsPerLap: aNumberOfStepsPerLap
+			with: aNumberOfLaps
+			with: players;
+		yourself
+]
+
 { #category : #description }
 Game >> actualTurn [
 	"Because every player has a number of turn, actualTurn returns which player can play"
@@ -54,11 +64,11 @@ Game >> actualTurn [
 ]
 
 { #category : #initialize }
-Game >> initializeWithStepsToWin: aNumberOfStepsToWin with: aListOfPlayers [
+Game >> initializeWithStepsPerLap: aNumberOfStepsPerLap with: aNumberOfLaps with: players [
 	"Create a game with n steps to win and list of players, then assign first turn number"
-
-	numberOfStepsToWin := aNumberOfStepsToWin.
-	listOfPlayers := aListOfPlayers.
+	numberOfSlotsPerLap := aNumberOfStepsPerLap.
+	listOfPlayers := players.
+	numberOfLaps := aNumberOfLaps.
 	turn := 1.
 	self start
 ]
@@ -67,8 +77,8 @@ Game >> initializeWithStepsToWin: aNumberOfStepsToWin with: aListOfPlayers [
 Game >> isOver [
 	"Looks if a player has reached the end of the game"
 
-	^ listOfPlayers
-		anySatisfy: [ :player | player position = numberOfStepsToWin ]
+	^ listOfPlayers 
+		anySatisfy: [ :player | (player position >= 0 ) & (player lap = numberOfLaps )] 
 ]
 
 { #category : #actions }
@@ -83,6 +93,12 @@ Game >> numberOfPlayers [
 	"Returns the amount of players that are playing the game"
 
 	^ listOfPlayers size
+]
+
+{ #category : #description }
+Game >> numberOfSlotsPerLap [
+
+	^ numberOfSlotsPerLap
 ]
 
 { #category : #description }
@@ -107,7 +123,7 @@ Game >> start [
 Game >> stepsToWin [
 	"Returns how long the game is"
 
-	^ numberOfStepsToWin
+	^ numberOfSlotsPerLap * numberOfLaps
 ]
 
 { #category : #actions }
@@ -115,5 +131,5 @@ Game >> winner [
 	"Returns a player that has already win"
 
 	^ listOfPlayers
-		detect: [ :player | player position >= numberOfStepsToWin ]
+		detect: [ :player | (player position >= 0 ) & (player lap = numberOfLaps ) ]
 ]

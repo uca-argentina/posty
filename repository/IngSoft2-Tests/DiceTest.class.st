@@ -39,7 +39,7 @@ DiceTest >> setUp [
 	robert := Player called: 'Robert'.
 	players := OrderedCollection with: albert with: robert .
 	aDice := RandomDice withFaces: 4.
-	aGame := Game WithStepsToWin: 5 withPlayers: players.
+	aGame := Game withStepsPerLap: 5 withNumberOfLaps: 2 withPlayers: players.
 ]
 
 { #category : #tests }
