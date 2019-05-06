@@ -57,6 +57,16 @@ GameTest >> testAfterAGameHasEndedNoOneCouldPlay [
 ]
 
 { #category : #tests }
+GameTest >> testAlbertFinishOneLapsAndMovesToTheSecond [
+	albert plays: aGame with: diceOne.
+	robert plays: aGame with: diceTwo.
+	albert plays: aGame with: diceTwo.
+	robert plays: aGame with: diceTwo.
+	albert plays: aGame with: diceTwo.
+	self assert: albert lap equals: 2.
+]
+
+{ #category : #tests }
 GameTest >> testGameHas5StepsAndIsPlayableBy2Players [
 	self assert: aGame stepsToWin equals: 10.
 	self assert: (aGame players size) equals: 2
@@ -74,13 +84,22 @@ GameTest >> testGameIsOverTrue [
 	albert plays: aGame with: diceOne.
 	robert plays: aGame with: diceTwo.
 	albert plays: aGame with: diceTwo.
+	robert plays: aGame with: diceTwo.
+	albert plays: aGame with: diceTwo.
 	self assert: aGame isOver equals: true
+]
+
+{ #category : #tests }
+GameTest >> testTheGameHasTwoLaps [
+	self assert: aGame numberOfLaps equals: 2.
 ]
 
 { #category : #tests }
 GameTest >> testTheWinnerOfTheGameIsAlbert [
 	albert plays: aGame with: diceOne.
 	robert plays: aGame with: diceTwo.
-	albert plays: aGame with: diceOne.
+	albert plays: aGame with: diceTwo.
+	robert plays: aGame with: diceTwo.
+	albert plays: aGame with: diceTwo.
 	self assert: aGame winner name equals: 'Albert'
 ]

@@ -78,7 +78,7 @@ Game >> isOver [
 	"Looks if a player has reached the end of the game"
 
 	^ listOfPlayers 
-		anySatisfy: [ :player | (player position >= 0 ) & (player lap = numberOfLaps )] 
+		anySatisfy: [ :player | (player position >=  (numberOfSlotsPerLap * numberOfLaps) )] 
 ]
 
 { #category : #actions }
@@ -86,6 +86,11 @@ Game >> nextTurn: aNumber [
 	"Updates the collaborator turn with a new value"
 
 	turn := aNumber
+]
+
+{ #category : #accessing }
+Game >> numberOfLaps [
+	^ numberOfLaps 
 ]
 
 { #category : #description }

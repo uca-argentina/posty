@@ -76,17 +76,15 @@ Player >> initializeWithName: aName [
 ]
 
 { #category : #description }
-Player >> lap [
-	"Return lap value of the player"
-
-	^ lapNumber 
+Player >> lap [ 
+	^ lapNumber .
 ]
 
 { #category : #actions }
 Player >> move: aNumberOfSteps [
 	"Change position of the player in the game"
 	
-	position := position + aNumberOfSteps
+	position :=  position + aNumberOfSteps.
 ]
 
 { #category : #description }
@@ -125,7 +123,7 @@ Player >> updateLap: numberOfSlots [
 	"After the player plays it has to update its turn in the queue"
 	
 	position > numberOfSlots 
-		ifTrue: [( self position = (self position - numberOfSlots)  ) & (self lap = self lap + 1)]
+		ifTrue: [ lapNumber :=  lapNumber + 1 ]
 ]
 
 { #category : #updates }
