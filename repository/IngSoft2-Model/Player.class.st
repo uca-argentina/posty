@@ -31,7 +31,8 @@ Class {
 		'playerName',
 		'position',
 		'lapNumber',
-		'myTurn'
+		'myTurn',
+		'lastPosition'
 	],
 	#category : #'IngSoft2-Model'
 }
@@ -80,10 +81,15 @@ Player >> lap [
 	^ lapNumber .
 ]
 
+{ #category : #accessing }
+Player >> lastPosition [ 
+	^ lastPosition .
+]
+
 { #category : #actions }
 Player >> move: aNumberOfSteps [
 	"Change position of the player in the game"
-	
+	lastPosition := position.
 	position :=  position + aNumberOfSteps.
 ]
 
@@ -101,7 +107,7 @@ Player >> plays: aGame with: aDice [
 	self assertIsMyTurn: aGame actualTurn.
 	self move: aDice roll.
 	self updateLap: aGame numberOfSlotsPerLap.
-	self updateTurn: aGame
+	self updateTurn: aGame.
 ]
 
 { #category : #description }
@@ -122,8 +128,7 @@ Player >> turn [
 Player >> updateLap: numberOfSlots [
 	"After the player plays it has to update its turn in the queue"
 	
-	position > numberOfSlots 
-		ifTrue: [ lapNumber :=  lapNumber + 1 ]
+	lapNumber := position // numberOfSlots .
 ]
 
 { #category : #updates }

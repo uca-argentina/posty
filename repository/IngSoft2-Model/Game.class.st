@@ -34,25 +34,18 @@ Class {
 		'numberOfSlotsPerLap',
 		'numberOfLaps',
 		'listOfPlayers',
-		'turn'
+		'turn',
+		'board'
 	],
 	#category : #'IngSoft2-Model'
 }
 
 { #category : #creation }
-Game class >> WithStepsToWin: aNumberOfStepsToWin withPlayers: aNumberOfplayers [
+Game class >> withSteps: aNumberOfStepsPerLap withLaps: aNumberOfLaps withPlayers: players [
 	^ self new
-		initializeWithStepsToWin: aNumberOfStepsToWin
-			with: aNumberOfplayers;
-		yourself
-]
-
-{ #category : #creation }
-Game class >> withStepsPerLap: aNumberOfStepsPerLap withNumberOfLaps: aNumberOfLaps withPlayers: players [
-	^ self new
-		initializeWithStepsPerLap: aNumberOfStepsPerLap
-			with: aNumberOfLaps
-			with: players;
+		initializeWithSteps: aNumberOfStepsPerLap
+			withLaps: aNumberOfLaps
+			withPlayers: players;
 		yourself
 ]
 
@@ -63,14 +56,25 @@ Game >> actualTurn [
 	^ turn
 ]
 
+{ #category : #description }
+Game >> chart [
+	listOfPlayers sort: [ " insert criterio" ].
+	^ listOfPlayers
+]
+
+{ #category : #actions }
+Game >> createBoard [
+]
+
 { #category : #initialize }
-Game >> initializeWithStepsPerLap: aNumberOfStepsPerLap with: aNumberOfLaps with: players [
+Game >> initializeWithSteps: aNumberOfStepsPerLap withLaps: aNumberOfLaps withPlayers: players [
 	"Create a game with n steps to win and list of players, then assign first turn number"
 	numberOfSlotsPerLap := aNumberOfStepsPerLap.
 	listOfPlayers := players.
 	numberOfLaps := aNumberOfLaps.
 	turn := 1.
-	self start
+	self start.
+	self createBoard
 ]
 
 { #category : #actions }

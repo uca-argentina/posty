@@ -41,7 +41,7 @@ PlayerTest >> setUp [
 	albert := Player called: 'Albert'.
 	robert := Player called: 'Robert'.
 	players := OrderedCollection with: albert with: robert.
-	aGame := Game withStepsPerLap: 5 withNumberOfLaps: 2 withPlayers: players.
+	aGame := Game withSteps: 5 withLaps: 2 withPlayers: players
 ]
 
 { #category : #tests }
@@ -55,6 +55,16 @@ PlayerTest >> testAPlayerCalledRobert [
 PlayerTest >> testAfterAlbertPlaysItsRobertTurn [
 	albert plays: aGame with: diceOne.
 	self assert: robert turn equals: aGame actualTurn.
+]
+
+{ #category : #tests }
+PlayerTest >> testAlbertFinishActualLapIs2 [
+	albert plays: aGame with: diceOne.
+	robert plays: aGame with: diceTwo.
+	albert plays: aGame with: diceTwo.
+	robert plays: aGame with: diceTwo.
+	albert plays: aGame with: diceTwo.
+	self assert: albert lap equals: 2.
 ]
 
 { #category : #tests }

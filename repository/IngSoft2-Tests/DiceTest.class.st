@@ -34,12 +34,12 @@ Class {
 
 { #category : #running }
 DiceTest >> setUp [
-	| players|
+	| players |
 	albert := Player called: 'Albert'.
 	robert := Player called: 'Robert'.
-	players := OrderedCollection with: albert with: robert .
+	players := OrderedCollection with: albert with: robert.
 	aDice := RandomDice withFaces: 4.
-	aGame := Game withStepsPerLap: 5 withNumberOfLaps: 2 withPlayers: players.
+	aGame := Game withSteps: 5 withLaps: 2 withPlayers: players
 ]
 
 { #category : #tests }

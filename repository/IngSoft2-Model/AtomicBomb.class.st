@@ -1,6 +1,6 @@
 "
 Please comment me using the following template inspired by Class Responsibility Collaborator (CRC) design:
-""Each boardslot has an affect when the player falls there""
+"" Special box ""
 For the Class part:  State a one line summary. For example, ""I represent a paragraph of text"".
 
 For the Responsibility part: Three sentences about my main responsibilities - what I do, what I know.
@@ -17,33 +17,35 @@ Public API and Key Messages
  
 Internal Representation and Key Implementation Points.
 
+    Instance Variables
+	probability:		<Object>
+
 
     Implementation Points
 "
 Class {
-	#name : #TypeOfSlots,
-	#superclass : #Object,
+	#name : #AtomicBomb,
+	#superclass : #Boxes,
 	#instVars : [
-		'probability',
-		'number'
+		'probability'
 	],
 	#category : #'IngSoft2-Model'
 }
 
-{ #category : #action }
-TypeOfSlots >> effectToThePlayer [
+{ #category : #operations }
+AtomicBomb class >> create [
+	^ self new
+		initializeWithProbability;
+		yourself
+]
 
-	^ self subclassResponsibility
+{ #category : #actions }
+AtomicBomb >> effect: toTheGame [
+	(toTheGame players) do: [ :player | player position: 0 ]
+	
 ]
 
 { #category : #initialize }
-TypeOfSlots >> initializeWithProbability [
-
-	^ self subclassResponsibility
-]
-
-{ #category : #description }
-TypeOfSlots >> slotNumber [
-
-	^ number
+AtomicBomb >> initializeWithProbability [ 
+	probability := 0.2
 ]
