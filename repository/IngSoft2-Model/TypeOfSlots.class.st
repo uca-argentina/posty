@@ -49,6 +49,12 @@ TypeOfSlots >> initializeWithProbability [
 	probability := 0
 ]
 
+{ #category : #'as yet unclassified' }
+TypeOfSlots >> playerCantReceiveAnotherEffect: player [
+
+	player acceptEffect = false
+]
+
 { #category : #accessing }
 TypeOfSlots >> probability [
 

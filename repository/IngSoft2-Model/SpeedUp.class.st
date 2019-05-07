@@ -29,7 +29,8 @@ Class {
 { #category : #action }
 SpeedUp >> effect:  aPlayer [
 
-	aPlayer position = self position + 4
+	aPlayer position = self position + 4.
+	self playerCantReceiveAnotherEffect: aPlayer
 ]
 
 { #category : #initialization }

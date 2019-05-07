@@ -48,8 +48,7 @@ Class {
 
 { #category : #running }
 TableroTest >> setUp [
-	"Hooks that subclasses may override to define the fixture of test."
-	| typeOfSlots |
+	| aBoard typeOfSlots |
 	slotBombaAtomica := BombaAtomica withProbability.
 	slotWormHole := WormHole withProbability. 
 	slotVacio := Vacio withProbability.
@@ -57,10 +56,25 @@ TableroTest >> setUp [
 	slotSpeedUp := SpeedUp withProbability.
 	slotTimeMachine := TimeMachine withProbability.
 	typeOfSlots := OrderedCollection with: slotBombaAtomica with: slotWormHole with: slotVacio with: slotMoonWalk with: slotSpeedUp with:  slotTimeMachine.
+	aBoard := Board initializeWithNumberOfSlots: 5 withTypeOfSlots: typeOfSlots
 ]
 
 { #category : #tests }
-TableroTest >> testSlots [
+TableroTest >> testBoardSizeIsTen [
+	| aBoard typeOfSlots |
+	slotBombaAtomica := BombaAtomica withProbability.
+	slotWormHole := WormHole withProbability. 
+	slotVacio := Vacio withProbability.
+	slotMoonWalk := MoonWalk withProbability.
+	slotSpeedUp := SpeedUp withProbability.
+	slotTimeMachine := TimeMachine withProbability.
+	typeOfSlots := OrderedCollection with: slotBombaAtomica with: slotVacio with: slotMoonWalk with: slotSpeedUp with:  slotTimeMachine with: slotWormHole .
+	aBoard := Board initializeWithNumberOfSlots: 5 withTypeOfSlots: typeOfSlots.
+	self assert: aBoard size equals: 5
+]
+
+{ #category : #tests }
+TableroTest >> testSlotsProbability [
 	self assert: slotBombaAtomica probability  equals: 2.
 	
 	

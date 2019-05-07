@@ -24,8 +24,7 @@ Class {
 	#name : #Board,
 	#superclass : #Object,
 	#instVars : [
-		'numberOfSlots',
-		'typeOfSlots'
+		'setOfSlots'
 	],
 	#category : #'IngSoft2-Model'
 }
@@ -40,6 +39,18 @@ Board class >> initializeWithNumberOfSlots: aNumberOfSlotsPerBoard withTypeOfSlo
 
 { #category : #initialization }
 Board >> initializeWithNumberOfSlots: aNumberOfSlotsPerBoard withTypeOfSlots: aListOfSlots [
+	setOfSlots := OrderedCollection new: aNumberOfSlotsPerBoard .
+	setOfSlots 
+		do: [ :slot |  slot add: (self randomSlot: aListOfSlots  ) ]
+]
 
-	1 to: aNumberOfSlotsPerBoard do: [ :x | x + 1 ]
+{ #category : #actions }
+Board >> randomSlot: aListOfSlots [
+
+	|probabilityForRandomSlot|
+	probabilityForRandomSlot:= (1 to: 100) atRandom.
+	^ aListOfSlots 
+		detect: [ :slot | probabilityForRandomSlot < slot probability ]
+
+
 ]

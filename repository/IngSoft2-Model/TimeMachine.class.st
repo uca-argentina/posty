@@ -29,7 +29,8 @@ Class {
 { #category : #action }
 TimeMachine >> effect:  aPlayer [
 
-	aPlayer position = aPlayer lastposition
+	aPlayer position = aPlayer lastposition.
+	self playerCantReceiveAnotherEffect: aPlayer
 ]
 
 { #category : #initialization }

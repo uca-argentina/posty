@@ -23,17 +23,16 @@ Internal Representation and Key Implementation Points.
 Class {
 	#name : #MoonWalk,
 	#superclass : #TypeOfSlots,
-	#instVars : [
-		'nSlotsToGoBack'
-	],
 	#category : #'IngSoft2-Model'
 }
 
 { #category : #action }
 MoonWalk >> effect:  aListOfPlayers [
 
+	|nSlotsToGoBack|
+	nSlotsToGoBack:= (1 to: 5) atRandom.
 	aListOfPlayers 
-	do: [ :player | player position = self position - nSlotsToGoBack  ]
+	do: [ :player | (player position = self position - nSlotsToGoBack) & (self playerCantReceiveAnotherEffect: player)]
 ]
 
 { #category : #initialization }

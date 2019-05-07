@@ -30,7 +30,7 @@ Class {
 BombaAtomica >> effect:  aListOfPlayers [
 
 	aListOfPlayers 
-	do: [ :player | player position = 0 ]
+	do: [ :player | (player position = 0 ) & self playerCantReceiveAnotherEffect: player  ]
 ]
 
 { #category : #initialize }
