@@ -78,7 +78,7 @@ Game >> isOver [
 	"Looks if a player has reached the end of the game"
 
 	^ listOfPlayers 
-		anySatisfy: [ :player | (player position >=  (numberOfSlotsPerLap * numberOfLaps) )] 
+		anySatisfy: [ :player | (player lapNumber = self numberOfLaps ) ] 
 ]
 
 { #category : #actions }
@@ -136,5 +136,5 @@ Game >> winner [
 	"Returns a player that has already win"
 
 	^ listOfPlayers
-		detect: [ :player | (player position >= 0 ) & (player lap = numberOfLaps ) ]
+		detect: [ :player | (player lapNumber = numberOfLaps ) ]
 ]

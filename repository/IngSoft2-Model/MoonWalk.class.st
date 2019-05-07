@@ -1,6 +1,6 @@
 "
 Please comment me using the following template inspired by Class Responsibility Collaborator (CRC) design:
-""All players return to the start of their lap""
+""The other players go back N slots""
 For the Class part:  State a one line summary. For example, ""I represent a paragraph of text"".
 
 For the Responsibility part: Three sentences about my main responsibilities - what I do, what I know.
@@ -21,20 +21,23 @@ Internal Representation and Key Implementation Points.
     Implementation Points
 "
 Class {
-	#name : #BombaAtomica,
+	#name : #MoonWalk,
 	#superclass : #TypeOfSlots,
+	#instVars : [
+		'nSlotsToGoBack'
+	],
 	#category : #'IngSoft2-Model'
 }
 
 { #category : #action }
-BombaAtomica >> effect:  aListOfPlayers [
+MoonWalk >> effect:  aListOfPlayers [
 
 	aListOfPlayers 
-	do: [ :player | player position = 0 ]
+	do: [ :player | player position = self position - nSlotsToGoBack  ]
 ]
 
-{ #category : #initialize }
-BombaAtomica >> initializeWithProbability [
+{ #category : #initialization }
+MoonWalk >> initializeWithProbability [
 
-	probability := 2 
+	probability := 62
 ]

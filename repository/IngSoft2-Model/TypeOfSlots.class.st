@@ -25,25 +25,32 @@ Class {
 	#superclass : #Object,
 	#instVars : [
 		'probability',
-		'number'
+		'slotNumber'
 	],
 	#category : #'IngSoft2-Model'
 }
 
+{ #category : #creation }
+TypeOfSlots class >> withProbability [
+	^ self new
+		initializeWithProbability;
+		yourself
+]
+
 { #category : #action }
-TypeOfSlots >> effectToThePlayer [
+TypeOfSlots >> effect:  aPlayerOrPlayers [
 
 	^ self subclassResponsibility
 ]
 
-{ #category : #initialize }
+{ #category : #initialization }
 TypeOfSlots >> initializeWithProbability [
 
-	^ self subclassResponsibility
+	probability := 0
 ]
 
-{ #category : #description }
-TypeOfSlots >> slotNumber [
+{ #category : #accessing }
+TypeOfSlots >> probability [
 
-	^ number
+	^ probability 
 ]

@@ -41,7 +41,7 @@ GameTest >> setUp [
 	albert := Player called: 'Albert'.
 	robert := Player called: 'Robert'.
 	players := OrderedCollection with: albert with: robert.
-	aGame := Game withStepsPerLap: 5 withNumberOfLaps: 2 withPlayers: players.
+	aGame := Game withStepsPerLap: 4 withNumberOfLaps: 3 withPlayers: players.
 	
 ]
 
@@ -52,6 +52,7 @@ GameTest >> testAfterAGameHasEndedNoOneCouldPlay [
 	albert plays: aGame with: diceTwo.
 	robert plays: aGame with: diceTwo.
 	albert plays: aGame with: diceTwo.
+	robert plays: aGame with: diceTwo.
 	self should: [ robert plays: aGame with: diceTwo ] raise: Error.
 	self should: [ albert plays: aGame with: diceTwo ] raise: Error.
 ]
@@ -60,15 +61,13 @@ GameTest >> testAfterAGameHasEndedNoOneCouldPlay [
 GameTest >> testAlbertFinishOneLapsAndMovesToTheSecond [
 	albert plays: aGame with: diceOne.
 	robert plays: aGame with: diceTwo.
-	albert plays: aGame with: diceTwo.
-	robert plays: aGame with: diceTwo.
-	albert plays: aGame with: diceTwo.
-	self assert: albert lap equals: 2.
+	self assert: albert lapNumber equals: 2.
+	self assert: albert position equals: 1.
 ]
 
 { #category : #tests }
 GameTest >> testGameHas5StepsAndIsPlayableBy2Players [
-	self assert: aGame stepsToWin equals: 10.
+	self assert: aGame stepsToWin equals: 12.
 	self assert: (aGame players size) equals: 2
 ]
 
@@ -84,21 +83,17 @@ GameTest >> testGameIsOverTrue [
 	albert plays: aGame with: diceOne.
 	robert plays: aGame with: diceTwo.
 	albert plays: aGame with: diceTwo.
-	robert plays: aGame with: diceTwo.
-	albert plays: aGame with: diceTwo.
 	self assert: aGame isOver equals: true
 ]
 
 { #category : #tests }
 GameTest >> testTheGameHasTwoLaps [
-	self assert: aGame numberOfLaps equals: 2.
+	self assert: aGame numberOfLaps equals: 3.
 ]
 
 { #category : #tests }
 GameTest >> testTheWinnerOfTheGameIsAlbert [
 	albert plays: aGame with: diceOne.
-	robert plays: aGame with: diceTwo.
-	albert plays: aGame with: diceTwo.
 	robert plays: aGame with: diceTwo.
 	albert plays: aGame with: diceTwo.
 	self assert: aGame winner name equals: 'Albert'

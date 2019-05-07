@@ -41,7 +41,7 @@ PlayerTest >> setUp [
 	albert := Player called: 'Albert'.
 	robert := Player called: 'Robert'.
 	players := OrderedCollection with: albert with: robert.
-	aGame := Game withStepsPerLap: 5 withNumberOfLaps: 2 withPlayers: players.
+	aGame := Game withStepsPerLap: 5 withNumberOfLaps: 3 withPlayers: players.
 ]
 
 { #category : #tests }
@@ -59,16 +59,16 @@ PlayerTest >> testAfterAlbertPlaysItsRobertTurn [
 
 { #category : #tests }
 PlayerTest >> testIfIGetAFourIMoveFourBlocks [
-	albert plays: aGame with: diceOne  .
-	self assert: albert position equals: 4
+	albert plays: aGame with: diceTwo  .
+	self assert: albert position equals: 5
 ]
 
 { #category : #tests }
 PlayerTest >> testIfIRollTwoTimesASameFaceDiceMyPositionIncrease [
-	albert plays: aGame with: diceOne.
-	robert plays: aGame with: diceOne.
-	albert plays: aGame with: diceOne.
-	self assert: albert position equals: 8
+	albert plays: aGame with: diceTwo.
+	robert plays: aGame with: diceTwo .
+	albert plays: aGame with: diceTwo.
+	self assert: albert position equals: 4
 ]
 
 { #category : #tests }
@@ -76,14 +76,14 @@ PlayerTest >> testInThisTurnThePositionOfRobertIsFourAndAlbertIsEigth [
 	albert plays: aGame with: diceOne.
 	robert plays: aGame with: diceTwo.
 	albert plays: aGame with: diceTwo.
-	self assert: (aGame players at: 1) position equals: 8.
-	self assert: (aGame players at: 2) position equals: 4
+	self assert: (aGame players at: 1) lapNumber equals: 2.
+	self assert: (aGame players at: 2) position equals: 5
 ]
 
 { #category : #tests }
 PlayerTest >> testInitialPositionOfRobertIsZero [
 	robert := Player called: 'Robert'.
-	self assert: robert position equals: 0
+	self assert: robert position equals: 1
 ]
 
 { #category : #tests }

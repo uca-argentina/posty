@@ -45,13 +45,13 @@ DiceTest >> setUp [
 { #category : #tests }
 DiceTest >> testAPlayerCalledAlbertRollsARandomDiceWith4Faces [
 	albert plays: aGame with: aDice.
-	self assert: (albert position between: 1 and: 4)
+	self assert: (albert position between: 2 and: 5)
 ]
 
 { #category : #tests }
 DiceTest >> testAPlayerCalledRobertRollsARandomDiceWith4Faces [
 	albert plays: aGame with: aDice.
-	self assert: (albert position between: 1 and: 4)
+	self assert: (albert position between: 2 and: 5)
 ]
 
 { #category : #tests }

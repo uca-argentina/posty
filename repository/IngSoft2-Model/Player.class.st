@@ -31,7 +31,9 @@ Class {
 		'playerName',
 		'position',
 		'lapNumber',
-		'myTurn'
+		'myTurn',
+		'lastPosition',
+		'acceptEffect'
 	],
 	#category : #'IngSoft2-Model'
 }
@@ -71,20 +73,21 @@ Player >> initializeWithName: aName [
 	"Create a player with a name and locate him at the begining of the game"
 
 	playerName := aName.
-	position := 0.
-	lapNumber:= 0
+	position := 1.
+	lapNumber:= 1.
+	acceptEffect := true
 ]
 
 { #category : #description }
-Player >> lap [ 
+Player >> lapNumber [ 
 	^ lapNumber .
 ]
 
 { #category : #actions }
 Player >> move: aNumberOfSteps [
 	"Change position of the player in the game"
-	
-	position :=  position + aNumberOfSteps.
+	lastPosition := position.
+	position :=  position + aNumberOfSteps
 ]
 
 { #category : #description }
@@ -97,6 +100,7 @@ Player >> name [
 { #category : #actions }
 Player >> plays: aGame with: aDice [
 	"When a player plays the game check if the game is still on, if it is its turn, roll the dice and update turn assignation"
+	acceptEffect := true.
 	self assertGameIsOver: aGame isOver.
 	self assertIsMyTurn: aGame actualTurn.
 	self move: aDice roll.
@@ -111,6 +115,13 @@ Player >> position [
 	^ position
 ]
 
+{ #category : #updates }
+Player >> startNewLap: numberOfSlots [
+	"After the player plays it has to update its turn in the queue"
+	lapNumber :=  (lapNumber + 1).
+	position := ( position - numberOfSlots)
+]
+
 { #category : #description }
 Player >> turn [
 	"Return turn value of the player"
@@ -120,10 +131,9 @@ Player >> turn [
 
 { #category : #updates }
 Player >> updateLap: numberOfSlots [
-	"After the player plays it has to update its turn in the queue"
 	
 	position > numberOfSlots 
-		ifTrue: [ lapNumber :=  lapNumber + 1 ]
+		ifTrue: [ self startNewLap:numberOfSlots ]
 ]
 
 { #category : #updates }
