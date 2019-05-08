@@ -42,5 +42,5 @@ TimeMachine >> effect: toTheGame [
 
 { #category : #initialize }
 TimeMachine >> initializeWithProbability [ 
-	probability := 0.8
+	probability := 30
 ]

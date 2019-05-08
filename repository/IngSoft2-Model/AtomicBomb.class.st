@@ -26,9 +26,6 @@ Internal Representation and Key Implementation Points.
 Class {
 	#name : #AtomicBomb,
 	#superclass : #Boxes,
-	#instVars : [
-		'probability'
-	],
 	#category : #'IngSoft2-Model'
 }
 
@@ -41,11 +38,11 @@ AtomicBomb class >> create [
 
 { #category : #actions }
 AtomicBomb >> effect: toTheGame [
-	(toTheGame players) do: [ :player | player position: 0 ]
+	(toTheGame players) do: [ :player | player position = 0 ]
 	
 ]
 
 { #category : #initialize }
 AtomicBomb >> initializeWithProbability [ 
-	probability := 0.2
+	probability := 2
 ]

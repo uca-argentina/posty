@@ -78,7 +78,7 @@ Player >> initializeWithName: aName [
 
 { #category : #description }
 Player >> lap [ 
-	^ lapNumber .
+	^ lapNumber
 ]
 
 { #category : #accessing }
@@ -89,8 +89,9 @@ Player >> lastPosition [
 { #category : #actions }
 Player >> move: aNumberOfSteps [
 	"Change position of the player in the game"
-	lastPosition := position.
-	position :=  position + aNumberOfSteps.
+
+	lastPosition:= position.
+	position:= position + aNumberOfSteps.
 ]
 
 { #category : #description }
@@ -106,6 +107,8 @@ Player >> plays: aGame with: aDice [
 	self assertGameIsOver: aGame isOver.
 	self assertIsMyTurn: aGame actualTurn.
 	self move: aDice roll.
+	self updateLap: aGame numberOfSlotsPerLap.
+	(aGame board at: (self position) )effect:aGame.
 	self updateLap: aGame numberOfSlotsPerLap.
 	self updateTurn: aGame.
 ]
@@ -127,8 +130,11 @@ Player >> turn [
 { #category : #updates }
 Player >> updateLap: numberOfSlots [
 	"After the player plays it has to update its turn in the queue"
-	
-	lapNumber := position // numberOfSlots .
+
+	position > numberOfSlots
+		ifTrue: [ 
+			position := position - numberOfSlots.
+			lapNumber := self lap + 1 ]
 ]
 
 { #category : #updates }

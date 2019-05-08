@@ -42,5 +42,5 @@ WormHole >> effect: toTheGame [
 
 { #category : #initialize }
 WormHole >> initializeWithProbability [ 
-	probability := 0.15
+	probability := 100
 ]

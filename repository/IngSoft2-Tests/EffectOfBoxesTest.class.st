@@ -1,6 +1,6 @@
 "
 Please comment me using the following template inspired by Class Responsibility Collaborator (CRC) design:
-""Here there are the tests that evaluates game behaviour""
+""Here we test the different effects""
 For the Class part:  State a one line summary. For example, ""I represent a paragraph of text"".
 
 For the Responsibility part: Three sentences about my main responsibilities - what I do, what I know.
@@ -17,16 +17,23 @@ Public API and Key Messages
  
 Internal Representation and Key Implementation Points.
 
+    Instance Variables
+	aGame:		<Object>
+	albert:		<Object>
+	diceOne:		<Object>
+	diceTwo:		<Object>
+	robert:		<Object>
+
 
     Implementation Points
 "
 Class {
-	#name : #GameTest,
+	#name : #EffectOfBoxesTest,
 	#superclass : #TestCase,
 	#instVars : [
-		'aGame',
-		'robert',
 		'albert',
+		'robert',
+		'aGame',
 		'diceOne',
 		'diceTwo'
 	],
@@ -34,78 +41,76 @@ Class {
 }
 
 { #category : #running }
-GameTest >> setUp [
+EffectOfBoxesTest >> setUp [
 	| players |
-	diceOne := SameFaceDice withFaces: 6.
+	diceOne := SameFaceDice withFaces: 4.
 	diceTwo := SameFaceDice withFaces: 4.
 	albert := Player called: 'Albert'.
 	robert := Player called: 'Robert'.
 	players := OrderedCollection with: albert with: robert.
 	aGame := Game withSteps: 5 withLaps: 2 withPlayers: players.
-	aGame board= aGame createDeterminatedBoard 	
+	aGame board = aGame createDeterminatedBoard  
 ]
 
 { #category : #tests }
-GameTest >> testAfterAGameHasEndedNoOneCouldPlay [
-	albert plays: aGame with: diceOne.
-	robert plays: aGame with: diceTwo.
-	albert plays: aGame with: diceTwo.
-	robert plays: aGame with: diceTwo.
-	albert plays: aGame with: diceTwo.
-	self should: [ albert plays: aGame with: diceTwo ] raise: Error.
-]
-
-{ #category : #tests }
-GameTest >> testGameHas5StepsAndIsPlayableBy2Players [
-	self assert: aGame stepsToWin equals: 10.
-	self assert: (aGame players size) equals: 2
-]
-
-{ #category : #tests }
-GameTest >> testGameIsOverFalse [
-	albert plays: aGame with: diceOne.
-	robert plays: aGame with: diceTwo.
-	self assert: aGame isOver equals: false
-]
-
-{ #category : #tests }
-GameTest >> testGameIsOverTrue [
-	albert plays: aGame with: diceOne.
-	robert plays: aGame with: diceTwo.
-	albert plays: aGame with: diceTwo.
-	robert plays: aGame with: diceTwo.
-	albert plays: aGame with: diceTwo.
-	self assert: aGame isOver equals: true
-]
-
-{ #category : #tests }
-GameTest >> testRandomBoardCreation [
-	| aBoard |
-	aBoard := aGame createRandomBoard.
-	self assert: aBoard size equals: 5
-]
-
-{ #category : #tests }
-GameTest >> testSpeedUpMovesFourBoxesAhead [
+EffectOfBoxesTest >> testAtomicBombEffect [
 	| aBox |
 	albert plays: aGame with: diceOne.
 	robert plays: aGame with: diceTwo.
-	aBox := SpeedUp create.
+	aBox := AtomicBomb create.
+	aBox effect: aGame.
+	self assert: albert position equals: 0.
+]
+
+{ #category : #tests }
+EffectOfBoxesTest >> testMoonWalkEffect [
+	| aBox |
+	albert plays: aGame with: diceOne.
+	robert plays: aGame with: diceTwo.
+	aBox := MoonWalk  create.
+	aBox effect: aGame.
+	self assert: albert position equals: 2.
+]
+
+{ #category : #tests }
+EffectOfBoxesTest >> testSpeedUpEffect [
+	| aBox |
+	albert plays: aGame with: diceOne.
+	robert plays: aGame with: diceTwo.
+	aBox := SpeedUp  create.
 	aBox effect: aGame.
 	self assert: albert position equals: 8.
 ]
 
 { #category : #tests }
-GameTest >> testTheGameHasTwoLaps [
-	self assert: aGame numberOfLaps equals: 2.
+EffectOfBoxesTest >> testTimeMachineReturnAPlayerToItsLastPosition [
+	| aBox |
+	albert plays: aGame with: diceOne.
+	robert plays: aGame with: diceTwo.
+	albert plays: aGame with: diceOne.
+	robert plays: aGame with: diceTwo.
+	aBox := TimeMachine create.
+	aBox effect: aGame.
+	self assert: albert position equals: 4.
+	
 ]
 
 { #category : #tests }
-GameTest >> testTheWinnerOfTheGameIsAlbert [
+EffectOfBoxesTest >> testVacioHasNotAnEspecialEffect [
+	| aBox |
 	albert plays: aGame with: diceOne.
 	robert plays: aGame with: diceTwo.
-	albert plays: aGame with: diceTwo.
+	aBox := Empty create.
+	aBox effect: aGame.
+	self assert: albert position equals: 4.
+]
+
+{ #category : #tests }
+EffectOfBoxesTest >> testWhormHoleMovesFourBoxesBack [
+	| aBox |
+	albert plays: aGame with: diceOne.
 	robert plays: aGame with: diceTwo.
-	albert plays: aGame with: diceTwo.
-	self assert: aGame winner name equals: 'Albert'
+	aBox := WormHole create.
+	aBox effect: aGame.
+	self assert: albert position equals: 0.
 ]

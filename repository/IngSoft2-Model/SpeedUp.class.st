@@ -43,5 +43,5 @@ SpeedUp >> effect: toTheGame [
 
 { #category : #initialize }
 SpeedUp >> initializeWithProbability [ 
-	probability := 0.15
+	probability := 22
 ]

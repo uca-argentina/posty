@@ -56,6 +56,11 @@ Game >> actualTurn [
 	^ turn
 ]
 
+{ #category : #accessing }
+Game >> board [
+	^board
+]
+
 { #category : #description }
 Game >> chart [
 	listOfPlayers sort: [ " insert criterio" ].
@@ -63,7 +68,19 @@ Game >> chart [
 ]
 
 { #category : #actions }
-Game >> createBoard [
+Game >> createDeterminatedBoard [
+	| slotEmpty |
+	slotEmpty := Empty create.
+	board := OrderedCollection new: numberOfSlotsPerLap.
+	1 to: numberOfSlotsPerLap do: [ :slot | board add: slotEmpty ].
+	^ board
+]
+
+{ #category : #actions }
+Game >> createRandomBoard [
+	board := OrderedCollection new: numberOfSlotsPerLap.
+	1 to: numberOfSlotsPerLap do: [ :slot | board add: self randomSlot ].
+	^ board
 ]
 
 { #category : #initialize }
@@ -74,7 +91,7 @@ Game >> initializeWithSteps: aNumberOfStepsPerLap withLaps: aNumberOfLaps withPl
 	numberOfLaps := aNumberOfLaps.
 	turn := 1.
 	self start.
-	self createBoard
+	
 ]
 
 { #category : #actions }
@@ -82,7 +99,7 @@ Game >> isOver [
 	"Looks if a player has reached the end of the game"
 
 	^ listOfPlayers 
-		anySatisfy: [ :player | (player position >=  (numberOfSlotsPerLap * numberOfLaps) )] 
+		anySatisfy: [ :player | (player lap >=  (numberOfLaps) )] 
 ]
 
 { #category : #actions }
@@ -118,6 +135,27 @@ Game >> players [
 ]
 
 { #category : #accessing }
+Game >> randomSlot [
+	| typeOfSlots randomProbability slotAtomicBomb slotMoonWalk slotSpeedUp slotTimeMachine slotVacio slotWormHole |
+	slotAtomicBomb := AtomicBomb create.
+	slotMoonWalk := MoonWalk create.
+	slotSpeedUp := SpeedUp create.
+	slotTimeMachine := TimeMachine create.
+	slotVacio := Empty create.
+	slotWormHole := WormHole create.
+	typeOfSlots := OrderedCollection
+		with: slotAtomicBomb
+		with: slotMoonWalk
+		with: slotSpeedUp
+		with: slotTimeMachine
+		with: slotVacio
+		with: slotWormHole.
+	randomProbability := (1 to: 100) atRandom.
+	^ typeOfSlots
+		detect: [ :slot | randomProbability < slot probability ]
+]
+
+{ #category : #accessing }
 Game >> start [
 	"Everytime the game is created it assign turns to all players"
 
@@ -140,5 +178,5 @@ Game >> winner [
 	"Returns a player that has already win"
 
 	^ listOfPlayers
-		detect: [ :player | (player position >= 0 ) & (player lap = numberOfLaps ) ]
+		detect: [ :player | player lap = (numberOfLaps) ]
 ]

@@ -26,7 +26,20 @@ Class {
 	#category : #'IngSoft2-Model'
 }
 
+{ #category : #creation }
+MoonWalk class >> create [
+	^ self new
+		initializeWithProbability;
+		yourself
+]
+
+{ #category : #action }
+MoonWalk >> effect: toTheGame [
+	toTheGame players
+		do: [ :player | player position = ( player position - 2 )]
+]
+
 { #category : #initialize }
 MoonWalk >> initializeWithProbability [ 
-	probability := 0.5
+	probability := 7
 ]

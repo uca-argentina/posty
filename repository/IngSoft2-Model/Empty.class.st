@@ -21,26 +21,26 @@ Internal Representation and Key Implementation Points.
     Implementation Points
 "
 Class {
-	#name : #Vacio,
+	#name : #Empty,
 	#superclass : #Boxes,
 	#category : #'IngSoft2-Model'
 }
 
 { #category : #operations }
-Vacio class >> create [
+Empty class >> create [
 	^ self new
 		initializeWithProbability;
 		yourself
 ]
 
 { #category : #action }
-Vacio >> effect: toTheGame [
+Empty >> effect: toTheGame [
 	| thePlayer |
 	thePlayer := (toTheGame players) detect: [ :player | (player turn) = (toTheGame actualTurn)].
 	thePlayer move: 0.
 ]
 
 { #category : #initialize }
-Vacio >> initializeWithProbability [ 
-	probability := 0.55
+Empty >> initializeWithProbability [ 
+	probability := 85
 ]

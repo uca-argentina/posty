@@ -36,12 +36,13 @@ Class {
 { #category : #running }
 PlayerTest >> setUp [
 	| players |
-	diceOne := SameFaceDice withFaces: 6.
+	diceOne := SameFaceDice withFaces: 4.
 	diceTwo := SameFaceDice withFaces: 4.
 	albert := Player called: 'Albert'.
 	robert := Player called: 'Robert'.
 	players := OrderedCollection with: albert with: robert.
-	aGame := Game withSteps: 5 withLaps: 2 withPlayers: players
+	aGame := Game withSteps: 5 withLaps: 2 withPlayers: players.
+	aGame board= aGame createDeterminatedBoard 	
 ]
 
 { #category : #tests }
@@ -78,16 +79,18 @@ PlayerTest >> testIfIRollTwoTimesASameFaceDiceMyPositionIncrease [
 	albert plays: aGame with: diceOne.
 	robert plays: aGame with: diceOne.
 	albert plays: aGame with: diceOne.
-	self assert: albert position equals: 8
+	self assert: albert position equals: 3.
+	self assert: robert position equals: 4.
 ]
 
 { #category : #tests }
-PlayerTest >> testInThisTurnThePositionOfRobertIsFourAndAlbertIsEigth [
+PlayerTest >> testInThisTurnThePositionOfRobertIsThreeAndAlbertIsThree [
 	albert plays: aGame with: diceOne.
 	robert plays: aGame with: diceTwo.
 	albert plays: aGame with: diceTwo.
-	self assert: (aGame players at: 1) position equals: 8.
-	self assert: (aGame players at: 2) position equals: 4
+	robert plays: aGame with: diceTwo.
+	self assert: (aGame players at: 1) position equals: 3.
+	self assert: (aGame players at: 2) position equals: 3
 ]
 
 { #category : #tests }

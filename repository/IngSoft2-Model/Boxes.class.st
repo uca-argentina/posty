@@ -24,8 +24,7 @@ Class {
 	#name : #Boxes,
 	#superclass : #Object,
 	#instVars : [
-		'probability',
-		'number'
+		'probability'
 	],
 	#category : #'IngSoft2-Model'
 }
@@ -40,4 +39,9 @@ Boxes >> effect: anObject [
 Boxes >> initializeWithProbability [
 
 	^ self subclassResponsibility
+]
+
+{ #category : #action }
+Boxes >> probability [
+	^ probability 
 ]
