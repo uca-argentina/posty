@@ -33,7 +33,6 @@ Moonwalk >> effectOn: aGame [
 
 { #category : #action }
 Moonwalk >> restOfPlayers: aGame [
-
 	^ aGame player
 		select: [ :player | player ~= (aGame player at: aGame actualTurn) ]
 ]
