@@ -51,36 +51,13 @@ Game class >> withSteps: aNumberOfStepsPerLap withLaps: aNumberOfLaps withPlayer
 
 { #category : #description }
 Game >> actualTurn [
-	"Because every player has a number of turn, actualTurn returns which player can play"
-
 	^ turn
 ]
 
-{ #category : #accessing }
-Game >> board [
-	^board
-]
-
-{ #category : #description }
-Game >> chart [
-	listOfPlayers sort: [ " insert criterio" ].
-	^ listOfPlayers
-]
-
-{ #category : #actions }
-Game >> createDeterminatedBoard [
-	| slotEmpty |
-	slotEmpty := Empty create.
-	board := OrderedCollection new: numberOfSlotsPerLap.
-	1 to: numberOfSlotsPerLap do: [ :slot | board add: slotEmpty ].
-	^ board
-]
-
-{ #category : #actions }
-Game >> createRandomBoard [
-	board := OrderedCollection new: numberOfSlotsPerLap.
-	1 to: numberOfSlotsPerLap do: [ :slot | board add: self randomSlot ].
-	^ board
+{ #category : #asserting }
+Game >> assertGameIsOver [
+	self isOver
+		ifTrue: [ self error: 'The game has ended' ]
 ]
 
 { #category : #initialize }
@@ -90,23 +67,58 @@ Game >> initializeWithSteps: aNumberOfStepsPerLap withLaps: aNumberOfLaps withPl
 	listOfPlayers := players.
 	numberOfLaps := aNumberOfLaps.
 	turn := 1.
-	self start.
 	
 ]
 
 { #category : #actions }
 Game >> isOver [
-	"Looks if a player has reached the end of the game"
-
-	^ listOfPlayers 
-		anySatisfy: [ :player | (player lap >=  (numberOfLaps) )] 
+	^ listOfPlayers anySatisfy: [ :player | player position > (numberOfLaps * numberOfSlotsPerLap) ]
 ]
 
-{ #category : #actions }
-Game >> nextTurn: aNumber [
-	"Updates the collaborator turn with a new value"
+{ #category : #description }
+Game >> lapOf: aPlayer [ 
+	aPlayer position < 0
+	ifTrue: [ ^-1 ]
+	ifFalse: [ ^ ((aPlayer position / numberOfSlotsPerLap)+1) asInteger. ]
+	
+	
+]
 
-	turn := aNumber
+{ #category : #description }
+Game >> laps [
+	^ numberOfLaps .
+]
+
+{ #category : #description }
+Game >> lapsMade: aPlayer [
+	^ (aPlayer position / numberOfSlotsPerLap) asInteger
+		* numberOfSlotsPerLap
+]
+
+{ #category : #description }
+Game >> lastLapOf: aPlayer [ 
+	^ ((aPlayer lastPosition / numberOfSlotsPerLap) + 1) asInteger 
+]
+
+{ #category : #description }
+Game >> lastPositionOf: aPlayer [ 
+	^ aPlayer lastPosition
+]
+
+{ #category : #description }
+Game >> listOfTurns [
+	^ listOfPlayers 
+]
+
+{ #category : #action }
+Game >> newTurnWithDice: aDice [ 
+	"Picks the player that has to play according to turns and plays"
+	| thePlayer|
+	self assertGameIsOver.
+	thePlayer := listOfPlayers at: self actualTurn.
+	thePlayer AddPositionRecord: thePlayer position .
+	thePlayer changePosition: aDice roll.
+	self updateTurn: self actualTurn + 1.
 ]
 
 { #category : #accessing }
@@ -123,60 +135,44 @@ Game >> numberOfPlayers [
 
 { #category : #description }
 Game >> numberOfSlotsPerLap [
-
+	"Return length of the board"
 	^ numberOfSlotsPerLap
 ]
 
 { #category : #description }
-Game >> players [
-	"Return all the players of the game"
-
-	^ listOfPlayers
-]
-
-{ #category : #accessing }
-Game >> randomSlot [
-	| typeOfSlots randomProbability slotAtomicBomb slotMoonWalk slotSpeedUp slotTimeMachine slotVacio slotWormHole |
-	slotAtomicBomb := AtomicBomb create.
-	slotMoonWalk := MoonWalk create.
-	slotSpeedUp := SpeedUp create.
-	slotTimeMachine := TimeMachine create.
-	slotVacio := Empty create.
-	slotWormHole := WormHole create.
-	typeOfSlots := OrderedCollection
-		with: slotAtomicBomb
-		with: slotMoonWalk
-		with: slotSpeedUp
-		with: slotTimeMachine
-		with: slotVacio
-		with: slotWormHole.
-	randomProbability := (1 to: 100) atRandom.
-	^ typeOfSlots
-		detect: [ :slot | randomProbability < slot probability ]
-]
-
-{ #category : #accessing }
-Game >> start [
-	"Everytime the game is created it assign turns to all players"
-
-	| turns |
-	turns := 1 to: listOfPlayers size.
-	listOfPlayers
-		with: turns
-		do: [ :player :number | player assignTurn: number ]
+Game >> player [
+	"Returns Game's players"
+	^ listOfPlayers .
 ]
 
 { #category : #description }
-Game >> stepsToWin [
-	"Returns how long the game is"
+Game >> positionOf: aPlayer [
+	aPlayer position < 0
+		ifTrue: [ ^ aPlayer position + numberOfSlotsPerLap ].
+	aPlayer position <= numberOfSlotsPerLap
+		ifTrue: [ ^ aPlayer position ]
+		ifFalse: [ ^ aPlayer position - (self lapsMade: aPlayer) ]
+]
 
-	^ numberOfSlotsPerLap * numberOfLaps
+{ #category : #description }
+Game >> ranking [
+	^ listOfPlayers sort: [ :player1 :player2 | player1 position > player2 position ]
+]
+
+{ #category : #description }
+Game >> steps [
+	"Return number of steps"
+	^ numberOfSlotsPerLap 
 ]
 
 { #category : #actions }
-Game >> winner [
-	"Returns a player that has already win"
+Game >> updateTurn: aNumber [
+	turn := aNumber > listOfPlayers size
+		ifTrue: [ aNumber - listOfPlayers size ]
+		ifFalse: [ aNumber ]
+]
 
-	^ listOfPlayers
-		detect: [ :player | player lap = (numberOfLaps) ]
+{ #category : #description }
+Game >> winner [
+	^ self ranking at: 1.
 ]

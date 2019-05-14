@@ -30,8 +30,6 @@ Class {
 	#instVars : [
 		'playerName',
 		'position',
-		'lapNumber',
-		'myTurn',
 		'lastPosition'
 	],
 	#category : #'IngSoft2-Model'
@@ -44,27 +42,15 @@ Player class >> called: aName [
 		yourself
 ]
 
-{ #category : #assertions }
-Player >> assertGameIsOver: aGameStatus [
-	"Assertion to detect if the game has ended"
-
-	aGameStatus
-		ifTrue: [ self error: 'Game has already ended' ]
+{ #category : #action }
+Player >> AddPositionRecord: aNumber [
+	lastPosition add: aNumber .
 ]
 
-{ #category : #assertions }
-Player >> assertIsMyTurn: gameTurn [
-	"Assertion to know if it is the turn of the player"
-
-	gameTurn = myTurn
-		ifFalse: [ self error: 'Its not your turn' ]
-]
-
-{ #category : #actions }
-Player >> assignTurn: aNumber [
-	"Give a player a turn number"
-
-	myTurn := aNumber
+{ #category : #action }
+Player >> changePosition: aNumber [ 
+	"When the player changes its position dependending it last postion"
+	position := position + aNumber.
 ]
 
 { #category : #initialize }
@@ -73,74 +59,26 @@ Player >> initializeWithName: aName [
 
 	playerName := aName.
 	position := 0.
-	lapNumber:= 0
+	lastPosition := OrderedCollection with: 0.
 ]
 
 { #category : #description }
-Player >> lap [ 
-	^ lapNumber
+Player >> lastPosition [
+	^ lastPosition at: (lastPosition size -1)
 ]
 
 { #category : #accessing }
-Player >> lastPosition [ 
-	^ lastPosition .
-]
-
-{ #category : #actions }
-Player >> move: aNumberOfSteps [
-	"Change position of the player in the game"
-
-	lastPosition:= position.
-	position:= position + aNumberOfSteps.
+Player >> move: aNumber [
+	"When the player changes its position not dependending it last postion"
+	position := aNumber
 ]
 
 { #category : #description }
 Player >> name [
-	"Show player name"
-
-	^ playerName
-]
-
-{ #category : #actions }
-Player >> plays: aGame with: aDice [
-	"When a player plays the game check if the game is still on, if it is its turn, roll the dice and update turn assignation"
-	self assertGameIsOver: aGame isOver.
-	self assertIsMyTurn: aGame actualTurn.
-	self move: aDice roll.
-	self updateLap: aGame numberOfSlotsPerLap.
-	(aGame board at: (self position) )effect:aGame.
-	self updateLap: aGame numberOfSlotsPerLap.
-	self updateTurn: aGame.
+	^ playerName 
 ]
 
 { #category : #description }
 Player >> position [
-	"Return where is the player in the game"
-
 	^ position
-]
-
-{ #category : #description }
-Player >> turn [
-	"Return turn value of the player"
-
-	^ myTurn
-]
-
-{ #category : #updates }
-Player >> updateLap: numberOfSlots [
-	"After the player plays it has to update its turn in the queue"
-
-	position > numberOfSlots
-		ifTrue: [ 
-			position := position - numberOfSlots.
-			lapNumber := self lap + 1 ]
-]
-
-{ #category : #updates }
-Player >> updateTurn: aGame [
-	"After the player plays it has to update its turn in the queue"
-	
-	aGame nextTurn: myTurn + 1.
-	self assignTurn: myTurn + aGame numberOfPlayers
 ]

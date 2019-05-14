@@ -1,6 +1,6 @@
 "
 Please comment me using the following template inspired by Class Responsibility Collaborator (CRC) design:
-""Here we play the game with players and they are affected by differents boxes.""
+""Testing board creation acording to probability ""
 For the Class part:  State a one line summary. For example, ""I represent a paragraph of text"".
 
 For the Responsibility part: Three sentences about my main responsibilities - what I do, what I know.
@@ -17,37 +17,26 @@ Public API and Key Messages
  
 Internal Representation and Key Implementation Points.
 
-    Instance Variables
-	aGame:		<Object>
-	albert:		<Object>
-	diceOne:		<Object>
-	diceTwo:		<Object>
-	robert:		<Object>
-
 
     Implementation Points
 "
 Class {
-	#name : #RandomBoardTest,
+	#name : #BoardTest,
 	#superclass : #TestCase,
-	#instVars : [
-		'albert',
-		'robert',
-		'aGame',
-		'diceOne',
-		'diceTwo'
-	],
 	#category : #'IngSoft2-Tests'
 }
 
-{ #category : #running }
-RandomBoardTest >> setUp [
-	| players |
-	diceOne := SameFaceDice withFaces: 6.
-	diceTwo := SameFaceDice withFaces: 4.
-	albert := Player called: 'Albert'.
-	robert := Player called: 'Robert'.
-	players := OrderedCollection with: albert with: robert.
-	aGame := Game withSteps: 5 withLaps: 2 withPlayers: players.
-	aGame board = aGame createRandomBoard
+{ #category : #tests }
+BoardTest >> testBoardDistributionOfBoxes [
+	| aBoard atomicBomb vacio speedUp wormHole timeMachine moonWalk listOfEffects |
+	atomicBomb := AtomicBomb withProbability: 2.
+	vacio := Vacio withProbability: 55.
+	speedUp := SpeedUp withProbability: 15.
+	wormHole := WormHole withProbability: 15.
+	timeMachine := TimeMachine withProbability: 8.
+	moonWalk := Moonwalk withProbability: 5.
+	listOfEffects := OrderedCollection with: atomicBomb with: vacio with: speedUp with: wormHole with: timeMachine with: moonWalk.
+	aBoard := Board withSteps: 100 with: listOfEffects.
+	
+	
 ]

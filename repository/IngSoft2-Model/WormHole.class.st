@@ -1,6 +1,6 @@
 "
 Please comment me using the following template inspired by Class Responsibility Collaborator (CRC) design:
-"" Special box ""
+""Retrocede 4 Casilleros""
 For the Class part:  State a one line summary. For example, ""I represent a paragraph of text"".
 
 For the Responsibility part: Three sentences about my main responsibilities - what I do, what I know.
@@ -22,25 +22,11 @@ Internal Representation and Key Implementation Points.
 "
 Class {
 	#name : #WormHole,
-	#superclass : #Boxes,
+	#superclass : #Box,
 	#category : #'IngSoft2-Model'
 }
 
-{ #category : #operations }
-WormHole class >> create [
-	^ self new
-		initializeWithProbability;
-		yourself
-]
-
 { #category : #action }
-WormHole >> effect: toTheGame [
-	| thePlayer |
-	thePlayer := (toTheGame players) detect: [ :player | (player turn) = (toTheGame actualTurn)].
-	thePlayer move: -4.
-]
-
-{ #category : #initialize }
-WormHole >> initializeWithProbability [ 
-	probability := 100
+WormHole >> effectOn: aGame [ 
+	(aGame player at: aGame actualTurn) changePosition: 4 negated 
 ]
