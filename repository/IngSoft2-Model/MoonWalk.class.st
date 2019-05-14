@@ -27,8 +27,12 @@ Class {
 }
 
 { #category : #action }
-Moonwalk >> effectOn: aGame [ 
-	| restOfPlayers |
-	restOfPlayers := (aGame player) select: [ :player | player ~= (aGame player at: aGame actualTurn) ].
-	restOfPlayers collect: [ :player | player changePosition: 9 negated ]
+Moonwalk >> effectOn: aGame [
+	(self restOfPlayers: aGame) collect: [ :player | player changePosition: 9 negated ]
+]
+
+{ #category : #action }
+Moonwalk >> restOfPlayers: aGame [
+	^ aGame player
+		select: [ :player | player ~= (aGame player at: aGame actualTurn) ]
 ]

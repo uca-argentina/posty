@@ -25,18 +25,3 @@ Class {
 	#superclass : #TestCase,
 	#category : #'IngSoft2-Tests'
 }
-
-{ #category : #tests }
-BoardTest >> testBoardDistributionOfBoxes [
-	| aBoard atomicBomb vacio speedUp wormHole timeMachine moonWalk listOfEffects |
-	atomicBomb := AtomicBomb withProbability: 2.
-	vacio := Vacio withProbability: 55.
-	speedUp := SpeedUp withProbability: 15.
-	wormHole := WormHole withProbability: 15.
-	timeMachine := TimeMachine withProbability: 8.
-	moonWalk := Moonwalk withProbability: 5.
-	listOfEffects := OrderedCollection with: atomicBomb with: vacio with: speedUp with: wormHole with: timeMachine with: moonWalk.
-	aBoard := Board withSteps: 100 with: listOfEffects.
-	
-	
-]
