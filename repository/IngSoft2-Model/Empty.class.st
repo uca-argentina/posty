@@ -21,12 +21,12 @@ Internal Representation and Key Implementation Points.
     Implementation Points
 "
 Class {
-	#name : #Vacio,
+	#name : #Empty,
 	#superclass : #Box,
 	#category : #'IngSoft2-Model'
 }
 
 { #category : #action }
-Vacio >> effectOn: aGame [ 
+Empty >> effectOn: aGame [ 
 	
 ]

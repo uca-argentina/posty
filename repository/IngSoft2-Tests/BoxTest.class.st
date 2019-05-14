@@ -137,7 +137,7 @@ BoxTest >> testVacio [
 	jack := Player called: 'Jack'.
 	ben := Player called: 'Ben'.
 	players := OrderedCollection with: jack with: ben.
-	vacio := Vacio withProbability: 55.
+	vacio := Empty withProbability: 55.
 	aGame := Game withSteps: 10 withLaps: 5 withPlayers: players.
 	aGame newTurnWithDice: diceOne.
 	aGame newTurnWithDice: diceTwo.
