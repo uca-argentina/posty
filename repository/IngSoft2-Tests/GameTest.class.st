@@ -23,212 +23,179 @@ Internal Representation and Key Implementation Points.
 Class {
 	#name : #GameTest,
 	#superclass : #TestCase,
+	#instVars : [
+		'players',
+		'jack',
+		'ben',
+		'aGame',
+		'theGame',
+		'louis',
+		'threePlayers',
+		'empty',
+		'moonwalk',
+		'atomicbomb',
+		'speedup',
+		'boxes',
+		'aBoard',
+		'threePlayerGame',
+		'returnsFour',
+		'returnsFive',
+		'returnsSix',
+		'returnsSeven'
+	],
 	#category : #'IngSoft2-Tests'
 }
 
-{ #category : #tests }
-GameTest >> testAfterAPlayerPlaysTwoTimesPositionIncrease [
-	| aDice jack ben aGame players |
-	aDice := SameFaceDice withFaces: 4.
+{ #category : #running }
+GameTest >> setUp [
+	"Players creation"
 	jack := Player called: 'Jack'.
 	ben := Player called: 'Ben'.
 	players := OrderedCollection with: jack with: ben.
-	aGame := Game withSteps: 10 withLaps: 5  withPlayers:  players.
-	aGame newTurnWithDice: aDice.
-	aGame newTurnWithDice: aDice.
-	aGame newTurnWithDice: aDice.
-	self assert: (aGame positionOf: jack) equals: 8.
-	self assert: (aGame lapOf: jack) equals: 1.
-	self assert: (aGame positionOf: ben) equals: 4.
-	self assert: (aGame lapOf: ben) equals: 1.
+	louis := Player called: 'Louis'.
+	threePlayers := OrderedCollection with: jack with: ben with: louis.
+	"Dice Creation"
+	returnsFour := SameFaceDice withFaces: 4.
+	returnsFive := SameFaceDice withFaces: 5.
+	returnsSix := SameFaceDice withFaces: 6.
+	returnsSeven := SameFaceDice withFaces: 7.
+	"Board Creation"
+	empty := Empty withProbability: 0.55.
+	moonwalk := Moonwalk withProbability: 0.15.
+	atomicbomb := AtomicBomb withProbability: 0.02.
+	speedup := SpeedUp withProbability: 0.15.
+	boxes := OrderedCollection with: empty with: speedup with: moonwalk with: atomicbomb with:empty with: moonwalk.
+	boxes add: empty.
+	boxes add: speedup.
+	boxes add: empty.
+	boxes add: atomicbomb.
+	aBoard := Board with: boxes.
+	"Game creation"
+	aGame := Game withBoard: aBoard withLaps: 5  withPlayers:  players.
+	theGame := Game withBoard: aBoard withLaps: 2  withPlayers:  players.
+	threePlayerGame := Game withBoard: aBoard withLaps: 5  withPlayers:  threePlayers.
+]
+
+{ #category : #tests }
+GameTest >> testAfterAPlayerPlaysTwoTimesPositionIncrease [
+	aGame newTurnWithDice: returnsFour.
+	aGame newTurnWithDice: returnsSix.
+	aGame newTurnWithDice: returnsFive.
+	self assert: (aGame positionOf: jack) equals: 6.
+	self assert: (aGame lapOf: jack) equals: -1.
+	self assert: (aGame positionOf: ben) equals: 7.
+	self assert: (aGame lapOf: ben) equals: -1.
 ]
 
 { #category : #tests }
 GameTest >> testAfterJackPlaysItsBenTurn [
-	| aDice jack ben aGame players |
-	aDice := SameFaceDice withFaces: 4.
-	jack := Player called: 'Jack'.
-	ben := Player called: 'Ben'.
-	players := OrderedCollection with: jack with: ben.
-	aGame := Game withSteps: 10 withLaps: 5  withPlayers:  players.
-	aGame newTurnWithDice: aDice.
+	aGame newTurnWithDice: returnsFour.
 	self assert: aGame actualTurn equals: 2.
 ]
 
 { #category : #tests }
 GameTest >> testJackAndBenArePlayersOfTheGame [
-	| jack ben aGame players |
-	jack := Player called: 'Jack'.
-	ben := Player called: 'Ben'.
-	players := OrderedCollection with: jack with: ben.
-	aGame := Game withSteps: 10 withLaps: 5  withPlayers:  players.
 	self assert:  ( aGame player at: 1) name equals: 'Jack'.
 	self assert:  ( aGame player at: 2) name equals: 'Ben'
 ]
 
 { #category : #tests }
 GameTest >> testJackGoesFirstThenBen [
-	| jack ben aGame players |
-	jack := Player called: 'Jack'.
-	ben := Player called: 'Ben'.
-	players := OrderedCollection with: jack with: ben.
-	aGame := Game withSteps: 10 withLaps: 5  withPlayers: players.
 	self assert: ( aGame listOfTurns at: 1) name equals: 'Jack'.
 	self assert: ( aGame listOfTurns at: 2) name equals: 'Ben'.
 ]
 
 { #category : #tests }
 GameTest >> testJackPlaysAndChangePosition [
-	| aDice jack ben aGame players |
-	aDice := SameFaceDice withFaces: 4.
-	jack := Player called: 'Jack'.
-	ben := Player called: 'Ben'.
-	players := OrderedCollection with: jack with: ben.
-	aGame := Game withSteps: 10 withLaps: 5  withPlayers:  players.
-	aGame newTurnWithDice: aDice.
-	self assert: (aGame positionOf: jack) equals: 4.
+	aGame newTurnWithDice: returnsFive.
+	self assert: (aGame positionOf: jack) equals: 5.
 	self assert: (aGame lapOf: jack) equals: 1.
 ]
 
 { #category : #tests }
 GameTest >> testJackReachsFinalLapAndGameEnds [
-	| diceOne diceTwo jack ben aGame players |
-	diceOne := SameFaceDice withFaces: 8.
-	diceTwo := SameFaceDice withFaces: 4.
-	jack := Player called: 'Jack'.
-	ben := Player called: 'Ben'.
-	players := OrderedCollection with: jack with: ben.
-	aGame := Game withSteps: 10 withLaps: 2  withPlayers:  players.
-	aGame newTurnWithDice: diceOne.
-	aGame newTurnWithDice: diceTwo.
-	aGame newTurnWithDice: diceOne.
-	aGame newTurnWithDice: diceTwo.
-	aGame newTurnWithDice: diceOne.
-	self assert: aGame isOver.
+	theGame newTurnWithDice: returnsFive.
+	theGame newTurnWithDice: returnsSeven.
+	theGame newTurnWithDice: returnsFour.
+	theGame newTurnWithDice: returnsFour.
+	theGame newTurnWithDice: returnsSix.
+	theGame newTurnWithDice: returnsFour.
+	theGame newTurnWithDice: returnsSix.
+	self assert: theGame isOver.
 ]
 
 { #category : #tests }
 GameTest >> testLapsOfAGame [
-	| jack ben aGame players |
-	jack := Player called: 'Jack'.
-	ben := Player called: 'Ben'.
-	players := OrderedCollection with: jack with: ben.
-	aGame := Game withSteps: 10 withLaps: 5 withPlayers: players.
 	self assert: aGame laps equals: 5.
 ]
 
 { #category : #tests }
 GameTest >> testLastPositionOfJack [
-	| aDice jack ben aGame players |
-	aDice := SameFaceDice withFaces: 4.
-	jack := Player called: 'Jack'.
-	ben := Player called: 'Ben'.
-	players := OrderedCollection with: jack with: ben.
-	aGame := Game withSteps: 10 withLaps: 5  withPlayers:  players.
-	aGame newTurnWithDice: aDice.
-	aGame newTurnWithDice: aDice.
-	aGame newTurnWithDice: aDice.
-	aGame newTurnWithDice: aDice.
-	aGame newTurnWithDice: aDice.
-	self assert: (aGame lastPositionOf: jack ) equals: 4.
+	aGame newTurnWithDice: returnsFour.
+	aGame newTurnWithDice: returnsFour.
+	aGame newTurnWithDice: returnsFour.
+	aGame newTurnWithDice: returnsFour.
+	aGame newTurnWithDice: returnsFour.
+	self assert: (aGame lastPositionOf: jack ) equals: 0.
 	self assert: (aGame lastLapOf: jack) equals: 1.
 ]
 
 { #category : #tests }
 GameTest >> testNoOneCanPlayAfterGameIsOver [
-	| diceOne diceTwo jack ben aGame players |
-	diceOne := SameFaceDice withFaces: 8.
-	diceTwo := SameFaceDice withFaces: 4.
-	jack := Player called: 'Jack'.
-	ben := Player called: 'Ben'.
-	players := OrderedCollection with: jack with: ben.
-	aGame := Game withSteps: 10 withLaps: 2  withPlayers:  players.
-	aGame newTurnWithDice: diceOne.
-	aGame newTurnWithDice: diceTwo.
-	aGame newTurnWithDice: diceOne.
-	aGame newTurnWithDice: diceTwo.
-	aGame newTurnWithDice: diceOne.
-	self should: [ aGame newTurnWithDice: diceOne ] raise: Error.
+	theGame newTurnWithDice: returnsFive.
+	theGame newTurnWithDice: returnsSeven.
+	theGame newTurnWithDice: returnsFour.
+	theGame newTurnWithDice: returnsFour.
+	theGame newTurnWithDice: returnsSix.
+	theGame newTurnWithDice: returnsFour.
+	theGame newTurnWithDice: returnsSix.
+	self should: [ theGame newTurnWithDice: returnsFour ] raise: Error.
 ]
 
 { #category : #tests }
 GameTest >> testPlayerCompletesALap [
-	| aDice jack ben aGame players |
-	aDice := SameFaceDice withFaces: 4.
-	jack := Player called: 'Jack'.
-	ben := Player called: 'Ben'.
-	players := OrderedCollection with: jack with: ben.
-	aGame := Game withSteps: 10 withLaps: 5  withPlayers:  players.
-	aGame newTurnWithDice: aDice.
-	aGame newTurnWithDice: aDice.
-	aGame newTurnWithDice: aDice.
-	aGame newTurnWithDice: aDice.
-	aGame newTurnWithDice: aDice.
-	self assert: (aGame positionOf: jack )equals: 2.
+	aGame newTurnWithDice: returnsSeven.
+	aGame newTurnWithDice: returnsFive.
+	aGame newTurnWithDice: returnsFour.
+	self assert: (aGame positionOf: jack )equals: 1.
 	self assert: (aGame lapOf: jack) equals: 2.
 ]
 
 { #category : #tests }
 GameTest >> testPlayerPlaysWithDifferentDices [
-	| diceOne diceTwo jack ben aGame players |
-	diceOne := SameFaceDice withFaces: 5.
-	diceTwo := SameFaceDice withFaces: 7.
-	jack := Player called: 'Jack'.
-	ben := Player called: 'Ben'.
-	players := OrderedCollection with: jack with: ben.
-	aGame := Game withSteps: 10 withLaps: 5 withPlayers: players.
-	aGame newTurnWithDice: diceOne.
-	aGame newTurnWithDice: diceOne.
-	aGame newTurnWithDice: diceTwo.
-	aGame newTurnWithDice: diceOne.
-	aGame newTurnWithDice: diceTwo.
-	self assert: (aGame positionOf: jack) equals: 9.
-	self assert: (aGame lapOf: jack) equals: 2
+	aGame newTurnWithDice: returnsFive.
+	aGame newTurnWithDice: returnsFour.
+	aGame newTurnWithDice: returnsSix.
+	aGame newTurnWithDice: returnsFive.
+	self assert: (aGame positionOf: jack) equals: 7.
+	self assert: (aGame lapOf: jack) equals: -1
 ]
 
 { #category : #tests }
 GameTest >> testStepsOfAGame [
-	| jack ben aGame players |
-	jack := Player called: 'Jack'.
-	ben := Player called: 'Ben'.
-	players := OrderedCollection with: jack with: ben.
-	aGame := Game withSteps: 10 withLaps: 5  withPlayers: players.
 	self assert: aGame steps equals: 10. 
 ]
 
 { #category : #tests }
 GameTest >> testTheRankingOfTheGame [
-	| diceOne diceTwo jack ben louis aGame players |
-	diceOne := SameFaceDice withFaces: 5.
-	diceTwo := SameFaceDice withFaces: 6.
-	jack := Player called: 'Jack'.
-	ben := Player called: 'Ben'.
-	louis := Player called: 'Louis'.
-	players := OrderedCollection with: jack with: ben with: louis.
-	aGame := Game withSteps: 10 withLaps: 5  withPlayers:  players.
-	aGame newTurnWithDice: diceOne.
-	aGame newTurnWithDice: diceTwo.
-	aGame newTurnWithDice: diceOne.
-	aGame newTurnWithDice: diceTwo.
-	aGame newTurnWithDice: diceTwo.
-	self assert: (aGame ranking at: 1) equals: ben.
-	self assert: (aGame ranking at: 2) equals: jack.
-	self assert: (aGame ranking at: 3) equals: louis
+	threePlayerGame newTurnWithDice: returnsFive.
+	threePlayerGame newTurnWithDice: returnsSeven.
+	threePlayerGame newTurnWithDice: returnsFour.
+	threePlayerGame newTurnWithDice: returnsFive.
+	threePlayerGame newTurnWithDice: returnsSeven.
+	self assert: (threePlayerGame ranking at: 1) equals: ben.
+	self assert: (threePlayerGame ranking at: 2) equals: jack.
+	self assert: (threePlayerGame ranking at: 3) equals: louis
 ]
 
 { #category : #tests }
 GameTest >> testTheWinnerOfTheGame [
-	| diceOne diceTwo jack ben aGame players |
-	diceOne := SameFaceDice withFaces: 8.
-	diceTwo := SameFaceDice withFaces: 4.
-	jack := Player called: 'Jack'.
-	ben := Player called: 'Ben'.
-	players := OrderedCollection with: jack with: ben.
-	aGame := Game withSteps: 10 withLaps: 2  withPlayers:  players.
-	aGame newTurnWithDice: diceOne.
-	aGame newTurnWithDice: diceTwo.
-	aGame newTurnWithDice: diceOne.
-	aGame newTurnWithDice: diceTwo.
-	aGame newTurnWithDice: diceOne.
-	self assert: aGame winner equals: jack.
+	theGame newTurnWithDice: returnsFive.
+	theGame newTurnWithDice: returnsSeven.
+	theGame newTurnWithDice: returnsFour.
+	theGame newTurnWithDice: returnsFour.
+	theGame newTurnWithDice: returnsSix.
+	theGame newTurnWithDice: returnsFour.
+	theGame newTurnWithDice: returnsSix.
+	self assert: theGame winner equals: jack.
 ]

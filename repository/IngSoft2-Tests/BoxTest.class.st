@@ -23,24 +23,65 @@ Internal Representation and Key Implementation Points.
 Class {
 	#name : #BoxTest,
 	#superclass : #TestCase,
+	#instVars : [
+		'jack',
+		'ben',
+		'players',
+		'atomicBomb',
+		'aGame',
+		'moonWalk',
+		'speedUp',
+		'timeMachine',
+		'vacio',
+		'wormHole',
+		'boxes',
+		'aBoard',
+		'returnsFour',
+		'returnsFive',
+		'returnsSix',
+		'returnsSeven',
+		'returnsNine',
+		'returnsEight'
+	],
 	#category : #'IngSoft2-Tests'
 }
 
-{ #category : #tests }
-BoxTest >> testAtomicBomb [
-	| diceOne diceTwo jack ben aGame players atomicBomb |
-	diceOne := SameFaceDice withFaces: 4.
-	diceTwo := SameFaceDice withFaces: 6.
+{ #category : #running }
+BoxTest >> setUp [
+	"Dice Creation"
+	returnsFour := SameFaceDice withFaces: 4.
+	returnsFive := SameFaceDice withFaces: 5.
+	returnsSix := SameFaceDice withFaces: 6.
+	returnsSeven := SameFaceDice withFaces: 7.
+	returnsEight := SameFaceDice withFaces: 8.
+	returnsNine := SameFaceDice withFaces: 9.
+	"Player Creation"
 	jack := Player called: 'Jack'.
 	ben := Player called: 'Ben'.
 	players := OrderedCollection with: jack with: ben.
-	atomicBomb := AtomicBomb withProbability: 2.
-	aGame := Game withSteps: 10 withLaps: 5  withPlayers:  players.
-	aGame newTurnWithDice: diceOne.
-	aGame newTurnWithDice: diceTwo.
-	self assert: jack position equals: 4.
-	self assert: ben position equals: 6.
-	atomicBomb effectOn: aGame.
+	"Effects Creation"
+	atomicBomb := AtomicBomb withProbability: 0.2.
+	moonWalk := Moonwalk withProbability: 0.05.
+	speedUp := SpeedUp withProbability: 0.15.
+	timeMachine := TimeMachine withProbability: 0.08.
+	vacio := Empty withProbability: 0.55.
+	wormHole := WormHole withProbability: 0.15.
+	"Board creation"
+	boxes := OrderedCollection with: vacio with: speedUp with: moonWalk with: atomicBomb with: vacio with: moonWalk.
+	boxes add: timeMachine .
+	boxes add: speedUp .
+	boxes add: vacio.
+	boxes add: wormHole.
+	aBoard := Board with: boxes.
+	"Game Creation"
+	aGame := Game withBoard: aBoard withLaps: 5  withPlayers:  players.
+]
+
+{ #category : #tests }
+BoxTest >> testAtomicBomb [
+	"When second player gets a Four he reaches atomic bomb"
+	aGame newTurnWithDice: returnsFive.
+	aGame newTurnWithDice: returnsFour.
 	self assert: (aGame positionOf: jack) equals: 0.
 	self assert: (aGame positionOf: ben) equals: 0.
 	
@@ -49,160 +90,56 @@ BoxTest >> testAtomicBomb [
 
 { #category : #tests }
 BoxTest >> testMoonWalk [
-	| diceOne diceTwo jack ben aGame players moonWalk |
-	diceOne := SameFaceDice withFaces: 4.
-	diceTwo := SameFaceDice withFaces: 6.
-	jack := Player called: 'Jack'.
-	ben := Player called: 'Ben'.
-	players := OrderedCollection with: jack with: ben.
-	moonWalk := Moonwalk withProbability: 5.
-	aGame := Game withSteps: 10 withLaps: 5  withPlayers:  players.
-	aGame newTurnWithDice: diceOne.
-	aGame newTurnWithDice: diceTwo.
-	aGame newTurnWithDice: diceOne.
-	aGame newTurnWithDice: diceTwo.
-	aGame newTurnWithDice: diceOne.
-	aGame newTurnWithDice: diceTwo.
-	self assert: (aGame positionOf: jack) equals: 2.
-	self assert: (aGame lapOf: jack) equals: 2.
-	self assert: (aGame positionOf: ben) equals: 8.
-	self assert: (aGame lapOf: ben) equals: 2.
-	moonWalk effectOn: aGame.
-	self assert: (aGame positionOf: jack) equals: 2.
-	self assert: (aGame lapOf: jack) equals: 2.
-	self assert: (aGame positionOf: ben) equals: 9.
+	aGame newTurnWithDice: returnsFive.
+	aGame newTurnWithDice: returnsSix.
+	self assert: (aGame positionOf: jack) equals: 6.
+	self assert: (aGame lapOf: jack) equals: -1.
+	self assert: (aGame positionOf: ben) equals: 6.
 	self assert: (aGame lapOf: ben) equals: 1.
 	
 ]
 
 { #category : #tests }
 BoxTest >> testSpeedUp [
-	| diceOne diceTwo jack ben aGame players speedUp |
-	diceOne := SameFaceDice withFaces: 4.
-	diceTwo := SameFaceDice withFaces: 6.
-	jack := Player called: 'Jack'.
-	ben := Player called: 'Ben'.
-	players := OrderedCollection with: jack with: ben.
-	speedUp := SpeedUp withProbability: 15.
-	aGame := Game withSteps: 10 withLaps: 5  withPlayers:  players.
-	aGame newTurnWithDice: diceOne.
-	aGame newTurnWithDice: diceTwo.
-	aGame newTurnWithDice: diceOne.
-	aGame newTurnWithDice: diceTwo.
-	aGame newTurnWithDice: diceOne.
-	aGame newTurnWithDice: diceTwo.
-	self assert: (aGame positionOf: jack) equals: 2.
-	self assert: (aGame lapOf: jack) equals: 2.
-	self assert: (aGame positionOf: ben) equals: 8.
-	self assert: (aGame lapOf: ben) equals: 2.
-	speedUp effectOn: aGame.
+	aGame newTurnWithDice: returnsFive.
+	aGame newTurnWithDice: returnsNine.
+	aGame newTurnWithDice: returnsSeven.
 	self assert: (aGame positionOf: jack) equals: 6.
 	self assert: (aGame lapOf: jack) equals: 2.
-	self assert: (aGame positionOf: ben) equals: 8.
-	self assert: (aGame lapOf: ben) equals: 2.
+	self assert: (aGame positionOf: ben) equals: 9.
+	self assert: (aGame lapOf: ben) equals: 1.
 ]
 
 { #category : #tests }
 BoxTest >> testTimeMachine [
-	| diceOne diceTwo jack ben aGame players timeMachine |
-	diceOne := SameFaceDice withFaces: 4.
-	diceTwo := SameFaceDice withFaces: 6.
-	jack := Player called: 'Jack'.
-	ben := Player called: 'Ben'.
-	players := OrderedCollection with: jack with: ben.
-	timeMachine := TimeMachine withProbability: 8.
-	aGame := Game withSteps: 10 withLaps: 5 withPlayers: players.
-	aGame newTurnWithDice: diceOne.
-	aGame newTurnWithDice: diceTwo.
-	aGame newTurnWithDice: diceOne.
-	aGame newTurnWithDice: diceTwo.
-	aGame newTurnWithDice: diceOne.
-	aGame newTurnWithDice: diceTwo.
-	self assert: (aGame positionOf: jack) equals: 2.
-	self assert: (aGame lapOf: jack) equals: 2.
-	self assert: (aGame positionOf: ben) equals: 8.
-	self assert: (aGame lapOf: ben) equals: 2.
-	timeMachine effectOn: aGame.
-	self assert: (aGame positionOf: jack) equals: 4.
+	aGame newTurnWithDice: returnsFive.
+	aGame newTurnWithDice: returnsNine.
+	aGame newTurnWithDice: returnsFour.
+	aGame newTurnWithDice: returnsSix.
+	aGame newTurnWithDice: returnsEight.
+	self assert: (aGame positionOf: jack) equals: 5.
 	self assert: (aGame lapOf: jack) equals: 1.
-	self assert: (aGame positionOf: ben) equals: 8.
+	self assert: (aGame positionOf: ben) equals: 5.
 	self assert: (aGame lapOf: ben) equals: 2
 ]
 
 { #category : #tests }
 BoxTest >> testVacio [
-	| diceOne diceTwo jack ben aGame players vacio |
-	diceOne := SameFaceDice withFaces: 4.
-	diceTwo := SameFaceDice withFaces: 6.
-	jack := Player called: 'Jack'.
-	ben := Player called: 'Ben'.
-	players := OrderedCollection with: jack with: ben.
-	vacio := Empty withProbability: 55.
-	aGame := Game withSteps: 10 withLaps: 5 withPlayers: players.
-	aGame newTurnWithDice: diceOne.
-	aGame newTurnWithDice: diceTwo.
-	aGame newTurnWithDice: diceOne.
-	aGame newTurnWithDice: diceTwo.
-	aGame newTurnWithDice: diceOne.
-	aGame newTurnWithDice: diceTwo.
-	self assert: (aGame positionOf: jack) equals: 2.
-	self assert: (aGame lapOf: jack) equals: 2.
-	self assert: (aGame positionOf: ben) equals: 8.
-	self assert: (aGame lapOf: ben) equals: 2.
-	vacio effectOn: aGame.
-	self assert: (aGame positionOf: jack) equals: 2.
-	self assert: (aGame lapOf: jack) equals: 2.
-	self assert: (aGame positionOf: ben) equals: 8.
-	self assert: (aGame lapOf: ben) equals: 2
+	aGame newTurnWithDice: returnsFive.
+	aGame newTurnWithDice: returnsNine.
+	self assert: (aGame positionOf: jack) equals: 5.
+	self assert: (aGame lapOf: jack) equals: 1.
+	self assert: (aGame positionOf: ben) equals: 9.
+	self assert: (aGame lapOf: ben) equals: 1
 ]
 
 { #category : #tests }
 BoxTest >> testWormHole [
-	| diceOne diceTwo jack ben aGame players wormHole |
-	diceOne := SameFaceDice withFaces: 4.
-	diceTwo := SameFaceDice withFaces: 6.
-	jack := Player called: 'Jack'.
-	ben := Player called: 'Ben'.
-	players := OrderedCollection with: jack with: ben.
-	wormHole := WormHole withProbability: 15.
-	aGame := Game withSteps: 10 withLaps: 5 withPlayers: players.
-	aGame newTurnWithDice: diceOne.
-	aGame newTurnWithDice: diceTwo.
-	aGame newTurnWithDice: diceOne.
-	aGame newTurnWithDice: diceTwo.
-	aGame newTurnWithDice: diceOne.
-	aGame newTurnWithDice: diceTwo.
-	self assert: (aGame positionOf: jack) equals: 2.
-	self assert: (aGame lapOf: jack) equals: 2.
-	self assert: (aGame positionOf: ben) equals: 8.
-	self assert: (aGame lapOf: ben) equals: 2.
-	wormHole effectOn: aGame.
-	self assert: (aGame positionOf: jack) equals: 8.
+	aGame newTurnWithDice: returnsFive.
+	aGame newTurnWithDice: returnsNine.
+	aGame newTurnWithDice: returnsFive.
+	self assert: (aGame positionOf: jack) equals: 6.
 	self assert: (aGame lapOf: jack) equals: 1.
-	self assert: (aGame positionOf: ben) equals: 8.
-	self assert: (aGame lapOf: ben) equals: 2
-]
-
-{ #category : #tests }
-BoxTest >> testWormHoleNegativeLap [
-	| diceOne diceTwo jack ben aGame players wormHole |
-	diceOne := SameFaceDice withFaces: 4.
-	diceTwo := SameFaceDice withFaces: 6.
-	jack := Player called: 'Jack'.
-	ben := Player called: 'Ben'.
-	players := OrderedCollection with: jack with: ben.
-	wormHole := WormHole withProbability: 15.
-	aGame := Game withSteps: 10 withLaps: 5 withPlayers: players.
-	aGame newTurnWithDice: diceOne.
-	aGame newTurnWithDice: diceTwo.
-	(aGame player at: 1) move: 2.
-	self assert: (aGame positionOf: jack) equals: 2.
-	self assert: (aGame lapOf: jack) equals: 1.
-	self assert: (aGame positionOf: ben) equals: 6.
-	self assert: (aGame lapOf: ben) equals: 1.
-	wormHole effectOn: aGame.
-	self assert: (aGame positionOf: jack) equals: 8.
-	self assert: (aGame lapOf: jack) equals: -1.
-	self assert: (aGame positionOf: ben) equals: 6.
+	self assert: (aGame positionOf: ben) equals: 9.
 	self assert: (aGame lapOf: ben) equals: 1
 ]

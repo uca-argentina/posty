@@ -44,6 +44,7 @@ Player class >> called: aName [
 
 { #category : #action }
 Player >> AddPositionRecord: aNumber [
+	"add to its position records a new position"
 	lastPosition add: aNumber .
 ]
 
@@ -64,6 +65,7 @@ Player >> initializeWithName: aName [
 
 { #category : #description }
 Player >> lastPosition [
+	"ask the position records its last position"
 	^ lastPosition at: (lastPosition size -1)
 ]
 
@@ -75,10 +77,12 @@ Player >> move: aNumber [
 
 { #category : #description }
 Player >> name [
+	"return player name"
 	^ playerName 
 ]
 
 { #category : #description }
 Player >> position [
+	"return player position"
 	^ position
 ]

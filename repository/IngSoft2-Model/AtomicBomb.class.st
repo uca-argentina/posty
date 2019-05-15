@@ -28,5 +28,6 @@ Class {
 
 { #category : #action }
 AtomicBomb >> effectOn: aGame [
-	aGame player collect: [ :player | player changePosition: (player position) negated ]
+	"when this effect appears every player goes to the begining again"
+	aGame player collect: [ :player | player move: 0 ]
 ]

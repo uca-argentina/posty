@@ -28,11 +28,13 @@ Class {
 
 { #category : #action }
 Moonwalk >> effectOn: aGame [
+	"when this effect appears every player goes back N (in this case 9) position except the one who reaches this box"
 	(self restOfPlayers: aGame) collect: [ :player | player changePosition: 9 negated ]
 ]
 
 { #category : #action }
 Moonwalk >> restOfPlayers: aGame [
+	"pick players who applies the effect"
 	^ aGame player
 		select: [ :player | player ~= (aGame player at: aGame actualTurn) ]
 ]

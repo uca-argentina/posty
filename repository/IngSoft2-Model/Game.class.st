@@ -41,72 +41,80 @@ Class {
 }
 
 { #category : #creation }
-Game class >> withSteps: aNumberOfStepsPerLap withLaps: aNumberOfLaps withPlayers: players [
-	^ self new
-		initializeWithSteps: aNumberOfStepsPerLap
-			withLaps: aNumberOfLaps
-			withPlayers: players;
+Game class >> withBoard: aBoard withLaps: aNumberOfLaps withPlayers: players [ 
+	^ self new 
+		initializeWithBoard: aBoard
+		withLaps: aNumberOfLaps
+		withPlayers: players;
 		yourself
 ]
 
 { #category : #description }
 Game >> actualTurn [
+	"returns which turn number has now to play"
 	^ turn
 ]
 
 { #category : #asserting }
 Game >> assertGameIsOver [
+	"ask if the game is over"
 	self isOver
 		ifTrue: [ self error: 'The game has ended' ]
 ]
 
-{ #category : #initialize }
-Game >> initializeWithSteps: aNumberOfStepsPerLap withLaps: aNumberOfLaps withPlayers: players [
-	"Create a game with n steps to win and list of players, then assign first turn number"
-	numberOfSlotsPerLap := aNumberOfStepsPerLap.
+{ #category : #initialization }
+Game >> initializeWithBoard: aBoard withLaps: aNumberOfLaps withPlayers: players [ 
+	"Creates the game with a board, players and a number of laps."
+	board := aBoard.
 	listOfPlayers := players.
 	numberOfLaps := aNumberOfLaps.
 	turn := 1.
-	
 ]
 
 { #category : #actions }
 Game >> isOver [
-	^ listOfPlayers anySatisfy: [ :player | player position > (numberOfLaps * numberOfSlotsPerLap) ]
+	"ask if any player has reached the end of the game"
+	^ listOfPlayers anySatisfy: [ :player | player position > (numberOfLaps * (board amountOfBoxes)) ]
 ]
 
 { #category : #description }
 Game >> lapOf: aPlayer [ 
+	"ask the player its position to calculate in which lap it is"
 	aPlayer position < 0
 	ifTrue: [ ^-1 ]
-	ifFalse: [ ^ ((aPlayer position / numberOfSlotsPerLap)+1) asInteger. ]
+	ifFalse: [ ^ ((aPlayer position / board amountOfBoxes)+1) asInteger. ]
 	
 	
 ]
 
 { #category : #description }
 Game >> laps [
+	"returns number of laps of the game"
 	^ numberOfLaps .
 ]
 
 { #category : #description }
 Game >> lapsMade: aPlayer [
-	^ (aPlayer position / numberOfSlotsPerLap) asInteger
-		* numberOfSlotsPerLap
+	"ask how many laps has completed the player"
+	^ (aPlayer position / board amountOfBoxes) asInteger
+		* board amountOfBoxes 
 ]
 
 { #category : #description }
 Game >> lastLapOf: aPlayer [ 
-	^ ((aPlayer lastPosition / numberOfSlotsPerLap) + 1) asInteger 
+	"ask the player its last position to calculate in which lap was"
+	^ ((aPlayer lastPosition / board amountOfBoxes) + 1) asInteger 
 ]
 
 { #category : #description }
 Game >> lastPositionOf: aPlayer [ 
+	"ask the player its last position"
 	^ aPlayer lastPosition
 ]
 
 { #category : #description }
 Game >> listOfTurns [
+	"ask in which order are the players"
 	^ listOfPlayers 
 ]
 
@@ -116,13 +124,15 @@ Game >> newTurnWithDice: aDice [
 	| thePlayer|
 	self assertGameIsOver.
 	thePlayer := listOfPlayers at: self actualTurn.
-	thePlayer AddPositionRecord: thePlayer position .
+	thePlayer AddPositionRecord: (self positionOf: thePlayer).
 	thePlayer changePosition: aDice roll.
+	(board atIndex: (self positionOf: thePlayer)) effectOn: self.
 	self updateTurn: self actualTurn + 1.
 ]
 
 { #category : #accessing }
 Game >> numberOfLaps [
+	"number of laps of the game"
 	^ numberOfLaps 
 ]
 
@@ -147,26 +157,29 @@ Game >> player [
 
 { #category : #description }
 Game >> positionOf: aPlayer [
+	"ask the player its position and calculates according to the game structure its location on the board"
 	aPlayer position < 0
-		ifTrue: [ ^ aPlayer position + numberOfSlotsPerLap ].
-	aPlayer position <= numberOfSlotsPerLap
+		ifTrue: [ ^ aPlayer position + board amountOfBoxes  ].
+	aPlayer position <= board amountOfBoxes
 		ifTrue: [ ^ aPlayer position ]
 		ifFalse: [ ^ aPlayer position - (self lapsMade: aPlayer) ]
 ]
 
 { #category : #description }
 Game >> ranking [
+	"sort players according to position so it makes a ranking"
 	^ listOfPlayers sort: [ :player1 :player2 | player1 position > player2 position ]
 ]
 
 { #category : #description }
 Game >> steps [
 	"Return number of steps"
-	^ numberOfSlotsPerLap 
+	^ board amountOfBoxes
 ]
 
 { #category : #actions }
 Game >> updateTurn: aNumber [
+	"update turns according the players in the game"
 	turn := aNumber > listOfPlayers size
 		ifTrue: [ aNumber - listOfPlayers size ]
 		ifFalse: [ aNumber ]
@@ -174,5 +187,6 @@ Game >> updateTurn: aNumber [
 
 { #category : #description }
 Game >> winner [
+	"the winner is the one that is first at the ranking"
 	^ self ranking at: 1.
 ]

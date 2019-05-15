@@ -1,6 +1,6 @@
 "
 Please comment me using the following template inspired by Class Responsibility Collaborator (CRC) design:
-""A regular Dice""
+""aBoard""
 For the Class part:  State a one line summary. For example, ""I represent a paragraph of text"".
 
 For the Responsibility part: Three sentences about my main responsibilities - what I do, what I know.
@@ -17,28 +17,42 @@ Public API and Key Messages
  
 Internal Representation and Key Implementation Points.
 
+    Instance Variables
+	listOfBoxes:		<Object>
+
 
     Implementation Points
 "
 Class {
-	#name : #RandomDice,
-	#superclass : #Dice,
+	#name : #Board,
+	#superclass : #Object,
 	#instVars : [
-		'random'
+		'listOfBoxes'
 	],
 	#category : #'IngSoft2-Model'
 }
 
-{ #category : #initialize }
-RandomDice >> initializeWithFaces: aNumberOfFaces [
-	"initializes a random dice"
-	super initializeWithFaces: aNumberOfFaces.
-	random := Random new
+{ #category : #creation }
+Board class >> with: boxes [ 
+	^ self new
+	initializeWith: boxes;
+	yourself 
+]
+
+{ #category : #description }
+Board >> amountOfBoxes [
+	"returns size of the board"
+	^ listOfBoxes size
 ]
 
 { #category : #actions }
-RandomDice >> roll [
-	"Roll returns a random value between 1 and the amount of faces of the dice"
+Board >> atIndex: aBoardPosition [
+	"return an effect from an specific position"
+	^ listOfBoxes at: aBoardPosition.
+]
 
-	^ (random next * numberOfFaces) floor + 1
+{ #category : #initialize }
+Board >> initializeWith: boxes [ 
+	"creates the board"
+	listOfBoxes := boxes.
 ]

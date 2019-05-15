@@ -28,5 +28,6 @@ Class {
 
 { #category : #action }
 TimeMachine >> effectOn: aGame [ 
+	"when this effect appears the player goes back to its last position recorded"
 	(aGame player at: aGame actualTurn) move: (aGame lastPositionOf: (aGame player at: aGame actualTurn) )
 ]

@@ -28,5 +28,6 @@ Class {
 
 { #category : #action }
 SpeedUp >> effectOn: aGame [ 
+	"when this effect appears the player moves 4 blocks from its position"
 	(aGame player at: aGame actualTurn) changePosition: 4. 
 ]
