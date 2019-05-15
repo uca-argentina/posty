@@ -28,5 +28,6 @@ Class {
 
 { #category : #action }
 WormHole >> effectOn: aGame [ 
+	"when this effect appears the player goes back 4 blocks from its position"
 	(aGame player at: aGame actualTurn) changePosition: 4 negated 
 ]

@@ -28,5 +28,5 @@ Class {
 
 { #category : #action }
 Empty >> effectOn: aGame [ 
-	
+	"when this effect appears nothings happend"
 ]

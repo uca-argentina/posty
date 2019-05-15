@@ -45,16 +45,18 @@ Box >> effectOn: aGame [
 
 { #category : #initialization }
 Box >> initializeWithProbability: aNumber [
-
+	"Create an effect with its probability of appearence"
 	probability  := aNumber.
 ]
 
 { #category : #action }
 Box >> positionInBoard: aNumber [
+	"specify wich position takes the box in the board"
 	position := aNumber.
 ]
 
 { #category : #accessing }
 Box >> probability [ 
+	"Returns the probability of appearence"
 	^ probability .
 ]
