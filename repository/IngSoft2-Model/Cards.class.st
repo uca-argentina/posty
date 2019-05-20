@@ -1,6 +1,6 @@
 "
 Please comment me using the following template inspired by Class Responsibility Collaborator (CRC) design:
-""Testing Player Behaviour""
+""Cards of a Game""
 For the Class part:  State a one line summary. For example, ""I represent a paragraph of text"".
 
 For the Responsibility part: Three sentences about my main responsibilities - what I do, what I know.
@@ -17,25 +17,23 @@ Public API and Key Messages
  
 Internal Representation and Key Implementation Points.
 
+    Instance Variables
+	probability:		<Object>
+
 
     Implementation Points
 "
 Class {
-	#name : #PlayerTest,
-	#superclass : #TestCase,
-	#category : #'IngSoft2-Tests'
+	#name : #Cards,
+	#superclass : #Object,
+	#instVars : [
+		'probability'
+	],
+	#category : #'IngSoft2-Model'
 }
 
-{ #category : #tests }
-PlayerTest >> testAPlayerCalledJack [
-	| jack |
-	jack := Player called: 'Jack'.
-	self assert: jack name equals: 'Jack'
-]
+{ #category : #action }
+Cards >> effectOn: aGame [
 
-{ #category : #tests }
-PlayerTest >> testAPlayerCalledJackHasTwoCards [
-	| jack |
-	jack := Player called: 'Jack'.
-	self assert: jack cards equals: 'asd'
+	self subclassResponsibility 
 ]

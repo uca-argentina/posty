@@ -30,7 +30,8 @@ Class {
 	#instVars : [
 		'playerName',
 		'position',
-		'lastPosition'
+		'lastPosition',
+		'listOfCards'
 	],
 	#category : #'IngSoft2-Model'
 }
@@ -46,6 +47,12 @@ Player class >> called: aName [
 Player >> AddPositionRecord: aNumber [
 	"add to its position records a new position"
 	lastPosition add: aNumber .
+]
+
+{ #category : #description }
+Player >> cards [
+	
+	^ listOfCards 
 ]
 
 { #category : #action }
