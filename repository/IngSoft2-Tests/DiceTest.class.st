@@ -28,16 +28,7 @@ Class {
 
 { #category : #tests }
 DiceTest >> testADiceCantHaveLessThanThreeFaces [
-	self should: [ Dice withFaces: 3 ] raise: Error.
-	self should: [ Dice withFaces: 0 ] raise: Error.
-	self should: [ Dice withFaces: -1 ] raise: Error
-]
-
-{ #category : #tests }
-DiceTest >> testARandomDiceReturnsValidNumbers [
-	| aDice |
-	aDice := RandomDice withFaces: 6.
-	self assert: aDice roll > 0
+	self should: [SameFaceDice withFaces: 3 ]raise: Error.
 ]
 
 { #category : #tests }
