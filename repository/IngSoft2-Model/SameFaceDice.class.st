@@ -23,12 +23,20 @@ Internal Representation and Key Implementation Points.
 Class {
 	#name : #SameFaceDice,
 	#superclass : #Dice,
+	#instVars : [
+		'returnValue'
+	],
 	#category : #'IngSoft2-Model'
 }
+
+{ #category : #action }
+SameFaceDice >> nextRollNumber: aNumber [ 
+	returnValue := aNumber
+]
 
 { #category : #actions }
 SameFaceDice >> roll [
 	"Whenever you roll the dice it returns 4"
 
-	^ numberOfFaces
+	^ returnValue 
 ]

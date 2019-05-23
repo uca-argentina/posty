@@ -22,12 +22,11 @@ Internal Representation and Key Implementation Points.
 "
 Class {
 	#name : #SpeedUp,
-	#superclass : #Box,
+	#superclass : #Effect,
 	#category : #'IngSoft2-Model'
 }
 
 { #category : #action }
 SpeedUp >> effectOn: aGame [ 
-	"when this effect appears the player moves 4 blocks from its position"
-	(aGame player at: aGame actualTurn) changePosition: 4. 
+	aGame move: (aGame nowPlays) anAmountOfBoxes: 4
 ]

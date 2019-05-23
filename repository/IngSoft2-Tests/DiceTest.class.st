@@ -32,9 +32,10 @@ DiceTest >> testADiceCantHaveLessThanThreeFaces [
 ]
 
 { #category : #tests }
-DiceTest >> testASameFaceDiceReturnsAlwaysTheSameNumber [
+DiceTest >> testASameFaceDiceReturnsAPrefixedValue [
 	| aDice |
 	aDice := SameFaceDice withFaces: 5.
+	aDice nextRollNumber: 5.
 	self assert: aDice roll equals: 5.
 ]
 

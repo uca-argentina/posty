@@ -22,12 +22,12 @@ Internal Representation and Key Implementation Points.
 "
 Class {
 	#name : #TimeMachine,
-	#superclass : #Box,
+	#superclass : #Effect,
 	#category : #'IngSoft2-Model'
 }
 
 { #category : #action }
 TimeMachine >> effectOn: aGame [ 
 	"when this effect appears the player goes back to its last position recorded"
-	(aGame player at: aGame actualTurn) move: (aGame lastPositionOf: (aGame player at: aGame actualTurn) )
+	aGame move: (aGame nowPlays) anAmountOfBoxes: ((aGame lastDiceResultFrom: (aGame nowPlays)) negated)
 ]

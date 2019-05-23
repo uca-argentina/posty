@@ -31,17 +31,28 @@ Class {
 	#name : #Game,
 	#superclass : #Object,
 	#instVars : [
-		'numberOfSlotsPerLap',
 		'numberOfLaps',
 		'listOfPlayers',
-		'turn',
-		'board'
+		'board',
+		'turnManager',
+		'listOfPositions',
+		'listOfLastDiceResult'
 	],
 	#category : #'IngSoft2-Model'
 }
 
 { #category : #creation }
+Game class >> assertIsAPositiveNumber: aNumber [
+	aNumber > 0
+		ifFalse: [ self error: 'Invalid' ]
+	
+]
+
+{ #category : #creation }
 Game class >> withBoard: aBoard withLaps: aNumberOfLaps withPlayers: players [ 
+	self assertIsAPositiveNumber: aBoard amountOfBoxes.
+	self assertIsAPositiveNumber: aNumberOfLaps.
+	self assertIsAPositiveNumber: players size.
 	^ self new 
 		initializeWithBoard: aBoard
 		withLaps: aNumberOfLaps
@@ -49,17 +60,21 @@ Game class >> withBoard: aBoard withLaps: aNumberOfLaps withPlayers: players [
 		yourself
 ]
 
-{ #category : #description }
-Game >> actualTurn [
-	"returns which turn number has now to play"
-	^ turn
-]
-
 { #category : #asserting }
 Game >> assertGameIsOver [
-	"ask if the game is over"
 	self isOver
 		ifTrue: [ self error: 'The game has ended' ]
+]
+
+{ #category : #description }
+Game >> indexInListOf: aPlayer [
+	| indexOfPlayer |
+	indexOfPlayer := 0.
+	listOfPlayers
+		doWithIndex: [ :eachPlayer :playerIndex | 
+			eachPlayer = aPlayer
+				ifTrue: [ indexOfPlayer := playerIndex ] ].
+	^ indexOfPlayer
 ]
 
 { #category : #initialization }
@@ -68,125 +83,111 @@ Game >> initializeWithBoard: aBoard withLaps: aNumberOfLaps withPlayers: players
 	board := aBoard.
 	listOfPlayers := players.
 	numberOfLaps := aNumberOfLaps.
-	turn := 1.
+	turnManager := GameTurn withAmountOfPlayers: players size.
+	listOfPositions := OrderedCollection new.
+	listOfLastDiceResult := OrderedCollection new.
+	(1 to: players size) do: [ :eachElement | listOfPositions add: 0. listOfLastDiceResult add: 0   ]
+]
+
+{ #category : #description }
+Game >> isAPlayer: aPlayer [ 
+	^ listOfPlayers anySatisfy: [ :player | player = aPlayer ]
 ]
 
 { #category : #actions }
 Game >> isOver [
-	"ask if any player has reached the end of the game"
-	^ listOfPlayers anySatisfy: [ :player | player position > (numberOfLaps * (board amountOfBoxes)) ]
+	^ listOfPositions anySatisfy: [ :position | position > (numberOfLaps * (board amountOfBoxes)) ]
 ]
 
 { #category : #description }
 Game >> lapOf: aPlayer [ 
-	"ask the player its position to calculate in which lap it is"
-	aPlayer position < 0
-	ifTrue: [ ^-1 ]
-	ifFalse: [ ^ ((aPlayer position / board amountOfBoxes)+1) asInteger. ]
-	
-	
+	| position |
+	position := listOfPositions at: (self indexInListOf: aPlayer) .
+	^ board lapAccordingToBoard: position
 ]
 
-{ #category : #description }
-Game >> laps [
-	"returns number of laps of the game"
-	^ numberOfLaps .
-]
-
-{ #category : #description }
-Game >> lapsMade: aPlayer [
-	"ask how many laps has completed the player"
-	^ (aPlayer position / board amountOfBoxes) asInteger
-		* board amountOfBoxes 
+{ #category : #accessing }
+Game >> lastDiceResultFrom: aPlayer [
+	^ listOfLastDiceResult at: (self indexInListOf: aPlayer).
 ]
 
 { #category : #description }
 Game >> lastLapOf: aPlayer [ 
-	"ask the player its last position to calculate in which lap was"
-	^ ((aPlayer lastPosition / board amountOfBoxes) + 1) asInteger 
+	^ board lapAccordingToBoard: (self lastPositionOf: aPlayer)
 ]
 
 { #category : #description }
 Game >> lastPositionOf: aPlayer [ 
-	"ask the player its last position"
-	^ aPlayer lastPosition
+	^ board positionAccordingToBoard: ((self positionOf: aPlayer) - (self lastDiceResultFrom: aPlayer)).
 ]
 
-{ #category : #description }
-Game >> listOfTurns [
-	"ask in which order are the players"
-	^ listOfPlayers 
+{ #category : #actions }
+Game >> move: aPlayer anAmountOfBoxes: aNumber [
+	| indexOfPlayer actualPosition |
+	indexOfPlayer := self indexInListOf: aPlayer.
+	actualPosition := listOfPositions at: indexOfPlayer .
+	listOfPositions at: indexOfPlayer put: (actualPosition + aNumber).
+	listOfLastDiceResult at: indexOfPlayer put: aNumber.
 ]
 
-{ #category : #action }
+{ #category : #actions }
 Game >> newTurnWithDice: aDice [ 
-	"Picks the player that has to play according to turns and plays"
 	| thePlayer|
 	self assertGameIsOver.
-	thePlayer := listOfPlayers at: self actualTurn.
-	thePlayer AddPositionRecord: (self positionOf: thePlayer).
-	thePlayer changePosition: aDice roll.
-	(board atIndex: (self positionOf: thePlayer)) effectOn: self.
-	self updateTurn: self actualTurn + 1.
-]
-
-{ #category : #accessing }
-Game >> numberOfLaps [
-	"number of laps of the game"
-	^ numberOfLaps 
+	thePlayer := self nowPlays.
+	self move: thePlayer anAmountOfBoxes: aDice roll.
+	board doEffectOn: thePlayer in: self.
+	turnManager updateTurn.
 ]
 
 { #category : #description }
-Game >> numberOfPlayers [
-	"Returns the amount of players that are playing the game"
-
-	^ listOfPlayers size
-]
-
-{ #category : #description }
-Game >> numberOfSlotsPerLap [
-	"Return length of the board"
-	^ numberOfSlotsPerLap
-]
-
-{ #category : #description }
-Game >> player [
-	"Returns Game's players"
-	^ listOfPlayers .
+Game >> nowPlays [
+	^ listOfPlayers at: turnManager returnTurn.
 ]
 
 { #category : #description }
 Game >> positionOf: aPlayer [
-	"ask the player its position and calculates according to the game structure its location on the board"
-	aPlayer position < 0
-		ifTrue: [ ^ aPlayer position + board amountOfBoxes  ].
-	aPlayer position <= board amountOfBoxes
-		ifTrue: [ ^ aPlayer position ]
-		ifFalse: [ ^ aPlayer position - (self lapsMade: aPlayer) ]
+	| position |
+	position := listOfPositions at: (self indexInListOf: aPlayer).
+	^ board positionAccordingToBoard: position.
+	
 ]
 
 { #category : #description }
 Game >> ranking [
-	"sort players according to position so it makes a ranking"
-	^ listOfPlayers sort: [ :player1 :player2 | player1 position > player2 position ]
+	| ranking  |
+	ranking := OrderedCollection new.
+	(1 to: listOfPlayers size) do: [ :each | ranking add: (OrderedCollection with: each) ].
+	(1 to: listOfPlayers size) do: [ :each | (ranking at: each) add: (listOfPositions at: each) ].
+	ranking sort: [ :element1 :element2 | (element1 at: 2) > (element2 at: 2) ].
+	^ ranking
+]
+
+{ #category : #description }
+Game >> rankingPositionOf: aPlayer [
+	| indexOfPlayer |
+	indexOfPlayer := self indexInListOf: aPlayer.
+	self ranking doWithIndex: [ :element :index | (element at: 1) = indexOfPlayer 
+		ifTrue: [ ^ index ]].
+]
+
+{ #category : #actions }
+Game >> restOfPlayers [
+	^ listOfPlayers 
+		select: [ :player | player ~= (self nowPlays) ]
+]
+
+{ #category : #actions }
+Game >> sendAllPlayersToPosition: aPosition [
+	(1 to: listOfPositions size) do: [ :eachPosition | listOfPositions at: eachPosition put: 0 ]
 ]
 
 { #category : #description }
 Game >> steps [
-	"Return number of steps"
 	^ board amountOfBoxes
-]
-
-{ #category : #actions }
-Game >> updateTurn: aNumber [
-	"update turns according the players in the game"
-	turn := aNumber > listOfPlayers size
-		ifTrue: [ aNumber - listOfPlayers size ]
-		ifFalse: [ aNumber ]
 ]
 
 { #category : #description }
 Game >> winner [
-	"the winner is the one that is first at the ranking"
-	^ self ranking at: 1.
+	^ listOfPlayers at: ((self ranking at: 1) at: 1).
 ]

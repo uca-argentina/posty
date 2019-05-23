@@ -32,10 +32,3 @@ PlayerTest >> testAPlayerCalledJack [
 	jack := Player called: 'Jack'.
 	self assert: jack name equals: 'Jack'
 ]
-
-{ #category : #tests }
-PlayerTest >> testAPlayerCalledJackHasTwoCards [
-	| jack |
-	jack := Player called: 'Jack'.
-	self assert: jack cards equals: 'asd'
-]

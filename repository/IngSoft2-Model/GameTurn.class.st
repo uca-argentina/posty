@@ -1,6 +1,6 @@
 "
 Please comment me using the following template inspired by Class Responsibility Collaborator (CRC) design:
-""Cards of a Game""
+""Manage turns of the game""
 For the Class part:  State a one line summary. For example, ""I represent a paragraph of text"".
 
 For the Responsibility part: Three sentences about my main responsibilities - what I do, what I know.
@@ -17,23 +17,42 @@ Public API and Key Messages
  
 Internal Representation and Key Implementation Points.
 
-    Instance Variables
-	probability:		<Object>
-
 
     Implementation Points
 "
 Class {
-	#name : #Cards,
+	#name : #GameTurn,
 	#superclass : #Object,
 	#instVars : [
-		'probability'
+		'numberOfPlayers',
+		'turnNumber'
 	],
 	#category : #'IngSoft2-Model'
 }
 
-{ #category : #action }
-Cards >> effectOn: aGame [
+{ #category : #'as yet unclassified' }
+GameTurn class >> withAmountOfPlayers: aNumberOfPlayers [
+	^ self new 
+	initializeWithAmountOfPlayers: aNumberOfPlayers;
+	yourself.
+]
 
-	self subclassResponsibility 
+{ #category : #initialization }
+GameTurn >> initializeWithAmountOfPlayers: aNumberOfPlayers [
+	numberOfPlayers := aNumberOfPlayers.
+	turnNumber := 1.
+]
+
+{ #category : #action }
+GameTurn >> returnTurn [
+	^ turnNumber .
+]
+
+{ #category : #action }
+GameTurn >> updateTurn [
+	| newTurnNumber |
+	newTurnNumber := turnNumber + 1.
+	turnNumber:= newTurnNumber > numberOfPlayers
+		ifTrue: [ newTurnNumber - numberOfPlayers ]
+		ifFalse: [ newTurnNumber ]
 ]
