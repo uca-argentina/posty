@@ -55,13 +55,6 @@ Dice >> initializeWithFaces: aNumberOfFaces [
 ]
 
 { #category : #actions }
-Dice >> numberOfFaces [
-	"Return how many faces does the dice has"
-
-	^ numberOfFaces
-]
-
-{ #category : #actions }
 Dice >> roll [
 	"Abstract method so subclasses specify how the dice rolls"
 

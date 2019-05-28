@@ -36,7 +36,9 @@ Class {
 		'board',
 		'turnManager',
 		'listOfPositions',
-		'listOfLastDiceResult'
+		'listOfLastDiceResult',
+		'cardsOfEachPlayer',
+		'cards'
 	],
 	#category : #'IngSoft2-Model'
 }
@@ -49,15 +51,26 @@ Game class >> assertIsAPositiveNumber: aNumber [
 ]
 
 { #category : #creation }
-Game class >> withBoard: aBoard withLaps: aNumberOfLaps withPlayers: players [ 
+Game class >> withBoard: aBoard withLaps: aNumberOfLaps withPlayers: players with: deckOfCards [ 
 	self assertIsAPositiveNumber: aBoard amountOfBoxes.
 	self assertIsAPositiveNumber: aNumberOfLaps.
 	self assertIsAPositiveNumber: players size.
 	^ self new 
 		initializeWithBoard: aBoard
 		withLaps: aNumberOfLaps
-		withPlayers: players;
+		withPlayers: players
+		with: deckOfCards ;
 		yourself
+]
+
+{ #category : #actions }
+Game >> addCardToPlayer: aPlayer [ 
+	(cardsOfEachPlayer at: (self indexInListOf: aPlayer)) add: cards removeLast.
+]
+
+{ #category : #description }
+Game >> amountOfCardsOf: aPlayer [ 
+	^ (cardsOfEachPlayer at: (self indexInListOf: aPlayer)) size.
 ]
 
 { #category : #asserting }
@@ -77,16 +90,17 @@ Game >> indexInListOf: aPlayer [
 	^ indexOfPlayer
 ]
 
-{ #category : #initialization }
-Game >> initializeWithBoard: aBoard withLaps: aNumberOfLaps withPlayers: players [ 
-	"Creates the game with a board, players and a number of laps."
+{ #category : #initializing }
+Game >> initializeWithBoard: aBoard withLaps: aNumberOfLaps withPlayers: players with: deckOfCards [ 
 	board := aBoard.
 	listOfPlayers := players.
 	numberOfLaps := aNumberOfLaps.
 	turnManager := GameTurn withAmountOfPlayers: players size.
 	listOfPositions := OrderedCollection new.
 	listOfLastDiceResult := OrderedCollection new.
-	(1 to: players size) do: [ :eachElement | listOfPositions add: 0. listOfLastDiceResult add: 0   ]
+	cardsOfEachPlayer := OrderedCollection new.
+	cards := deckOfCards .
+	(1 to: players size) do: [ :eachElement | listOfPositions add: 0. listOfLastDiceResult add: 0 . cardsOfEachPlayer add: (OrderedCollection with: 1 with: 2)   ]
 ]
 
 { #category : #description }

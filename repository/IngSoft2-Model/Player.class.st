@@ -28,10 +28,7 @@ Class {
 	#name : #Player,
 	#superclass : #Object,
 	#instVars : [
-		'playerName',
-		'position',
-		'lastPosition',
-		'listOfCards'
+		'playerName'
 	],
 	#category : #'IngSoft2-Model'
 }
@@ -48,8 +45,6 @@ Player >> initializeWithName: aName [
 	"Create a player with a name and locate him at the begining of the game"
 
 	playerName := aName.
-	position := 0.
-	lastPosition := OrderedCollection with: 0.
 ]
 
 { #category : #description }

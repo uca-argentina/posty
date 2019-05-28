@@ -41,7 +41,9 @@ Class {
 		'effectFour',
 		'effectFive',
 		'wormHole',
-		'effectSix'
+		'effectSix',
+		'pickCard',
+		'effectSeven'
 	],
 	#category : #'IngSoft2-Tests'
 }
@@ -55,19 +57,22 @@ BoardTest >> setUp [
 	timeMachine := TimeMachine new.
 	empty := Empty new.
 	wormHole := WormHole new.
+	pickCard := Card new.
 	effectOne := BoxWithProbability effect: atomicBomb  withProbability: 0.02.
 	effectTwo := BoxWithProbability effect: moonWalk withProbability: 0.05.
 	effectThree := BoxWithProbability effect: speedUp  withProbability: 0.15.
 	effectFour := BoxWithProbability effect: timeMachine  withProbability: 0.08.
-	effectFive := BoxWithProbability effect: empty  withProbability: 0.55.
+	effectFive := BoxWithProbability effect: empty  withProbability: 0.45.
 	effectSix := BoxWithProbability effect: wormHole  withProbability: 0.15.
+	effectSeven := BoxWithProbability effect: pickCard withProbability: 0.10.
 	boxes := OrderedCollection with: effectOne with: effectTwo with: effectThree with: effectFour with: effectFive with: effectSix.
-	aBoard := Board with: boxes.
+	boxes add: effectSeven .
+	aBoard:= Board with: boxes.
 ]
 
 { #category : #tests }
 BoardTest >> testAmountOfBoxes [
-	self assert: aBoard amountOfBoxes equals: 6.
+	self assert: aBoard amountOfBoxes equals: 7.
 	
 ]
 

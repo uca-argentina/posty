@@ -36,7 +36,9 @@ Class {
 		'threePlayerGame',
 		'twoPlayerGame',
 		'diceOne',
-		'diceTwo'
+		'diceTwo',
+		'card',
+		'deckOfCards'
 	],
 	#category : #'IngSoft2-Tests'
 }
@@ -65,14 +67,16 @@ GameTest >> setUp [
 	diceOne nextRollNumber: 4.
 	diceTwo := SameFaceDice withFaces: 5.
 	empty := Empty new.
-	boxes := OrderedCollection with: empty with: empty with: empty with: empty with:empty with: empty.
+	card := Card new.
+	boxes := OrderedCollection with: empty with: empty with: empty with: empty with:card with: empty.
 	boxes add: empty.
 	boxes add: empty.
 	boxes add: empty.
 	boxes add: empty.
 	aBoard := Board with: boxes.
-	twoPlayerGame := Game withBoard: aBoard withLaps: 2  withPlayers:  players.
-	threePlayerGame := Game withBoard: aBoard withLaps: 5  withPlayers:  threePlayers.
+	deckOfCards := OrderedCollection with: 1 with: 2 with: 3.
+	twoPlayerGame := Game withBoard: aBoard withLaps: 2  withPlayers:  players with: deckOfCards.
+	threePlayerGame := Game withBoard: aBoard withLaps: 5  withPlayers:  threePlayers with: deckOfCards.
 ]
 
 { #category : #tests }
@@ -80,6 +84,12 @@ GameTest >> testAfterJackPlaysItsBenTurn [
 	self assert: twoPlayerGame nowPlays equals: jack.
 	twoPlayerGame newTurnWithDice: diceOne.
 	self assert: twoPlayerGame nowPlays equals: ben.
+]
+
+{ #category : #tests }
+GameTest >> testAtTheBeginingEachPlayerHasTwoCards [
+	self assert: (twoPlayerGame amountOfCardsOf: jack) equals: 2.
+	self assert: (twoPlayerGame amountOfCardsOf: ben) equals: 2.
 ]
 
 { #category : #tests }
@@ -147,6 +157,15 @@ GameTest >> testPlayerCompletesALap [
 	diceOne nextRollNumber: 6.
 	twoPlayerGame newTurnWithDice: diceOne.
 	self assertPosition: 1 andLap: 1  for: jack  in: twoPlayerGame. 
+]
+
+{ #category : #tests }
+GameTest >> testPlayerGetsACardInCardBox [
+	diceOne nextRollNumber: 5.
+	twoPlayerGame newTurnWithDice: diceOne.
+	self assert: (twoPlayerGame amountOfCardsOf: jack) equals: 3.
+	
+	
 ]
 
 { #category : #tests }

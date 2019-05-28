@@ -33,7 +33,8 @@ Class {
 		'timeMachine',
 		'wormHole',
 		'diceOne',
-		'empty'
+		'empty',
+		'deckOfCards'
 	],
 	#category : #'IngSoft2-Tests'
 }
@@ -57,6 +58,7 @@ BoxTest >> setUp [
 	timeMachine := TimeMachine new.
 	empty := Empty new.
 	wormHole := WormHole new.
+	deckOfCards := OrderedCollection new.
 ]
 
 { #category : #tests }
@@ -64,7 +66,7 @@ BoxTest >> testAtomicBomb [
 	| atomicBombAndEmpty twoPlayerGame aBoard |
 	atomicBombAndEmpty := OrderedCollection with: empty with: empty with: empty with: atomicBomb with: empty.
 	aBoard := Board with: atomicBombAndEmpty.
-	twoPlayerGame := Game withBoard: aBoard withLaps: 1 withPlayers: players .
+	twoPlayerGame := Game withBoard: aBoard withLaps: 1 withPlayers: players with: deckOfCards .
 	diceOne nextRollNumber: 2.
 	twoPlayerGame newTurnWithDice: diceOne.
 	self assertPosition: 2 andLap: 0 of: jack in: twoPlayerGame.
@@ -82,7 +84,7 @@ BoxTest >> testMoonWalk [
 	| moonwalkAndEmpty twoPlayerGame aBoard |
 	moonwalkAndEmpty := OrderedCollection with: empty with: empty with: empty with: moonWalk with: empty.
 	aBoard := Board with: moonwalkAndEmpty.
-	twoPlayerGame := Game withBoard: aBoard withLaps: 1 withPlayers: players .
+	twoPlayerGame := Game withBoard: aBoard withLaps: 1 withPlayers: players with: deckOfCards .
 	diceOne nextRollNumber: 2.
 	twoPlayerGame newTurnWithDice: diceOne.
 	self assertPosition: 2 andLap: 0 of: jack in: twoPlayerGame.
@@ -99,7 +101,7 @@ BoxTest >> testSpeedUp [
 	| speedUpAndEmpty twoPlayerGame aBoard |
 	speedUpAndEmpty := OrderedCollection with: empty with: empty with: empty with: speedUp with: empty.
 	aBoard := Board with: speedUpAndEmpty.
-	twoPlayerGame := Game withBoard: aBoard withLaps: 1 withPlayers: players .
+	twoPlayerGame := Game withBoard: aBoard withLaps: 1 withPlayers: players with: deckOfCards .
 	diceOne nextRollNumber: 2.
 	twoPlayerGame newTurnWithDice: diceOne.
 	self assertPosition: 2 andLap: 0 of: jack in: twoPlayerGame.
@@ -115,7 +117,7 @@ BoxTest >> testTimeMachine [
 	| timeMachineAndEmpty twoPlayerGame aBoard |
 	timeMachineAndEmpty := OrderedCollection with: empty with: empty with: timeMachine with: empty with: empty.
 	aBoard := Board with: timeMachineAndEmpty.
-	twoPlayerGame := Game withBoard: aBoard withLaps: 3 withPlayers: players.
+	twoPlayerGame := Game withBoard: aBoard withLaps: 3 withPlayers: players with: deckOfCards.
 	diceOne nextRollNumber: 4.
 	twoPlayerGame newTurnWithDice: diceOne.
 	diceOne nextRollNumber: 5.
@@ -136,7 +138,7 @@ BoxTest >> testVacio [
 	| allEmpty twoPlayerGame aBoard |
 	allEmpty := OrderedCollection with: empty with: empty with: empty with: empty with: empty.
 	aBoard := Board with: allEmpty.
-	twoPlayerGame := Game withBoard: aBoard withLaps: 1 withPlayers: players .
+	twoPlayerGame := Game withBoard: aBoard withLaps: 1 withPlayers: players with: deckOfCards.
 	diceOne nextRollNumber: 4.
 	twoPlayerGame newTurnWithDice: diceOne.
 	self assertPosition: 4 andLap: 0 of: jack in: twoPlayerGame.
@@ -152,7 +154,7 @@ BoxTest >> testWormHole [
 	| wormHoleAndEmpty twoPlayerGame aBoard |
 	wormHoleAndEmpty := OrderedCollection with: empty with: empty with: empty with: empty with: wormHole.
 	aBoard := Board with: wormHoleAndEmpty.
-	twoPlayerGame := Game withBoard: aBoard withLaps: 1 withPlayers: players .
+	twoPlayerGame := Game withBoard: aBoard withLaps: 1 withPlayers: players with: deckOfCards.
 	diceOne nextRollNumber: 2.
 	twoPlayerGame newTurnWithDice: diceOne.
 	diceOne nextRollNumber: 4.

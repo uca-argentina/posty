@@ -30,7 +30,7 @@ Class {
 	#category : #'IngSoft2-Model'
 }
 
-{ #category : #'as yet unclassified' }
+{ #category : #creation }
 GameTurn class >> withAmountOfPlayers: aNumberOfPlayers [
 	^ self new 
 	initializeWithAmountOfPlayers: aNumberOfPlayers;

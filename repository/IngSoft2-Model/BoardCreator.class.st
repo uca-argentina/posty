@@ -55,7 +55,6 @@ BoardCreator >> amountOfBoxes [
 
 { #category : #actions }
 BoardCreator >> createBoard [
-	"Pick an element from vector"
 	| random |
 	random := Random new.
 	board := (1 to: size)
@@ -70,10 +69,13 @@ BoardCreator >> createListOfProbabilites [
 { #category : #actions }
 BoardCreator >> createVector [
 	"Creates vector according Metodo De La Urna Algorithm"
+
 	"For every exisiting effect add it (its probability * 100) times to vector array"
-	(1 to: listOfEffects size) collect: [ :element | 
-	(1 to: (self getEffectProbability: element)) collect: [ :index | vector add: (self getEffectAt: 1) ]].
-	
+
+	(1 to: listOfEffects size)
+		do: [ :element | 
+			(1 to: (self getEffectProbability: element))
+				do: [ :index | vector add: (self getEffectAt: element) ] ]
 ]
 
 { #category : #accessing }
@@ -110,12 +112,6 @@ BoardCreator >> initializeWithEffects: effects size: aNumberOfBoxes [
 BoardCreator >> probability [
 	"return list of probabilities of every effect"
 	^ listOfProbabilities .
-]
-
-{ #category : #accessing }
-BoardCreator >> theResult [
-	"returns the board created according the algorithm"
-	^ board
 ]
 
 { #category : #accessing }
