@@ -74,16 +74,16 @@ GameTest >> setUp [
 	boxes add: empty.
 	boxes add: empty.
 	aBoard := Board with: boxes.
-	deckOfCards := OrderedCollection with: 1 with: 2 with: 3.
+	deckOfCards := OrderedCollection new.
 	twoPlayerGame := Game withBoard: aBoard withLaps: 2  withPlayers:  players with: deckOfCards.
 	threePlayerGame := Game withBoard: aBoard withLaps: 5  withPlayers:  threePlayers with: deckOfCards.
 ]
 
 { #category : #tests }
 GameTest >> testAfterJackPlaysItsBenTurn [
-	self assert: twoPlayerGame nowPlays equals: jack.
+	self assert: twoPlayerGame currentPlayer equals: jack.
 	twoPlayerGame newTurnWithDice: diceOne.
-	self assert: twoPlayerGame nowPlays equals: ben.
+	self assert: twoPlayerGame currentPlayer equals: ben.
 ]
 
 { #category : #tests }
@@ -116,9 +116,9 @@ GameTest >> testJackAndBenArePlayersOfTheGame [
 { #category : #tests }
 GameTest >> testJackPlaysAndChangePosition [
 	self assertPosition: 0 andLap: 0  for: jack  in: twoPlayerGame. 
-	diceOne nextRollNumber: 5.
+	diceOne nextRollNumber: 4.
 	twoPlayerGame newTurnWithDice: diceOne.
-	self assertPosition: 5 andLap: 0  for: jack  in: twoPlayerGame. 
+	self assertPosition: 4 andLap: 0  for: jack  in: twoPlayerGame. 
 ]
 
 { #category : #tests }

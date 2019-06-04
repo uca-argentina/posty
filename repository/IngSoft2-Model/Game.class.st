@@ -38,7 +38,8 @@ Class {
 		'listOfPositions',
 		'listOfLastDiceResult',
 		'cardsOfEachPlayer',
-		'cards'
+		'cards',
+		'positionManager'
 	],
 	#category : #'IngSoft2-Model'
 }
@@ -65,7 +66,7 @@ Game class >> withBoard: aBoard withLaps: aNumberOfLaps withPlayers: players wit
 
 { #category : #actions }
 Game >> addCardToPlayer: aPlayer [ 
-	(cardsOfEachPlayer at: (self indexInListOf: aPlayer)) add: cards removeLast.
+	(cardsOfEachPlayer at: (self indexInListOf: aPlayer)) add: 3.
 ]
 
 { #category : #description }
@@ -77,6 +78,20 @@ Game >> amountOfCardsOf: aPlayer [
 Game >> assertGameIsOver [
 	self isOver
 		ifTrue: [ self error: 'The game has ended' ]
+]
+
+{ #category : #initializing }
+Game >> createPositionRecordsFor: aListOfPlayers [
+	positionManager := Dictionary new.
+	1 to: (aListOfPlayers size) do: [ :indexOfPlayer | 
+		positionManager
+			at: (aListOfPlayers at: indexOfPlayer)
+			put: (PositionHandler withInitialPosition: 0) ]
+]
+
+{ #category : #description }
+Game >> currentPlayer [
+	^ listOfPlayers  at: turnManager returnTurn.
 ]
 
 { #category : #description }
@@ -93,107 +108,93 @@ Game >> indexInListOf: aPlayer [
 { #category : #initializing }
 Game >> initializeWithBoard: aBoard withLaps: aNumberOfLaps withPlayers: players with: deckOfCards [ 
 	board := aBoard.
-	listOfPlayers := players.
 	numberOfLaps := aNumberOfLaps.
-	turnManager := GameTurn withAmountOfPlayers: players size.
-	listOfPositions := OrderedCollection new.
-	listOfLastDiceResult := OrderedCollection new.
+	turnManager := TurnManager withAmountOfPlayers: players size.
+	listOfPlayers := players.
+	self createPositionRecordsFor: players.
 	cardsOfEachPlayer := OrderedCollection new.
 	cards := deckOfCards .
-	(1 to: players size) do: [ :eachElement | listOfPositions add: 0. listOfLastDiceResult add: 0 . cardsOfEachPlayer add: (OrderedCollection with: 1 with: 2)   ]
+	1 to: players size do: [ :eachElement | cardsOfEachPlayer add: (OrderedCollection with: 1 with: 2)   ].
+	"self createCardsOfEachPlayerFor: players."
 ]
 
 { #category : #description }
 Game >> isAPlayer: aPlayer [ 
-	^ listOfPlayers anySatisfy: [ :player | player = aPlayer ]
+	^ (positionManager keys) anySatisfy: [ :player | player = aPlayer ]
 ]
 
 { #category : #actions }
 Game >> isOver [
-	^ listOfPositions anySatisfy: [ :position | position > (numberOfLaps * (board amountOfBoxes)) ]
+	^ (positionManager values) anySatisfy: [ :eachPositionManager | eachPositionManager position > (numberOfLaps * (board amountOfBoxes)) ]
 ]
 
 { #category : #description }
 Game >> lapOf: aPlayer [ 
-	| position |
-	position := listOfPositions at: (self indexInListOf: aPlayer) .
-	^ board lapAccordingToBoard: position
-]
-
-{ #category : #accessing }
-Game >> lastDiceResultFrom: aPlayer [
-	^ listOfLastDiceResult at: (self indexInListOf: aPlayer).
+	^ board lapAccordingToBoard: (positionManager at: aPlayer) position .
 ]
 
 { #category : #description }
 Game >> lastLapOf: aPlayer [ 
-	^ board lapAccordingToBoard: (self lastPositionOf: aPlayer)
+	^ board lapAccordingToBoard: (positionManager at: aPlayer) lastPosition
 ]
 
 { #category : #description }
 Game >> lastPositionOf: aPlayer [ 
-	^ board positionAccordingToBoard: ((self positionOf: aPlayer) - (self lastDiceResultFrom: aPlayer)).
+	^ board positionAccordingToBoard: (positionManager at: aPlayer) lastPosition.
 ]
 
 { #category : #actions }
 Game >> move: aPlayer anAmountOfBoxes: aNumber [
-	| indexOfPlayer actualPosition |
-	indexOfPlayer := self indexInListOf: aPlayer.
-	actualPosition := listOfPositions at: indexOfPlayer .
-	listOfPositions at: indexOfPlayer put: (actualPosition + aNumber).
-	listOfLastDiceResult at: indexOfPlayer put: aNumber.
+	(positionManager at: aPlayer) addNewRecord: aNumber.
 ]
 
 { #category : #actions }
 Game >> newTurnWithDice: aDice [ 
 	| thePlayer|
 	self assertGameIsOver.
-	thePlayer := self nowPlays.
+	thePlayer := self currentPlayer.
 	self move: thePlayer anAmountOfBoxes: aDice roll.
 	board doEffectOn: thePlayer in: self.
 	turnManager updateTurn.
 ]
 
 { #category : #description }
-Game >> nowPlays [
-	^ listOfPlayers at: turnManager returnTurn.
-]
-
-{ #category : #description }
 Game >> positionOf: aPlayer [
 	| position |
-	position := listOfPositions at: (self indexInListOf: aPlayer).
+	position := (positionManager at: aPlayer) position.
 	^ board positionAccordingToBoard: position.
 	
 ]
 
 { #category : #description }
 Game >> ranking [
-	| ranking  |
+	| ranking sorted|
 	ranking := OrderedCollection new.
-	(1 to: listOfPlayers size) do: [ :each | ranking add: (OrderedCollection with: each) ].
-	(1 to: listOfPlayers size) do: [ :each | (ranking at: each) add: (listOfPositions at: each) ].
-	ranking sort: [ :element1 :element2 | (element1 at: 2) > (element2 at: 2) ].
+	sorted := (positionManager values) sort: [ :element1 :element2 | element1 position > element2 position].
+	1 to: (positionManager size) do: [ :each | ranking add: (positionManager keyAtValue: (sorted at: each)) ].
 	^ ranking
 ]
 
 { #category : #description }
 Game >> rankingPositionOf: aPlayer [
-	| indexOfPlayer |
-	indexOfPlayer := self indexInListOf: aPlayer.
-	self ranking doWithIndex: [ :element :index | (element at: 1) = indexOfPlayer 
+	self ranking doWithIndex: [ :element :index | element = aPlayer 
 		ifTrue: [ ^ index ]].
 ]
 
 { #category : #actions }
 Game >> restOfPlayers [
-	^ listOfPlayers 
-		select: [ :player | player ~= (self nowPlays) ]
+	^ (positionManager keys )
+		select: [ :player | player ~= (self currentPlayer) ]
 ]
 
 { #category : #actions }
 Game >> sendAllPlayersToPosition: aPosition [
-	(1 to: listOfPositions size) do: [ :eachPosition | listOfPositions at: eachPosition put: 0 ]
+	1 to: (positionManager size) do: [ :each |  (positionManager values at: each) moveToZero ]
+]
+
+{ #category : #actions }
+Game >> sendToLastPosition: aPlayer [
+	(positionManager at: aPlayer) deleteLastRecord.
 ]
 
 { #category : #description }
@@ -203,5 +204,5 @@ Game >> steps [
 
 { #category : #description }
 Game >> winner [
-	^ listOfPlayers at: ((self ranking at: 1) at: 1).
+	^ self ranking at: 1.
 ]

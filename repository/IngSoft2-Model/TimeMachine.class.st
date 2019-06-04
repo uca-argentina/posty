@@ -28,6 +28,5 @@ Class {
 
 { #category : #action }
 TimeMachine >> effectOn: aGame [ 
-	"when this effect appears the player goes back to its last position recorded"
-	aGame move: (aGame nowPlays) anAmountOfBoxes: ((aGame lastDiceResultFrom: (aGame nowPlays)) negated)
+	aGame sendToLastPosition: (aGame currentPlayer )
 ]

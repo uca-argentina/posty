@@ -21,7 +21,7 @@ Internal Representation and Key Implementation Points.
     Implementation Points
 "
 Class {
-	#name : #GameTurn,
+	#name : #TurnManager,
 	#superclass : #Object,
 	#instVars : [
 		'numberOfPlayers',
@@ -31,25 +31,25 @@ Class {
 }
 
 { #category : #creation }
-GameTurn class >> withAmountOfPlayers: aNumberOfPlayers [
+TurnManager class >> withAmountOfPlayers: aNumberOfPlayers [
 	^ self new 
 	initializeWithAmountOfPlayers: aNumberOfPlayers;
 	yourself.
 ]
 
 { #category : #initialization }
-GameTurn >> initializeWithAmountOfPlayers: aNumberOfPlayers [
+TurnManager >> initializeWithAmountOfPlayers: aNumberOfPlayers [
 	numberOfPlayers := aNumberOfPlayers.
 	turnNumber := 1.
 ]
 
 { #category : #action }
-GameTurn >> returnTurn [
+TurnManager >> returnTurn [
 	^ turnNumber .
 ]
 
 { #category : #action }
-GameTurn >> updateTurn [
+TurnManager >> updateTurn [
 	| newTurnNumber |
 	newTurnNumber := turnNumber + 1.
 	turnNumber:= newTurnNumber > numberOfPlayers

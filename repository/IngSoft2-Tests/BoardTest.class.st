@@ -66,7 +66,7 @@ BoardTest >> setUp [
 	effectSix := BoxWithProbability effect: wormHole  withProbability: 0.15.
 	effectSeven := BoxWithProbability effect: pickCard withProbability: 0.10.
 	boxes := OrderedCollection with: effectOne with: effectTwo with: effectThree with: effectFour with: effectFive with: effectSix.
-	boxes add: effectSeven .
+	boxes add: effectSeven.
 	aBoard:= Board with: boxes.
 ]
 

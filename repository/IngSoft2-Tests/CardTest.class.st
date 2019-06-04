@@ -23,40 +23,5 @@ Internal Representation and Key Implementation Points.
 Class {
 	#name : #CardTest,
 	#superclass : #TestCase,
-	#instVars : [
-		'overload',
-		'speed',
-		'acceleration',
-		'cancellation',
-		'redo',
-		'repeat',
-		'cardOne',
-		'cardTwo',
-		'cardThree',
-		'cardFour',
-		'cardFive',
-		'cardSix',
-		'cardsEffects',
-		'deckOfCards'
-	],
 	#category : #'IngSoft2-Tests'
 }
-
-{ #category : #running }
-CardTest >> setUp [
-	super setUp.
-	overload := OverLoad new.
-	speed := SpeedCard new.
-	acceleration := Acceleration new.
-	cancellation := Cancellation new.
-	redo := Redo new.
-	repeat := Repeat new.
-	cardOne := BoxWithProbability effect: overload  withProbability: 0.166.
-	cardTwo := BoxWithProbability effect: speed withProbability: 0.166.
-	cardThree := BoxWithProbability effect: acceleration  withProbability: 0.166.
-	cardFour := BoxWithProbability effect: cancellation  withProbability: 0.166.
-	cardFive := BoxWithProbability effect: redo  withProbability: 0.166.
-	cardSix := BoxWithProbability effect: repeat  withProbability: 0.17.
-	cardsEffects := OrderedCollection with: cardOne with: cardTwo with: cardThree with: cardFour with: cardFive with: cardSix.
-	deckOfCards := BoardCreator with: cardsEffects size: 50.
-]

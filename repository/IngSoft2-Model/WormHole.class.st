@@ -28,5 +28,5 @@ Class {
 
 { #category : #action }
 WormHole >> effectOn: aGame [ 
-	aGame move: (aGame nowPlays) anAmountOfBoxes: (4 negated)
+	aGame move: (aGame currentPlayer) anAmountOfBoxes: (4 negated)
 ]
