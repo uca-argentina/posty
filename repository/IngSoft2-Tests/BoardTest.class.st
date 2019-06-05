@@ -57,7 +57,7 @@ BoardTest >> setUp [
 	timeMachine := TimeMachine new.
 	empty := Empty new.
 	wormHole := WormHole new.
-	pickCard := Card new.
+	pickCard := Cards new.
 	effectOne := BoxWithProbability effect: atomicBomb  withProbability: 0.02.
 	effectTwo := BoxWithProbability effect: moonWalk withProbability: 0.05.
 	effectThree := BoxWithProbability effect: speedUp  withProbability: 0.15.

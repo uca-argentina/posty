@@ -39,6 +39,7 @@ Class {
 		'listOfLastDiceResult',
 		'cardsOfEachPlayer',
 		'cards',
+		'cardsInPlay',
 		'positionManager'
 	],
 	#category : #'IngSoft2-Model'
@@ -78,6 +79,17 @@ Game >> amountOfCardsOf: aPlayer [
 Game >> assertGameIsOver [
 	self isOver
 		ifTrue: [ self error: 'The game has ended' ]
+]
+
+{ #category : #accessing }
+Game >> cardsInPlay [
+
+^cardsInPlay 
+]
+
+{ #category : #accessing }
+Game >> cardsOfEachPlayer [
+	^cardsOfEachPlayer
 ]
 
 { #category : #initializing }
@@ -145,7 +157,7 @@ Game >> lastPositionOf: aPlayer [
 
 { #category : #actions }
 Game >> move: aPlayer anAmountOfBoxes: aNumber [
-	(positionManager at: aPlayer) addNewRecord: aNumber.
+	(positionManager at: aPlayer) addNewRecord: aNumber 
 ]
 
 { #category : #actions }
@@ -179,6 +191,13 @@ Game >> ranking [
 Game >> rankingPositionOf: aPlayer [
 	self ranking doWithIndex: [ :element :index | element = aPlayer 
 		ifTrue: [ ^ index ]].
+]
+
+{ #category : #removing }
+Game >> removeCard: aCard [
+
+	(self cardsInPlay includes: aCard)
+	ifTrue: [ self cardsInPlay includes: aCard ]
 ]
 
 { #category : #actions }

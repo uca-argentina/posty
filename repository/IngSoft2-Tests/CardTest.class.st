@@ -23,5 +23,41 @@ Internal Representation and Key Implementation Points.
 Class {
 	#name : #CardTest,
 	#superclass : #TestCase,
+	#instVars : [
+		'players',
+		'jack',
+		'ben',
+		'theGame',
+		'empty',
+		'boxes',
+		'aBoard',
+		'threePlayerGame',
+		'twoPlayerGame',
+		'diceOne',
+		'diceTwo',
+		'card',
+		'deckOfCards'
+	],
 	#category : #'IngSoft2-Tests'
 }
+
+{ #category : #running }
+CardTest >> setUp [
+	super setUp.
+	jack := Player called: 'Jack'.
+	ben := Player called: 'Ben'.
+	players := OrderedCollection with: jack with: ben.
+	diceOne := SameFaceDice withFaces: 4.
+	diceOne nextRollNumber: 4.
+	diceTwo := SameFaceDice withFaces: 5.
+	empty := Empty new.
+	card := Card new.
+	boxes := OrderedCollection with: empty with: empty with: empty with: empty with:card with: empty.
+	boxes add: empty.
+	boxes add: empty.
+	boxes add: empty.
+	boxes add: empty.
+	aBoard := Board with: boxes.
+	deckOfCards := OrderedCollection new.
+	twoPlayerGame := Game withBoard: aBoard withLaps: 2  withPlayers:  players with: deckOfCards.
+]

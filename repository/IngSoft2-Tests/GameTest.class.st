@@ -163,7 +163,8 @@ GameTest >> testPlayerCompletesALap [
 GameTest >> testPlayerGetsACardInCardBox [
 	diceOne nextRollNumber: 5.
 	twoPlayerGame newTurnWithDice: diceOne.
-	self assert: (twoPlayerGame amountOfCardsOf: jack) equals: 3.
+	jack usesTheCard: 2 on: twoPlayerGame.
+	self assert: (twoPlayerGame amountOfCardsOf: jack) equals: 2.
 	
 	
 ]
@@ -191,6 +192,16 @@ GameTest >> testPlayerPlaysWithDifferentDices [
 	twoPlayerGame newTurnWithDice: diceOne.
 	self assertPosition: 1 andLap: 1 for: jack in: twoPlayerGame.
 	self assertPosition: 9 andLap: 0 for: ben in: twoPlayerGame.
+]
+
+{ #category : #tests }
+GameTest >> testPlayerUsesACardAndHaveOneLess [
+	diceOne nextRollNumber: 5.
+	twoPlayerGame newTurnWithDice: diceOne.
+	jack usesTheCard: 2 on: twoPlayerGame.
+	self assert: (twoPlayerGame amountOfCardsOf: jack) equals: 2.
+	
+	
 ]
 
 { #category : #tests }
