@@ -97,6 +97,12 @@ Game >> assertGameIsOver [
 		ifTrue: [ self error: 'The game has ended' ]
 ]
 
+{ #category : #asserting }
+Game >> assertIsTheTurnOf: aPlayer [
+	aPlayer = self currentPlayer
+		ifFalse: [ self error: 'Not your turn' ]
+]
+
 { #category : #creation }
 Game >> createCardsOfEachPlayerFor: aListOfPlayers [
 	cardsInHandOfEachPlayer := Dictionary new.
@@ -243,24 +249,28 @@ Game >> steps [
 ]
 
 { #category : #'ways to use cards' }
-Game >> thePlayer: aPlayer usesTheCard: aCard [ 
+Game >> thePlayer: aPlayer usesTheCard: aCard [
+	self assertIsTheTurnOf: aPlayer. 
 	(cardsInHandOfEachPlayer at: aPlayer) remove: aCard. 
 ]
 
 { #category : #'ways to use cards' }
 Game >> thePlayer: aPlayer wantsToUseTheCard: anEffect [ 
+	self assertIsTheTurnOf: aPlayer.
 	self thePlayer: aPlayer usesTheCard: anEffect.
 	self applyEffectToAll: anEffect.
 ]
 
 { #category : #'ways to use cards' }
 Game >> thePlayer: aPlayer wantsToUseTheCard: anEffect on: anotherEffect [ 
+	self assertIsTheTurnOf: aPlayer.
 	self thePlayer: aPlayer usesTheCard: anEffect . 
 	permanentCards valuesDo: [ :effect | effect remove: anotherEffect ]
 ]
 
 { #category : #'ways to use cards' }
 Game >> thePlayer: aPlayer wantsToUseTheCard: anEffect with: anotherPlayer [ 
+	self assertIsTheTurnOf: aPlayer.
 	self thePlayer: aPlayer usesTheCard: anEffect.
 	self applyEffect: anEffect to: anotherPlayer.
 	
@@ -268,6 +278,7 @@ Game >> thePlayer: aPlayer wantsToUseTheCard: anEffect with: anotherPlayer [
 
 { #category : #'ways to use cards' }
 Game >> thePlayer: aPlayer willHaveTheCards: aCollection [ 
+	self assertIsTheTurnOf: aPlayer.
 	cardsInHandOfEachPlayer at: aPlayer put: aCollection.
 ]
 
