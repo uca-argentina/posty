@@ -193,6 +193,7 @@ GameTest >> testPlayerUsesACardAndHaveOneLess [
 	diceOne nextRollNumber: 5.
 	twoPlayerGame newTurnWithDice: diceOne.
 	self assert: (twoPlayerGame amountOfCardsOf: jack) equals: 3.
+	twoPlayerGame newTurnWithDice: diceOne.
 	twoPlayerGame thePlayer: jack usesTheCard: theBlanckCard.
 	self assert: (twoPlayerGame amountOfCardsOf: jack) equals: 2.
 	

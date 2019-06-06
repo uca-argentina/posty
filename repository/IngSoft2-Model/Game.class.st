@@ -278,7 +278,6 @@ Game >> thePlayer: aPlayer wantsToUseTheCard: anEffect with: anotherPlayer [
 
 { #category : #'ways to use cards' }
 Game >> thePlayer: aPlayer willHaveTheCards: aCollection [ 
-	self assertIsTheTurnOf: aPlayer.
 	cardsInHandOfEachPlayer at: aPlayer put: aCollection.
 ]
 
