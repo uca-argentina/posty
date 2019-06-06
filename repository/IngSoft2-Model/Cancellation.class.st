@@ -26,8 +26,7 @@ Class {
 	#category : #'IngSoft2-Model'
 }
 
-{ #category : #actions }
-Cancellation >> effectOn: aGame remove: aCard [
-
-	aGame removeCard: aCard
+{ #category : #action }
+Cancellation >> effect [ 
+	^ 0.
 ]

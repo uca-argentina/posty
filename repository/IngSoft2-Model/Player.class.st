@@ -52,12 +52,3 @@ Player >> name [
 	"return player name"
 	^ playerName 
 ]
-
-{ #category : #actions }
-Player >> usesTheCard: aCard on: aGame [
-
-	((aGame cardsOfEachPlayer at: (aGame indexInListOf: self)) includes: aCard)
-	ifTrue: [ 
-		(aGame cardsOfEachPlayer at: (aGame indexInListOf: self)) remove: aCard
-		 ]
-]

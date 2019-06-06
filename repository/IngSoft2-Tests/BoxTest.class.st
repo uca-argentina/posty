@@ -34,7 +34,9 @@ Class {
 		'wormHole',
 		'diceOne',
 		'empty',
-		'deckOfCards'
+		'deckOfCards',
+		'theBlanckCard',
+		'theNoEffectCards'
 	],
 	#category : #'IngSoft2-Tests'
 }
@@ -58,7 +60,9 @@ BoxTest >> setUp [
 	timeMachine := TimeMachine new.
 	empty := Empty new.
 	wormHole := WormHole new.
-	deckOfCards := OrderedCollection new.
+	theBlanckCard := CardWithNoEffect new.
+	theNoEffectCards := OrderedCollection with: theBlanckCard.
+	deckOfCards := DeckOfCards withEffects: theNoEffectCards .
 ]
 
 { #category : #tests }

@@ -26,8 +26,7 @@ Class {
 	#category : #'IngSoft2-Model'
 }
 
-{ #category : #actions }
-Cards >> effectOn: aGame [ 
-
-self subclassResponsibility
+{ #category : #action }
+Cards >> effect [ 
+	self subclassResponsibility 
 ]

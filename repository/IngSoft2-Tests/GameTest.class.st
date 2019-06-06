@@ -38,7 +38,9 @@ Class {
 		'diceOne',
 		'diceTwo',
 		'card',
-		'deckOfCards'
+		'deckOfCards',
+		'theBlanckCard',
+		'theNoEffectCards'
 	],
 	#category : #'IngSoft2-Tests'
 }
@@ -74,7 +76,9 @@ GameTest >> setUp [
 	boxes add: empty.
 	boxes add: empty.
 	aBoard := Board with: boxes.
-	deckOfCards := OrderedCollection new.
+	theBlanckCard := CardWithNoEffect new.
+	theNoEffectCards := OrderedCollection with: theBlanckCard.
+	deckOfCards := DeckOfCards withEffects: theNoEffectCards .
 	twoPlayerGame := Game withBoard: aBoard withLaps: 2  withPlayers:  players with: deckOfCards.
 	threePlayerGame := Game withBoard: aBoard withLaps: 5  withPlayers:  threePlayers with: deckOfCards.
 ]
@@ -160,16 +164,6 @@ GameTest >> testPlayerCompletesALap [
 ]
 
 { #category : #tests }
-GameTest >> testPlayerGetsACardInCardBox [
-	diceOne nextRollNumber: 5.
-	twoPlayerGame newTurnWithDice: diceOne.
-	jack usesTheCard: 2 on: twoPlayerGame.
-	self assert: (twoPlayerGame amountOfCardsOf: jack) equals: 2.
-	
-	
-]
-
-{ #category : #tests }
 GameTest >> testPlayerPlaysPositionChange [
 	self assertPosition: 0 andLap: 0  for: jack  in: twoPlayerGame. 
 	self assertPosition: 0 andLap: 0  for: ben  in: twoPlayerGame . 
@@ -198,7 +192,8 @@ GameTest >> testPlayerPlaysWithDifferentDices [
 GameTest >> testPlayerUsesACardAndHaveOneLess [
 	diceOne nextRollNumber: 5.
 	twoPlayerGame newTurnWithDice: diceOne.
-	jack usesTheCard: 2 on: twoPlayerGame.
+	self assert: (twoPlayerGame amountOfCardsOf: jack) equals: 3.
+	twoPlayerGame thePlayer: jack usesTheCard: theBlanckCard.
 	self assert: (twoPlayerGame amountOfCardsOf: jack) equals: 2.
 	
 	

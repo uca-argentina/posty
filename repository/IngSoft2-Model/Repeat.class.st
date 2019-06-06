@@ -1,6 +1,6 @@
 "
 Please comment me using the following template inspired by Class Responsibility Collaborator (CRC) design:
-""Avanza un casillero mas despues de tirar""
+""repeat""
 For the Class part:  State a one line summary. For example, ""I represent a paragraph of text"".
 
 For the Responsibility part: Three sentences about my main responsibilities - what I do, what I know.
@@ -21,12 +21,12 @@ Internal Representation and Key Implementation Points.
     Implementation Points
 "
 Class {
-	#name : #Acceleration,
+	#name : #Repeat,
 	#superclass : #Cards,
 	#category : #'IngSoft2-Model'
 }
 
 { #category : #action }
-Acceleration >> effect [
-	^ 1
+Repeat >> effect [
+	^ 0
 ]
