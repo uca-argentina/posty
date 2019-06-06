@@ -22,19 +22,26 @@ Internal Representation and Key Implementation Points.
 "
 Class {
 	#name : #Moonwalk,
-	#superclass : #Box,
+	#superclass : #Effect,
+	#instVars : [
+		'numberOfStepsBack'
+	],
 	#category : #'IngSoft2-Model'
 }
 
-{ #category : #action }
-Moonwalk >> effectOn: aGame [
-	"when this effect appears every player goes back N (in this case 9) position except the one who reaches this box"
-	(self restOfPlayers: aGame) collect: [ :player | player changePosition: 9 negated ]
+{ #category : #accessing }
+Moonwalk class >> numberOfStepsBack: aNumber [
+	^ self new 
+	initializeWithNumberOfStepsBack: aNumber; 
+	yourself.
 ]
 
 { #category : #action }
-Moonwalk >> restOfPlayers: aGame [
-	"pick players who applies the effect"
-	^ aGame player
-		select: [ :player | player ~= (aGame player at: aGame actualTurn) ]
+Moonwalk >> effectOn: aGame [
+	(aGame restOfPlayers) do: [ :player | aGame move: player anAmountOfBoxes: (numberOfStepsBack negated)  ]
+]
+
+{ #category : #initialization }
+Moonwalk >> initializeWithNumberOfStepsBack: aNumber [
+	numberOfStepsBack := aNumber.
 ]

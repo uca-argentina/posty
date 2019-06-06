@@ -22,12 +22,12 @@ Internal Representation and Key Implementation Points.
 "
 Class {
 	#name : #AtomicBomb,
-	#superclass : #Box,
+	#superclass : #Effect,
 	#category : #'IngSoft2-Model'
 }
 
 { #category : #action }
 AtomicBomb >> effectOn: aGame [
 	"when this effect appears every player goes to the begining again"
-	aGame player collect: [ :player | player move: 0 ]
+	aGame sendAllPlayersToPosition: 0.
 ]

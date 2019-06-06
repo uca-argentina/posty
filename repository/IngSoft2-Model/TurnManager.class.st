@@ -1,6 +1,6 @@
 "
 Please comment me using the following template inspired by Class Responsibility Collaborator (CRC) design:
-""Im a Dice like in the real world""
+""Manage turns of the game""
 For the Class part:  State a one line summary. For example, ""I represent a paragraph of text"".
 
 For the Responsibility part: Three sentences about my main responsibilities - what I do, what I know.
@@ -17,46 +17,42 @@ Public API and Key Messages
  
 Internal Representation and Key Implementation Points.
 
-    Instance Variables
-	numberOfFaces:		<Object>
-	random:		<Object>
-
 
     Implementation Points
 "
 Class {
-	#name : #Dice,
+	#name : #TurnManager,
 	#superclass : #Object,
 	#instVars : [
-		'numberOfFaces'
+		'numberOfPlayers',
+		'turnNumber'
 	],
 	#category : #'IngSoft2-Model'
 }
 
 { #category : #creation }
-Dice class >> assertValidFaces: aNumberOfFaces [
-	aNumberOfFaces > 3
-		ifFalse: [ self error: 'Number of faces must be 4 or greater' ]
+TurnManager class >> withAmountOfPlayers: aNumberOfPlayers [
+	^ self new 
+	initializeWithAmountOfPlayers: aNumberOfPlayers;
+	yourself.
 ]
 
-{ #category : #creation }
-Dice class >> withFaces: aNumberOfFaces [
-	self assertValidFaces: aNumberOfFaces.
-	^ self new
-		initializeWithFaces: aNumberOfFaces;
-		yourself
+{ #category : #initialization }
+TurnManager >> initializeWithAmountOfPlayers: aNumberOfPlayers [
+	numberOfPlayers := aNumberOfPlayers.
+	turnNumber := 1.
 ]
 
-{ #category : #initialize }
-Dice >> initializeWithFaces: aNumberOfFaces [
-	"The number of faces of the dice is assigned"
-
-	numberOfFaces := aNumberOfFaces
+{ #category : #action }
+TurnManager >> returnTurn [
+	^ turnNumber .
 ]
 
-{ #category : #actions }
-Dice >> roll [
-	"Abstract method so subclasses specify how the dice rolls"
-
-	self subclassResponsibility
+{ #category : #action }
+TurnManager >> updateTurn [
+	| newTurnNumber |
+	newTurnNumber := turnNumber + 1.
+	turnNumber:= newTurnNumber > numberOfPlayers
+		ifTrue: [ newTurnNumber - numberOfPlayers ]
+		ifFalse: [ newTurnNumber ]
 ]

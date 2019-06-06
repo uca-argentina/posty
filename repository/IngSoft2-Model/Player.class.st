@@ -28,9 +28,7 @@ Class {
 	#name : #Player,
 	#superclass : #Object,
 	#instVars : [
-		'playerName',
-		'position',
-		'lastPosition'
+		'playerName'
 	],
 	#category : #'IngSoft2-Model'
 }
@@ -42,47 +40,15 @@ Player class >> called: aName [
 		yourself
 ]
 
-{ #category : #action }
-Player >> AddPositionRecord: aNumber [
-	"add to its position records a new position"
-	lastPosition add: aNumber .
-]
-
-{ #category : #action }
-Player >> changePosition: aNumber [ 
-	"When the player changes its position dependending it last postion"
-	position := position + aNumber.
-]
-
 { #category : #initialize }
 Player >> initializeWithName: aName [
 	"Create a player with a name and locate him at the begining of the game"
 
 	playerName := aName.
-	position := 0.
-	lastPosition := OrderedCollection with: 0.
-]
-
-{ #category : #description }
-Player >> lastPosition [
-	"ask the position records its last position"
-	^ lastPosition at: (lastPosition size -1)
-]
-
-{ #category : #accessing }
-Player >> move: aNumber [
-	"When the player changes its position not dependending it last postion"
-	position := aNumber
 ]
 
 { #category : #description }
 Player >> name [
 	"return player name"
 	^ playerName 
-]
-
-{ #category : #description }
-Player >> position [
-	"return player position"
-	^ position
 ]

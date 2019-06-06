@@ -28,118 +28,145 @@ Class {
 		'ben',
 		'players',
 		'atomicBomb',
-		'aGame',
 		'moonWalk',
 		'speedUp',
 		'timeMachine',
-		'vacio',
 		'wormHole',
-		'boxes',
-		'aBoard',
-		'returnsFour',
-		'returnsFive',
-		'returnsSix',
-		'returnsSeven',
-		'returnsNine',
-		'returnsEight'
+		'diceOne',
+		'empty',
+		'deckOfCards',
+		'theBlanckCard',
+		'theNoEffectCards'
 	],
 	#category : #'IngSoft2-Tests'
 }
 
+{ #category : #asserting }
+BoxTest >> assertPosition: aPosition andLap: aLap of: aPlayer in: theGame [ 
+	self assert: (theGame positionOf: aPlayer) equals: aPosition.
+	self assert: (theGame lapOf: aPlayer) equals: aLap
+]
+
 { #category : #running }
 BoxTest >> setUp [
-	"Dice Creation"
-	returnsFour := SameFaceDice withFaces: 4.
-	returnsFive := SameFaceDice withFaces: 5.
-	returnsSix := SameFaceDice withFaces: 6.
-	returnsSeven := SameFaceDice withFaces: 7.
-	returnsEight := SameFaceDice withFaces: 8.
-	returnsNine := SameFaceDice withFaces: 9.
-	"Player Creation"
+	super setUp.
+	diceOne := SameFaceDice withFaces: 6.
 	jack := Player called: 'Jack'.
 	ben := Player called: 'Ben'.
 	players := OrderedCollection with: jack with: ben.
-	"Effects Creation"
-	atomicBomb := AtomicBomb withProbability: 0.2.
-	moonWalk := Moonwalk withProbability: 0.05.
-	speedUp := SpeedUp withProbability: 0.15.
-	timeMachine := TimeMachine withProbability: 0.08.
-	vacio := Empty withProbability: 0.55.
-	wormHole := WormHole withProbability: 0.15.
-	"Board creation"
-	boxes := OrderedCollection with: vacio with: speedUp with: moonWalk with: atomicBomb with: vacio with: moonWalk.
-	boxes add: timeMachine .
-	boxes add: speedUp .
-	boxes add: vacio.
-	boxes add: wormHole.
-	aBoard := Board with: boxes.
-	"Game Creation"
-	aGame := Game withBoard: aBoard withLaps: 5  withPlayers:  players.
+	atomicBomb := AtomicBomb new.
+	moonWalk := Moonwalk numberOfStepsBack: 6.
+	speedUp := SpeedUp new.
+	timeMachine := TimeMachine new.
+	empty := Empty new.
+	wormHole := WormHole new.
+	theBlanckCard := CardWithNoEffect new.
+	theNoEffectCards := OrderedCollection with: theBlanckCard.
+	deckOfCards := DeckOfCards withEffects: theNoEffectCards .
 ]
 
 { #category : #tests }
 BoxTest >> testAtomicBomb [
-	"When second player gets a Four he reaches atomic bomb"
-	aGame newTurnWithDice: returnsFive.
-	aGame newTurnWithDice: returnsFour.
-	self assert: (aGame positionOf: jack) equals: 0.
-	self assert: (aGame positionOf: ben) equals: 0.
+	| atomicBombAndEmpty twoPlayerGame aBoard |
+	atomicBombAndEmpty := OrderedCollection with: empty with: empty with: empty with: atomicBomb with: empty.
+	aBoard := Board with: atomicBombAndEmpty.
+	twoPlayerGame := Game withBoard: aBoard withLaps: 1 withPlayers: players with: deckOfCards .
+	diceOne nextRollNumber: 2.
+	twoPlayerGame newTurnWithDice: diceOne.
+	self assertPosition: 2 andLap: 0 of: jack in: twoPlayerGame.
+	self assertPosition: 0 andLap: 0 of: ben in: twoPlayerGame.
+	diceOne nextRollNumber: 4.
+	twoPlayerGame newTurnWithDice: diceOne.
+	self assertPosition: 0 andLap: 0 of: jack in: twoPlayerGame.
+	self assertPosition: 0 andLap: 0 of: ben in: twoPlayerGame.
 	
 	
 ]
 
 { #category : #tests }
 BoxTest >> testMoonWalk [
-	aGame newTurnWithDice: returnsFive.
-	aGame newTurnWithDice: returnsSix.
-	self assert: (aGame positionOf: jack) equals: 6.
-	self assert: (aGame lapOf: jack) equals: -1.
-	self assert: (aGame positionOf: ben) equals: 6.
-	self assert: (aGame lapOf: ben) equals: 1.
+	| moonwalkAndEmpty twoPlayerGame aBoard |
+	moonwalkAndEmpty := OrderedCollection with: empty with: empty with: empty with: moonWalk with: empty.
+	aBoard := Board with: moonwalkAndEmpty.
+	twoPlayerGame := Game withBoard: aBoard withLaps: 1 withPlayers: players with: deckOfCards  .
+	diceOne nextRollNumber: 2.
+	twoPlayerGame newTurnWithDice: diceOne.
+	self assertPosition: 2 andLap: 0 of: jack in: twoPlayerGame.
+	self assertPosition: 0 andLap: 0 of: ben in: twoPlayerGame.
+	diceOne nextRollNumber: 4.
+	twoPlayerGame newTurnWithDice: diceOne.
+	self assertPosition: 1 andLap: -1 of: jack in: twoPlayerGame.
+	self assertPosition: 4 andLap: 0 of: ben in: twoPlayerGame.
 	
 ]
 
 { #category : #tests }
 BoxTest >> testSpeedUp [
-	aGame newTurnWithDice: returnsFive.
-	aGame newTurnWithDice: returnsNine.
-	aGame newTurnWithDice: returnsSeven.
-	self assert: (aGame positionOf: jack) equals: 6.
-	self assert: (aGame lapOf: jack) equals: 2.
-	self assert: (aGame positionOf: ben) equals: 9.
-	self assert: (aGame lapOf: ben) equals: 1.
+	| speedUpAndEmpty twoPlayerGame aBoard |
+	speedUpAndEmpty := OrderedCollection with: empty with: empty with: empty with: speedUp with: empty.
+	aBoard := Board with: speedUpAndEmpty.
+	twoPlayerGame := Game withBoard: aBoard withLaps: 1 withPlayers: players with: deckOfCards .
+	diceOne nextRollNumber: 2.
+	twoPlayerGame newTurnWithDice: diceOne.
+	self assertPosition: 2 andLap: 0 of: jack in: twoPlayerGame.
+	self assertPosition: 0 andLap: 0 of: ben in: twoPlayerGame.
+	diceOne nextRollNumber: 4.
+	twoPlayerGame newTurnWithDice: diceOne.
+	self assertPosition: 2 andLap: 0 of: jack in: twoPlayerGame.
+	self assertPosition: 3 andLap: 1 of: ben in: twoPlayerGame.
 ]
 
 { #category : #tests }
 BoxTest >> testTimeMachine [
-	aGame newTurnWithDice: returnsFive.
-	aGame newTurnWithDice: returnsNine.
-	aGame newTurnWithDice: returnsFour.
-	aGame newTurnWithDice: returnsSix.
-	aGame newTurnWithDice: returnsEight.
-	self assert: (aGame positionOf: jack) equals: 5.
-	self assert: (aGame lapOf: jack) equals: 1.
-	self assert: (aGame positionOf: ben) equals: 5.
-	self assert: (aGame lapOf: ben) equals: 2
+	| timeMachineAndEmpty twoPlayerGame aBoard |
+	timeMachineAndEmpty := OrderedCollection with: empty with: empty with: timeMachine with: empty with: empty.
+	aBoard := Board with: timeMachineAndEmpty.
+	twoPlayerGame := Game withBoard: aBoard withLaps: 3 withPlayers: players with: deckOfCards .
+	diceOne nextRollNumber: 4.
+	twoPlayerGame newTurnWithDice: diceOne.
+	diceOne nextRollNumber: 5.
+	twoPlayerGame newTurnWithDice: diceOne.
+	twoPlayerGame newTurnWithDice: diceOne.
+	diceOne nextRollNumber: 6.
+	twoPlayerGame newTurnWithDice: diceOne.
+	self assertPosition: 4 andLap: 1 of: jack in: twoPlayerGame.
+	self assertPosition: 1 andLap: 2 of: ben in: twoPlayerGame.
+	diceOne nextRollNumber: 4.
+	twoPlayerGame newTurnWithDice: diceOne.
+	self assertPosition: 4 andLap: 1 of: jack in: twoPlayerGame.
+	self assertPosition: 1 andLap: 2 of: ben in: twoPlayerGame.
 ]
 
 { #category : #tests }
 BoxTest >> testVacio [
-	aGame newTurnWithDice: returnsFive.
-	aGame newTurnWithDice: returnsNine.
-	self assert: (aGame positionOf: jack) equals: 5.
-	self assert: (aGame lapOf: jack) equals: 1.
-	self assert: (aGame positionOf: ben) equals: 9.
-	self assert: (aGame lapOf: ben) equals: 1
+	| allEmpty twoPlayerGame aBoard |
+	allEmpty := OrderedCollection with: empty with: empty with: empty with: empty with: empty.
+	aBoard := Board with: allEmpty.
+	twoPlayerGame := Game withBoard: aBoard withLaps: 1 withPlayers: players with: deckOfCards .
+	diceOne nextRollNumber: 4.
+	twoPlayerGame newTurnWithDice: diceOne.
+	self assertPosition: 4 andLap: 0 of: jack in: twoPlayerGame.
+	self assertPosition: 0 andLap: 0 of: ben in: twoPlayerGame.
+	diceOne nextRollNumber: 6.
+	twoPlayerGame newTurnWithDice: diceOne.
+	self assertPosition: 4 andLap: 0 of: jack in: twoPlayerGame.
+	self assertPosition: 1 andLap: 1 of: ben in: twoPlayerGame.
 ]
 
 { #category : #tests }
 BoxTest >> testWormHole [
-	aGame newTurnWithDice: returnsFive.
-	aGame newTurnWithDice: returnsNine.
-	aGame newTurnWithDice: returnsFive.
-	self assert: (aGame positionOf: jack) equals: 6.
-	self assert: (aGame lapOf: jack) equals: 1.
-	self assert: (aGame positionOf: ben) equals: 9.
-	self assert: (aGame lapOf: ben) equals: 1
+	| wormHoleAndEmpty twoPlayerGame aBoard |
+	wormHoleAndEmpty := OrderedCollection with: empty with: empty with: empty with: empty with: wormHole.
+	aBoard := Board with: wormHoleAndEmpty.
+	twoPlayerGame := Game withBoard: aBoard withLaps: 1 withPlayers: players with: deckOfCards  .
+	diceOne nextRollNumber: 2.
+	twoPlayerGame newTurnWithDice: diceOne.
+	diceOne nextRollNumber: 4.
+	twoPlayerGame newTurnWithDice: diceOne.
+	self assertPosition: 2 andLap: 0 of: jack in: twoPlayerGame.
+	self assertPosition: 4 andLap: 0 of: ben in: twoPlayerGame.
+	diceOne nextRollNumber: 3.
+	twoPlayerGame newTurnWithDice: diceOne.
+	self assertPosition: 1 andLap: 0 of: jack in: twoPlayerGame.
+	self assertPosition: 4 andLap: 0 of: ben in: twoPlayerGame.
 ]

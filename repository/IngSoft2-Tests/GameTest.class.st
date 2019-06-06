@@ -27,175 +27,212 @@ Class {
 		'players',
 		'jack',
 		'ben',
-		'aGame',
 		'theGame',
 		'louis',
 		'threePlayers',
 		'empty',
-		'moonwalk',
-		'atomicbomb',
-		'speedup',
 		'boxes',
 		'aBoard',
 		'threePlayerGame',
-		'returnsFour',
-		'returnsFive',
-		'returnsSix',
-		'returnsSeven'
+		'twoPlayerGame',
+		'diceOne',
+		'diceTwo',
+		'card',
+		'deckOfCards',
+		'theBlanckCard',
+		'theNoEffectCards'
 	],
 	#category : #'IngSoft2-Tests'
 }
 
+{ #category : #asserting }
+GameTest >> assertLastPosition: aPosition andLastLap: aLap for: aPlayer in: aGame [ 
+	self assert: (aGame lastPositionOf: aPlayer) equals: aPosition.
+	self assert: (aGame lastLapOf: aPlayer) equals: aLap.
+]
+
+{ #category : #asserting }
+GameTest >> assertPosition: aPosition andLap: aLap for: aPlayer in: aGame. [
+	self assert: (aGame positionOf: aPlayer) equals: aPosition.
+	self assert: (aGame lapOf: aPlayer) equals: aLap
+]
+
 { #category : #running }
 GameTest >> setUp [
-	"Players creation"
+	super setUp.
 	jack := Player called: 'Jack'.
 	ben := Player called: 'Ben'.
 	players := OrderedCollection with: jack with: ben.
 	louis := Player called: 'Louis'.
 	threePlayers := OrderedCollection with: jack with: ben with: louis.
-	"Dice Creation"
-	returnsFour := SameFaceDice withFaces: 4.
-	returnsFive := SameFaceDice withFaces: 5.
-	returnsSix := SameFaceDice withFaces: 6.
-	returnsSeven := SameFaceDice withFaces: 7.
-	"Board Creation"
-	empty := Empty withProbability: 0.55.
-	moonwalk := Moonwalk withProbability: 0.15.
-	atomicbomb := AtomicBomb withProbability: 0.02.
-	speedup := SpeedUp withProbability: 0.15.
-	boxes := OrderedCollection with: empty with: speedup with: moonwalk with: atomicbomb with:empty with: moonwalk.
+	diceOne := SameFaceDice withFaces: 4.
+	diceOne nextRollNumber: 4.
+	diceTwo := SameFaceDice withFaces: 5.
+	empty := Empty new.
+	card := Card new.
+	boxes := OrderedCollection with: empty with: empty with: empty with: empty with:card with: empty.
 	boxes add: empty.
-	boxes add: speedup.
 	boxes add: empty.
-	boxes add: atomicbomb.
+	boxes add: empty.
+	boxes add: empty.
 	aBoard := Board with: boxes.
-	"Game creation"
-	aGame := Game withBoard: aBoard withLaps: 5  withPlayers:  players.
-	theGame := Game withBoard: aBoard withLaps: 2  withPlayers:  players.
-	threePlayerGame := Game withBoard: aBoard withLaps: 5  withPlayers:  threePlayers.
-]
-
-{ #category : #tests }
-GameTest >> testAfterAPlayerPlaysTwoTimesPositionIncrease [
-	aGame newTurnWithDice: returnsFour.
-	aGame newTurnWithDice: returnsSix.
-	aGame newTurnWithDice: returnsFive.
-	self assert: (aGame positionOf: jack) equals: 6.
-	self assert: (aGame lapOf: jack) equals: -1.
-	self assert: (aGame positionOf: ben) equals: 7.
-	self assert: (aGame lapOf: ben) equals: -1.
+	theBlanckCard := CardWithNoEffect new.
+	theNoEffectCards := OrderedCollection with: theBlanckCard.
+	deckOfCards := DeckOfCards withEffects: theNoEffectCards .
+	twoPlayerGame := Game withBoard: aBoard withLaps: 2  withPlayers:  players with: deckOfCards.
+	threePlayerGame := Game withBoard: aBoard withLaps: 5  withPlayers:  threePlayers with: deckOfCards.
 ]
 
 { #category : #tests }
 GameTest >> testAfterJackPlaysItsBenTurn [
-	aGame newTurnWithDice: returnsFour.
-	self assert: aGame actualTurn equals: 2.
+	self assert: twoPlayerGame currentPlayer equals: jack.
+	twoPlayerGame newTurnWithDice: diceOne.
+	self assert: twoPlayerGame currentPlayer equals: ben.
+]
+
+{ #category : #tests }
+GameTest >> testAtTheBeginingEachPlayerHasTwoCards [
+	self assert: (twoPlayerGame amountOfCardsOf: jack) equals: 2.
+	self assert: (twoPlayerGame amountOfCardsOf: ben) equals: 2.
+]
+
+{ #category : #tests }
+GameTest >> testGameIsOver [
+	diceOne nextRollNumber: 9.
+	twoPlayerGame newTurnWithDice: diceOne.
+	diceOne nextRollNumber: 5.
+	twoPlayerGame newTurnWithDice: diceOne.
+	diceOne nextRollNumber: 8.
+	twoPlayerGame newTurnWithDice: diceOne.
+	diceOne nextRollNumber: 5.
+	twoPlayerGame newTurnWithDice: diceOne.
+	diceOne nextRollNumber: 4.
+	twoPlayerGame newTurnWithDice: diceOne.
+	self assert: twoPlayerGame isOver.
 ]
 
 { #category : #tests }
 GameTest >> testJackAndBenArePlayersOfTheGame [
-	self assert:  ( aGame player at: 1) name equals: 'Jack'.
-	self assert:  ( aGame player at: 2) name equals: 'Ben'
-]
-
-{ #category : #tests }
-GameTest >> testJackGoesFirstThenBen [
-	self assert: ( aGame listOfTurns at: 1) name equals: 'Jack'.
-	self assert: ( aGame listOfTurns at: 2) name equals: 'Ben'.
+	self assert:  (twoPlayerGame isAPlayer: jack).
+	self assert:  (twoPlayerGame isAPlayer: ben).
 ]
 
 { #category : #tests }
 GameTest >> testJackPlaysAndChangePosition [
-	aGame newTurnWithDice: returnsFive.
-	self assert: (aGame positionOf: jack) equals: 5.
-	self assert: (aGame lapOf: jack) equals: 1.
-]
-
-{ #category : #tests }
-GameTest >> testJackReachsFinalLapAndGameEnds [
-	theGame newTurnWithDice: returnsFive.
-	theGame newTurnWithDice: returnsSeven.
-	theGame newTurnWithDice: returnsFour.
-	theGame newTurnWithDice: returnsFour.
-	theGame newTurnWithDice: returnsSix.
-	theGame newTurnWithDice: returnsFour.
-	theGame newTurnWithDice: returnsSix.
-	self assert: theGame isOver.
-]
-
-{ #category : #tests }
-GameTest >> testLapsOfAGame [
-	self assert: aGame laps equals: 5.
+	self assertPosition: 0 andLap: 0  for: jack  in: twoPlayerGame. 
+	diceOne nextRollNumber: 4.
+	twoPlayerGame newTurnWithDice: diceOne.
+	self assertPosition: 4 andLap: 0  for: jack  in: twoPlayerGame. 
 ]
 
 { #category : #tests }
 GameTest >> testLastPositionOfJack [
-	aGame newTurnWithDice: returnsFour.
-	aGame newTurnWithDice: returnsFour.
-	aGame newTurnWithDice: returnsFour.
-	aGame newTurnWithDice: returnsFour.
-	aGame newTurnWithDice: returnsFour.
-	self assert: (aGame lastPositionOf: jack ) equals: 0.
-	self assert: (aGame lastLapOf: jack) equals: 1.
+	diceOne nextRollNumber: 4.
+	twoPlayerGame newTurnWithDice: diceOne.
+	twoPlayerGame newTurnWithDice: diceOne.
+	twoPlayerGame newTurnWithDice: diceOne.
+	self assertPosition: 8 andLap: 0  for: jack in: twoPlayerGame.
+	twoPlayerGame newTurnWithDice: diceOne.
+	twoPlayerGame newTurnWithDice: diceOne.
+	self assertLastPosition: 8 andLastLap: 0 for: jack in: twoPlayerGame.
 ]
 
 { #category : #tests }
 GameTest >> testNoOneCanPlayAfterGameIsOver [
-	theGame newTurnWithDice: returnsFive.
-	theGame newTurnWithDice: returnsSeven.
-	theGame newTurnWithDice: returnsFour.
-	theGame newTurnWithDice: returnsFour.
-	theGame newTurnWithDice: returnsSix.
-	theGame newTurnWithDice: returnsFour.
-	theGame newTurnWithDice: returnsSix.
-	self should: [ theGame newTurnWithDice: returnsFour ] raise: Error.
+	diceOne nextRollNumber: 9.
+	twoPlayerGame newTurnWithDice: diceOne.
+	diceOne nextRollNumber: 5.
+	twoPlayerGame newTurnWithDice: diceOne.
+	diceOne nextRollNumber: 8.
+	twoPlayerGame newTurnWithDice: diceOne.
+	diceOne nextRollNumber: 5.
+	twoPlayerGame newTurnWithDice: diceOne.
+	diceOne nextRollNumber: 4.
+	twoPlayerGame newTurnWithDice: diceOne.
+	self should: [ theGame newTurnWithDice: diceOne ] raise: Error.
 ]
 
 { #category : #tests }
 GameTest >> testPlayerCompletesALap [
-	aGame newTurnWithDice: returnsSeven.
-	aGame newTurnWithDice: returnsFive.
-	aGame newTurnWithDice: returnsFour.
-	self assert: (aGame positionOf: jack )equals: 1.
-	self assert: (aGame lapOf: jack) equals: 2.
+	diceOne nextRollNumber: 5.
+	twoPlayerGame newTurnWithDice: diceOne.
+	diceOne nextRollNumber: 5.
+	twoPlayerGame newTurnWithDice: diceOne.
+	diceOne nextRollNumber: 6.
+	twoPlayerGame newTurnWithDice: diceOne.
+	self assertPosition: 1 andLap: 1  for: jack  in: twoPlayerGame. 
+]
+
+{ #category : #tests }
+GameTest >> testPlayerPlaysPositionChange [
+	self assertPosition: 0 andLap: 0  for: jack  in: twoPlayerGame. 
+	self assertPosition: 0 andLap: 0  for: ben  in: twoPlayerGame . 
+	diceOne nextRollNumber: 4.
+	twoPlayerGame newTurnWithDice: diceOne. 
+	diceOne nextRollNumber: 6.
+	twoPlayerGame newTurnWithDice: diceOne.
+	self assertPosition: 4 andLap: 0  for: jack  in: twoPlayerGame. 
+	self assertPosition: 6 andLap: 0  for: ben  in: twoPlayerGame . 
 ]
 
 { #category : #tests }
 GameTest >> testPlayerPlaysWithDifferentDices [
-	aGame newTurnWithDice: returnsFive.
-	aGame newTurnWithDice: returnsFour.
-	aGame newTurnWithDice: returnsSix.
-	aGame newTurnWithDice: returnsFive.
-	self assert: (aGame positionOf: jack) equals: 7.
-	self assert: (aGame lapOf: jack) equals: -1
+	diceOne nextRollNumber: 5.
+	twoPlayerGame newTurnWithDice: diceOne.
+	diceTwo nextRollNumber: 4.
+	twoPlayerGame newTurnWithDice: diceTwo.
+	diceTwo nextRollNumber: 6.
+	twoPlayerGame newTurnWithDice: diceTwo.
+	twoPlayerGame newTurnWithDice: diceOne.
+	self assertPosition: 1 andLap: 1 for: jack in: twoPlayerGame.
+	self assertPosition: 9 andLap: 0 for: ben in: twoPlayerGame.
+]
+
+{ #category : #tests }
+GameTest >> testPlayerUsesACardAndHaveOneLess [
+	diceOne nextRollNumber: 5.
+	twoPlayerGame newTurnWithDice: diceOne.
+	self assert: (twoPlayerGame amountOfCardsOf: jack) equals: 3.
+	twoPlayerGame newTurnWithDice: diceOne.
+	twoPlayerGame thePlayer: jack usesTheCard: theBlanckCard.
+	self assert: (twoPlayerGame amountOfCardsOf: jack) equals: 2.
+	
+	
 ]
 
 { #category : #tests }
 GameTest >> testStepsOfAGame [
-	self assert: aGame steps equals: 10. 
+	self assert: twoPlayerGame steps equals: 10. 
 ]
 
 { #category : #tests }
 GameTest >> testTheRankingOfTheGame [
-	threePlayerGame newTurnWithDice: returnsFive.
-	threePlayerGame newTurnWithDice: returnsSeven.
-	threePlayerGame newTurnWithDice: returnsFour.
-	threePlayerGame newTurnWithDice: returnsFive.
-	threePlayerGame newTurnWithDice: returnsSeven.
-	self assert: (threePlayerGame ranking at: 1) equals: ben.
-	self assert: (threePlayerGame ranking at: 2) equals: jack.
-	self assert: (threePlayerGame ranking at: 3) equals: louis
+	diceOne nextRollNumber: 5.
+	threePlayerGame newTurnWithDice: diceOne.
+	diceOne nextRollNumber: 6.
+	threePlayerGame newTurnWithDice: diceOne.
+	diceOne nextRollNumber: 4.
+	threePlayerGame newTurnWithDice: diceOne.
+	diceOne nextRollNumber: 4.
+	threePlayerGame newTurnWithDice: diceOne.
+	diceOne nextRollNumber: 5.
+	threePlayerGame newTurnWithDice: diceOne.
+	self assert: (threePlayerGame rankingPositionOf: jack) equals: 2.
+	self assert: (threePlayerGame rankingPositionOf: ben) equals: 1.
+	self assert: (threePlayerGame rankingPositionOf: louis) equals: 3.
 ]
 
 { #category : #tests }
 GameTest >> testTheWinnerOfTheGame [
-	theGame newTurnWithDice: returnsFive.
-	theGame newTurnWithDice: returnsSeven.
-	theGame newTurnWithDice: returnsFour.
-	theGame newTurnWithDice: returnsFour.
-	theGame newTurnWithDice: returnsSix.
-	theGame newTurnWithDice: returnsFour.
-	theGame newTurnWithDice: returnsSix.
-	self assert: theGame winner equals: jack.
+	diceOne nextRollNumber: 9.
+	twoPlayerGame newTurnWithDice: diceOne.
+	diceOne nextRollNumber: 5.
+	twoPlayerGame newTurnWithDice: diceOne.
+	diceOne nextRollNumber: 8.
+	twoPlayerGame newTurnWithDice: diceOne.
+	diceOne nextRollNumber: 5.
+	twoPlayerGame newTurnWithDice: diceOne.
+	diceOne nextRollNumber: 4.
+	twoPlayerGame newTurnWithDice: diceOne.
+	self assert: twoPlayerGame winner equals: jack.
 ]

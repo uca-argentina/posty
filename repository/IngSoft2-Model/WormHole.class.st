@@ -22,12 +22,11 @@ Internal Representation and Key Implementation Points.
 "
 Class {
 	#name : #WormHole,
-	#superclass : #Box,
+	#superclass : #Effect,
 	#category : #'IngSoft2-Model'
 }
 
 { #category : #action }
 WormHole >> effectOn: aGame [ 
-	"when this effect appears the player goes back 4 blocks from its position"
-	(aGame player at: aGame actualTurn) changePosition: 4 negated 
+	aGame move: (aGame currentPlayer) anAmountOfBoxes: (4 negated)
 ]

@@ -39,20 +39,32 @@ Board class >> with: boxes [
 	yourself 
 ]
 
-{ #category : #description }
+{ #category : #actions }
 Board >> amountOfBoxes [
-	"returns size of the board"
 	^ listOfBoxes size
 ]
 
 { #category : #actions }
-Board >> atIndex: aBoardPosition [
-	"return an effect from an specific position"
-	^ listOfBoxes at: aBoardPosition.
+Board >> doEffectOn: aPlayer in: aGame [
+	(listOfBoxes at: (aGame positionOf: aPlayer)) effectOn: aGame
 ]
 
 { #category : #initialize }
 Board >> initializeWith: boxes [ 
 	"creates the board"
 	listOfBoxes := boxes.
+]
+
+{ #category : #actions }
+Board >> lapAccordingToBoard: aPosition [
+	^ (aPosition // self amountOfBoxes)
+]
+
+{ #category : #actions }
+Board >> positionAccordingToBoard: aPosition [
+	aPosition < 0
+		ifTrue: [ ^ aPosition + self amountOfBoxes ].
+	aPosition <= self amountOfBoxes
+		ifTrue: [ ^ aPosition  ]
+		ifFalse: [ ^ aPosition - (aPosition // self amountOfBoxes * self amountOfBoxes) ]
 ]

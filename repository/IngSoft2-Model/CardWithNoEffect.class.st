@@ -1,8 +1,8 @@
 "
 Please comment me using the following template inspired by Class Responsibility Collaborator (CRC) design:
-""Vuelve a la posicion del turno anterior""
-For the Class part:  State a one line summary. For example, ""I represent a paragraph of text"".
 
+For the Class part:  State a one line summary. For example, ""I represent a paragraph of text"".
+""cancellation""
 For the Responsibility part: Three sentences about my main responsibilities - what I do, what I know.
 
 For the Collaborators Part: State my main collaborators and one line about how I interact with them. 
@@ -21,12 +21,12 @@ Internal Representation and Key Implementation Points.
     Implementation Points
 "
 Class {
-	#name : #TimeMachine,
-	#superclass : #Effect,
+	#name : #CardWithNoEffect,
+	#superclass : #Cards,
 	#category : #'IngSoft2-Model'
 }
 
 { #category : #action }
-TimeMachine >> effectOn: aGame [ 
-	aGame sendToLastPosition: (aGame currentPlayer )
+CardWithNoEffect >> effect [ 
+	^0
 ]
