@@ -29,5 +29,6 @@ Class {
 { #category : #action }
 AtomicBomb >> effectOn: aGame [
 	"when this effect appears every player goes to the begining again"
-	aGame sendAllPlayersToPosition: 0.
+
+	aGame sendAllPlayersToInitialPosition
 ]

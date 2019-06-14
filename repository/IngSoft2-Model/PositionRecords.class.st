@@ -21,7 +21,7 @@ Internal Representation and Key Implementation Points.
     Implementation Points
 "
 Class {
-	#name : #PositionHandler,
+	#name : #PositionRecords,
 	#superclass : #Object,
 	#instVars : [
 		'recordOfPositions'
@@ -30,38 +30,38 @@ Class {
 }
 
 { #category : #'as yet unclassified' }
-PositionHandler class >> withInitialPosition: aNumber [
+PositionRecords class >> withInitialPosition: aNumber [
 	^ self new 
 		initializeWithInitialPosition: aNumber;
 		yourself
 ]
 
 { #category : #adding }
-PositionHandler >> addNewRecord: aNumber [
+PositionRecords >> addNewRecord: aNumber [
 	recordOfPositions add: aNumber.
 ]
 
 { #category : #adding }
-PositionHandler >> deleteLastRecord [
+PositionRecords >> deleteLastRecord [
 	recordOfPositions remove: (recordOfPositions last).
 ]
 
 { #category : #initialization }
-PositionHandler >> initializeWithInitialPosition: aNumber [
+PositionRecords >> initializeWithInitialPosition: aNumber [
 	recordOfPositions := OrderedCollection with: aNumber.
 ]
 
 { #category : #accessing }
-PositionHandler >> lastPosition [
+PositionRecords >> lastPosition [
 	^ recordOfPositions sum - recordOfPositions last.
 ]
 
 { #category : #accessing }
-PositionHandler >> moveToZero [
+PositionRecords >> moveToBeginning [
 	  recordOfPositions add: (self position) negated 
 ]
 
 { #category : #accessing }
-PositionHandler >> position [
+PositionRecords >> position [
 	^ recordOfPositions sum
 ]

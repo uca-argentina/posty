@@ -38,7 +38,7 @@ Class {
 		'listOfPositions',
 		'cardsInHandOfEachPlayer',
 		'deckOfCards',
-		'positionManager',
+		'playersOfTheGame',
 		'permanentCards'
 	],
 	#category : #'IngSoft2-Model'
@@ -123,11 +123,7 @@ Game >> createEffectOnPlayer: aListOfPlayers [
 
 { #category : #creation }
 Game >> createPositionRecordsFor: aListOfPlayers [
-	positionManager := Dictionary new.
-	1 to: (aListOfPlayers size) do: [ :indexOfPlayer | 
-		positionManager
-			at: (aListOfPlayers at: indexOfPlayer)
-			put: (PositionHandler withInitialPosition: 0) ]
+	playersOfTheGame := PlayersOfAGame listOfPositionOfPlayers: (aListOfPlayers collect: [ :player | PositionOfAPlayer player: player positionRecords: (PositionRecords withInitialPosition: 0)]).
 ]
 
 { #category : #description }
@@ -139,7 +135,7 @@ Game >> currentPlayer [
 Game >> initializeWithBoard: aBoard withLaps: aNumberOfLaps withPlayers: players with: aDeckOfCards [ 
 	board := aBoard.
 	numberOfLaps := aNumberOfLaps.
-	turnManager := TurnManager withAmountOfPlayers: players size.
+	turnManager := AssignTurn withAmountOfPlayers: players size.
 	listOfPlayers := players.
 	deckOfCards := aDeckOfCards .
 	self createEffectOnPlayer: players.
@@ -149,32 +145,32 @@ Game >> initializeWithBoard: aBoard withLaps: aNumberOfLaps withPlayers: players
 
 { #category : #description }
 Game >> isAPlayer: aPlayer [ 
-	^ (positionManager keys) anySatisfy: [ :player | player = aPlayer ]
+	^ (playersOfTheGame allPlayers) anySatisfy: [ :player | player = aPlayer ]
 ]
 
 { #category : #asserting }
 Game >> isOver [
-	^ (positionManager values) anySatisfy: [ :eachPositionManager | eachPositionManager position > (numberOfLaps * (board amountOfBoxes)) ]
+	^ playersOfTheGame hasAnyPlayerReachedPosition: (numberOfLaps * (board amountOfBoxes)) .
 ]
 
 { #category : #positions }
 Game >> lapOf: aPlayer [ 
-	^ board lapAccordingToBoard: (positionManager at: aPlayer) position .
+	^ board lapAccordingToBoard: (playersOfTheGame positionRecordsOf: aPlayer) position .
 ]
 
 { #category : #positions }
 Game >> lastLapOf: aPlayer [ 
-	^ board lapAccordingToBoard: (positionManager at: aPlayer) lastPosition
+	^ board lapAccordingToBoard: (playersOfTheGame positionRecordsOf: aPlayer) lastPosition
 ]
 
 { #category : #positions }
 Game >> lastPositionOf: aPlayer [ 
-	^ board positionAccordingToBoard: (positionManager at: aPlayer) lastPosition.
+	^ board positionAccordingToBoard: (playersOfTheGame positionRecordsOf: aPlayer ) lastPosition.
 ]
 
 { #category : #actions }
 Game >> move: aPlayer anAmountOfBoxes: aNumber [
-	(positionManager at: aPlayer) addNewRecord: aNumber + (self applyCardEffectsTo: aPlayer).
+	(playersOfTheGame positionRecordsOf: aPlayer) addNewRecord: aNumber + (self applyCardEffectsTo: aPlayer).
 ]
 
 { #category : #actions }
@@ -200,24 +196,19 @@ Game >> pickTwoRandomCards [
 { #category : #positions }
 Game >> positionOf: aPlayer [
 	| position |
-	position := (positionManager at: aPlayer) position.
+	position := (playersOfTheGame positionRecordsOf: aPlayer) position.
 	^ board positionAccordingToBoard: position.
 	
 ]
 
 { #category : #'ranking of the game' }
 Game >> ranking [
-	| ranking sorted|
-	ranking := OrderedCollection new.
-	sorted := (positionManager values) sort: [ :element1 :element2 | element1 position > element2 position].
-	1 to: (positionManager size) do: [ :each | ranking add: (positionManager keyAtValue: (sorted at: each)) ].
-	^ ranking
+	^ playersOfTheGame ranking
 ]
 
 { #category : #'ranking of the game' }
 Game >> rankingPositionOf: aPlayer [
-	self ranking doWithIndex: [ :element :index | element = aPlayer 
-		ifTrue: [ ^ index ]].
+	^ playersOfTheGame rankingPositionOf: aPlayer
 ]
 
 { #category : #removing }
@@ -229,18 +220,18 @@ Game >> removeCard: aCard [
 
 { #category : #description }
 Game >> restOfPlayers [
-	^ (positionManager keys )
+	^ (playersOfTheGame allPlayers )
 		select: [ :player | player ~= (self currentPlayer) ]
 ]
 
 { #category : #positions }
-Game >> sendAllPlayersToPosition: aPosition [
-	1 to: (positionManager size) do: [ :each |  (positionManager values at: each) moveToZero ]
+Game >> sendAllPlayersToInitialPosition [
+	playersOfTheGame sendAllPlayersToInitialPosition
 ]
 
 { #category : #positions }
 Game >> sendToLastPosition: aPlayer [
-	(positionManager at: aPlayer) deleteLastRecord.
+	(playersOfTheGame positionRecordsOf: aPlayer) deleteLastRecord.
 ]
 
 { #category : #description }
