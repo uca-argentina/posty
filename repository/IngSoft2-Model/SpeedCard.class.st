@@ -1,8 +1,8 @@
 "
 Please comment me using the following template inspired by Class Responsibility Collaborator (CRC) design:
-
+""speed card""
 For the Class part:  State a one line summary. For example, ""I represent a paragraph of text"".
-""cancellation""
+
 For the Responsibility part: Three sentences about my main responsibilities - what I do, what I know.
 
 For the Collaborators Part: State my main collaborators and one line about how I interact with them. 
@@ -21,13 +21,13 @@ Internal Representation and Key Implementation Points.
     Implementation Points
 "
 Class {
-	#name : #CardWithNoEffect,
+	#name : #SpeedCard,
 	#superclass : #Cards,
 	#category : #'IngSoft2-Model'
 }
 
 { #category : #action }
-CardWithNoEffect >> cardOn: aGame [
-	aGame lastCardUsed: self. 
-	^0
+SpeedCard >> cardOn: aGame [
+	aGame lastCardUsed: self.
+	^ 1
 ]

@@ -54,8 +54,8 @@ CardTest >> setUp [
 	diceOne := SameFaceDice withFaces: 4.
 	diceOne nextRollNumber: 4.
 	diceTwo := SameFaceDice withFaces: 5.
-	empty := Empty new.
-	card := Card new.
+	empty := EmptyEffect new.
+	card := CardEffect new.
 	boxes := OrderedCollection with: empty with: empty with: empty with: empty with:card with: empty.
 	boxes add: empty.
 	boxes add: empty.
@@ -67,12 +67,12 @@ CardTest >> setUp [
 { #category : #tests }
 CardTest >> testADeckOfCardsHasSixTypesOfCards [
 	| cardTypes overload speed acceleration cancellation redo repeat deckOfCards |
-	overload := Overload new.
-	speed := Speed new.
-	acceleration := Acceleration new.
-	cancellation := Cancellation new.
-	redo := Redo new.
-	repeat := Repeat new.
+	overload := OverloadCard new.
+	speed := SpeedCard new.
+	acceleration := AccelerationCard new.
+	cancellation := CancellationCard new.
+	redo := RedoCard new.
+	repeat := RepeatCard new.
 	cardTypes := OrderedCollection with: overload with: speed with: acceleration with: cancellation with: redo with: repeat.
 	deckOfCards := DeckOfCards withEffects: cardTypes .
 	self assert: (deckOfCards isAValidEffect: overload).
@@ -86,7 +86,7 @@ CardTest >> testADeckOfCardsHasSixTypesOfCards [
 { #category : #tests }
 CardTest >> testAcceleration [
 	| cardTypes acceleration deckOfCards twoPlayerGame |
-	acceleration := Acceleration new.
+	acceleration := AccelerationCard new.
 	cardTypes := OrderedCollection with: acceleration.
 	deckOfCards := DeckOfCards withEffects: cardTypes .
 	twoPlayerGame := Game withBoard: aBoard withLaps: 2  withPlayers: players with: deckOfCards.
@@ -106,12 +106,12 @@ CardTest >> testAcceleration [
 { #category : #tests }
 CardTest >> testAnyRandomCardIPickIsOneOfTheTypesGiven [
 	| cardTypes overload speed acceleration cancellation redo repeat deckOfCards aCard |
-	overload := Overload new.
-	speed := Speed new.
-	acceleration := Acceleration new.
-	cancellation := Cancellation new.
-	redo := Redo new.
-	repeat := Repeat new.
+	overload := OverloadCard new.
+	speed := SpeedCard new.
+	acceleration := AccelerationCard new.
+	cancellation := CancellationCard new.
+	redo := RedoCard new.
+	repeat := RepeatCard new.
 	cardTypes := OrderedCollection with: overload with: speed with: acceleration with: cancellation with: redo with: repeat.
 	deckOfCards := DeckOfCards withEffects: cardTypes .
 	aCard := deckOfCards pickACard.
@@ -121,8 +121,8 @@ CardTest >> testAnyRandomCardIPickIsOneOfTheTypesGiven [
 { #category : #tests }
 CardTest >> testCancellation [
 	| cardTypes acceleration cancellation deckOfCards twoPlayerGame |
-	acceleration := Acceleration new.
-	cancellation := Cancellation new.
+	acceleration := AccelerationCard new.
+	cancellation := CancellationCard new.
 	cardTypes := OrderedCollection with: acceleration.
 	deckOfCards := DeckOfCards withEffects: cardTypes .
 	twoPlayerGame := Game withBoard: aBoard withLaps: 2  withPlayers: players with: deckOfCards.
@@ -145,7 +145,7 @@ CardTest >> testCancellation [
 { #category : #tests }
 CardTest >> testOverload [
 	| cardTypes overload deckOfCards twoPlayerGame |
-	overload := Overload new.
+	overload := OverloadCard new.
 	cardTypes := OrderedCollection with: overload.
 	deckOfCards := DeckOfCards withEffects: cardTypes .
 	twoPlayerGame := Game withBoard: aBoard withLaps: 2  withPlayers: players with: deckOfCards.
@@ -165,8 +165,8 @@ CardTest >> testOverload [
 { #category : #tests }
 CardTest >> testRedo [
 	| cardTypes acceleration deckOfCards twoPlayerGame redo |
-	acceleration := Acceleration new.
-	redo := Redo new.
+	acceleration := AccelerationCard new.
+	redo := RedoCard new.
 	cardTypes := OrderedCollection with: acceleration.
 	deckOfCards := DeckOfCards withEffects: cardTypes .
 	twoPlayerGame := Game withBoard: aBoard withLaps: 2  withPlayers: players with: deckOfCards.
@@ -188,7 +188,7 @@ CardTest >> testRedo [
 { #category : #tests }
 CardTest >> testRepeat [ 
 	| cardTypes repeat deckOfCards twoPlayerGame |
-	repeat := Repeat new.
+	repeat := RepeatCard new.
 	cardTypes := OrderedCollection with: repeat.
 	deckOfCards := DeckOfCards withEffects: cardTypes .
 	twoPlayerGame := Game withBoard: aBoard withLaps: 2  withPlayers: players with: deckOfCards.
@@ -198,17 +198,21 @@ CardTest >> testRepeat [
 	self assertPosition: 5 andLap: 0  for: jack  in: twoPlayerGame . 
 	self assertPosition: 5 andLap: 0  for: ben  in: twoPlayerGame . 
 	diceOne nextRollNumber: 3.
-	twoPlayerGame thePlayer: jack wantsToUseTheCard: repeat with: ben.
 	twoPlayerGame newTurnWithDice: diceOne.
 	twoPlayerGame newTurnWithDice: diceOne.
 	self assertPosition: 8 andLap: 0  for: jack  in: twoPlayerGame . 
 	self assertPosition: 8 andLap: 0  for: ben  in: twoPlayerGame . 
+	twoPlayerGame thePlayer: jack wantsToUseTheCard: repeat with: ben.
+	twoPlayerGame newTurnWithDice: diceOne.
+	twoPlayerGame newTurnWithDice: diceOne.
+	self assertPosition: 1 andLap: 1  for: jack  in: twoPlayerGame . 
+	self assertPosition: 1 andLap: 1  for: ben  in: twoPlayerGame .
 ]
 
 { #category : #tests }
 CardTest >> testSpeed [ 
 	| cardTypes speed deckOfCards twoPlayerGame |
-	speed := Speed new.
+	speed := SpeedCard new.
 	cardTypes := OrderedCollection with: speed.
 	deckOfCards := DeckOfCards withEffects: cardTypes .
 	twoPlayerGame := Game withBoard: aBoard withLaps: 2  withPlayers: players with: deckOfCards.

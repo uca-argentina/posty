@@ -51,12 +51,12 @@ Class {
 { #category : #running }
 BoardTest >> setUp [
 	super setUp.
-	atomicBomb := AtomicBomb new.
-	moonWalk := Moonwalk numberOfStepsBack: 6.
-	speedUp := SpeedUp new.
-	timeMachine := TimeMachine new.
-	empty := Empty new.
-	wormHole := WormHole new.
+	atomicBomb := AtomicBombEffect new.
+	moonWalk := MoonwalkEffect numberOfStepsBack: 6.
+	speedUp := SpeedUpEffect new.
+	timeMachine := TimeMachineEffect new.
+	empty := EmptyEffect new.
+	wormHole := WormHoleEffect new.
 	pickCard := Cards new.
 	effectOne := BoxWithProbability effect: atomicBomb  withProbability: 0.02.
 	effectTwo := BoxWithProbability effect: moonWalk withProbability: 0.05.

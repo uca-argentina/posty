@@ -36,10 +36,9 @@ Class {
 		'board',
 		'turnManager',
 		'listOfPositions',
-		'cardsInHandOfEachPlayer',
 		'deckOfCards',
 		'playersOfTheGame',
-		'permanentCards'
+		'lastCardUsed'
 	],
 	#category : #'IngSoft2-Model'
 }
@@ -66,29 +65,27 @@ Game class >> withBoard: aBoard withLaps: aNumberOfLaps withPlayers: players wit
 
 { #category : #actions }
 Game >> addCardToPlayer: aPlayer [ 
-	(cardsInHandOfEachPlayer at: aPlayer) add: deckOfCards pickACard .
+	playersOfTheGame addCard: (deckOfCards pickACard) toPlayer: aPlayer
+]
+
+{ #category : #'effect of cards' }
+Game >> addPermanentCard: anEffect to: aPlayer [ 
+	(playersOfTheGame permanentCardsOf: aPlayer) addCard: anEffect.
 ]
 
 { #category : #description }
 Game >> amountOfCardsOf: aPlayer [ 
-	^ (cardsInHandOfEachPlayer at: aPlayer) size.
+	^ (playersOfTheGame amountOfCardsOf: aPlayer).
 ]
 
 { #category : #'effect of cards' }
-Game >> applyCardEffectsTo: aPlayer [
-	(permanentCards at: aPlayer) isNotEmpty 
-		ifTrue: [ ^ self permanentCardsEffectsAppliableTo: aPlayer ]
-		ifFalse: [ ^ 0 ]
+Game >> applyCardTo: aPlayer [
+	^ playersOfTheGame applyCardTo: aPlayer
 ]
 
 { #category : #'effect of cards' }
-Game >> applyEffect: anEffect to: aPlayer [ 
-	(permanentCards at: aPlayer) add: anEffect.
-]
-
-{ #category : #'effect of cards' }
-Game >> applyEffectToAll: anEffect [ 
-	listOfPlayers do: [ :eachPlayer | (permanentCards at: eachPlayer) add: anEffect ]
+Game >> applyCardToAll: anEffect [ 
+	playersOfTheGame applyCardToAll: anEffect.
 ]
 
 { #category : #asserting }
@@ -104,31 +101,43 @@ Game >> assertIsTheTurnOf: aPlayer [
 ]
 
 { #category : #creation }
-Game >> createCardsOfEachPlayerFor: aListOfPlayers [
-	cardsInHandOfEachPlayer := Dictionary new.
-	1 to: (aListOfPlayers size) do: [ :indexOfPlayer | 
-		cardsInHandOfEachPlayer
-			at: (aListOfPlayers at: indexOfPlayer)
-			put: self pickTwoRandomCards ]
+Game >> createCardsOfPlayer: aListOfPlayers [
+	^ aListOfPlayers
+		collect:
+			[ :player | CardsOfAPlayer player: player cards: self pickTwoRandomCards ]
 ]
 
 { #category : #creation }
-Game >> createEffectOnPlayer: aListOfPlayers [
-	permanentCards := Dictionary new.
-	1 to: (aListOfPlayers size) do: [ :indexOfPlayer | 
-		permanentCards
-			at: (aListOfPlayers at: indexOfPlayer)
-			put: (OrderedCollection new) ]
+Game >> createPermanentCardsOfPlayer: aListOfPlayers [
+	^ aListOfPlayers
+		collect: [ :player | PermanentCardsOfAPlayer ofPlayer: player ofGame: self ]
 ]
 
 { #category : #creation }
-Game >> createPositionRecordsFor: aListOfPlayers [
-	playersOfTheGame := PlayersOfAGame listOfPositionOfPlayers: (aListOfPlayers collect: [ :player | PositionOfAPlayer player: player positionRecords: (PositionRecords withInitialPosition: 0)]).
+Game >> createPlayersOfAGame: aListOfPlayers [
+	playersOfTheGame := PlayersOfAGame
+		listOfPositionOfPlayers: (self createPositionRecords: aListOfPlayers)
+		listOfCardsOfPlayers: (self createCardsOfPlayer: aListOfPlayers)
+		listOfPermanentCardsOfPlayers: (self createPermanentCardsOfPlayer: aListOfPlayers).
+]
+
+{ #category : #creation }
+Game >> createPositionRecords: aListOfPlayers [
+	^ aListOfPlayers
+		collect: [ :player | 
+			PositionOfAPlayer
+				player: player
+				positionRecords: (PositionRecords withInitialPosition: 0) ]
 ]
 
 { #category : #description }
 Game >> currentPlayer [
 	^ listOfPlayers  at: turnManager returnTurn.
+]
+
+{ #category : #'effect of cards' }
+Game >> doEffectOnLastPosition [
+	board doEffectOnLastPosition: (self currentPlayer) in: self.
 ]
 
 { #category : #initializing }
@@ -138,9 +147,7 @@ Game >> initializeWithBoard: aBoard withLaps: aNumberOfLaps withPlayers: players
 	turnManager := AssignTurn withAmountOfPlayers: players size.
 	listOfPlayers := players.
 	deckOfCards := aDeckOfCards .
-	self createEffectOnPlayer: players.
-	self createPositionRecordsFor: players.
-	self createCardsOfEachPlayerFor: players.
+	self createPlayersOfAGame: players.
 ]
 
 { #category : #description }
@@ -158,6 +165,16 @@ Game >> lapOf: aPlayer [
 	^ board lapAccordingToBoard: (playersOfTheGame positionRecordsOf: aPlayer) position .
 ]
 
+{ #category : #accessing }
+Game >> lastCardUsed [
+	^ lastCardUsed 
+]
+
+{ #category : #accessing }
+Game >> lastCardUsed: aCard [
+	lastCardUsed := aCard.
+]
+
 { #category : #positions }
 Game >> lastLapOf: aPlayer [ 
 	^ board lapAccordingToBoard: (playersOfTheGame positionRecordsOf: aPlayer) lastPosition
@@ -170,7 +187,7 @@ Game >> lastPositionOf: aPlayer [
 
 { #category : #actions }
 Game >> move: aPlayer anAmountOfBoxes: aNumber [
-	(playersOfTheGame positionRecordsOf: aPlayer) addNewRecord: aNumber + (self applyCardEffectsTo: aPlayer).
+	(playersOfTheGame positionRecordsOf: aPlayer) addNewRecord: aNumber + (self applyCardTo: aPlayer).
 ]
 
 { #category : #actions }
@@ -181,11 +198,6 @@ Game >> newTurnWithDice: aDice [
 	self move: thePlayer anAmountOfBoxes: aDice roll.
 	board doEffectOn: thePlayer in: self.
 	turnManager updateTurn.
-]
-
-{ #category : #'effect of cards' }
-Game >> permanentCardsEffectsAppliableTo: aPlayer [
-	^ (permanentCards at: aPlayer) inject: 0 into:  [ :sum :eachCard | sum + (eachCard effect)  ].
 ]
 
 { #category : #'ways to use cards' }
@@ -209,13 +221,6 @@ Game >> ranking [
 { #category : #'ranking of the game' }
 Game >> rankingPositionOf: aPlayer [
 	^ playersOfTheGame rankingPositionOf: aPlayer
-]
-
-{ #category : #removing }
-Game >> removeCard: aCard [
-
-	(self cardsInPlay includes: aCard)
-	ifTrue: [ self cardsInPlay includes: aCard ]
 ]
 
 { #category : #description }
@@ -242,34 +247,34 @@ Game >> steps [
 { #category : #'ways to use cards' }
 Game >> thePlayer: aPlayer usesTheCard: aCard [
 	self assertIsTheTurnOf: aPlayer. 
-	(cardsInHandOfEachPlayer at: aPlayer) remove: aCard. 
+	(playersOfTheGame cardsOfPlayer: aPlayer) usesTheCard: aCard. 
 ]
 
 { #category : #'ways to use cards' }
-Game >> thePlayer: aPlayer wantsToUseTheCard: anEffect [ 
+Game >> thePlayer: aPlayer wantsToUseTheCard: aCard [ 
 	self assertIsTheTurnOf: aPlayer.
-	self thePlayer: aPlayer usesTheCard: anEffect.
-	self applyEffectToAll: anEffect.
+	self thePlayer: aPlayer usesTheCard: aCard.
+	self applyCardToAll: aCard.
 ]
 
 { #category : #'ways to use cards' }
-Game >> thePlayer: aPlayer wantsToUseTheCard: anEffect on: anotherEffect [ 
+Game >> thePlayer: aPlayer wantsToUseTheCard: aCard on: anotherCard [ 
 	self assertIsTheTurnOf: aPlayer.
-	self thePlayer: aPlayer usesTheCard: anEffect . 
-	permanentCards valuesDo: [ :effect | effect remove: anotherEffect ]
+	self thePlayer: aPlayer usesTheCard: aCard . 
+	playersOfTheGame removeCard: anotherCard .
 ]
 
 { #category : #'ways to use cards' }
-Game >> thePlayer: aPlayer wantsToUseTheCard: anEffect with: anotherPlayer [ 
+Game >> thePlayer: aPlayer wantsToUseTheCard: aCard with: anotherPlayer [ 
 	self assertIsTheTurnOf: aPlayer.
-	self thePlayer: aPlayer usesTheCard: anEffect.
-	self applyEffect: anEffect to: anotherPlayer.
+	self thePlayer: aPlayer usesTheCard: aCard.
+	self addPermanentCard: aCard to: anotherPlayer.
 	
 ]
 
 { #category : #'ways to use cards' }
-Game >> thePlayer: aPlayer willHaveTheCards: aCollection [ 
-	cardsInHandOfEachPlayer at: aPlayer put: aCollection.
+Game >> thePlayer: aPlayer willHaveTheCards: cards [ 
+	(playersOfTheGame cardsOfPlayer: aPlayer) willHaveTheCards: cards.
 ]
 
 { #category : #'ranking of the game' }

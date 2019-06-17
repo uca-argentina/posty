@@ -1,6 +1,6 @@
 "
 Please comment me using the following template inspired by Class Responsibility Collaborator (CRC) design:
-""Todos vuelven atras N casilleros""
+""""""
 For the Class part:  State a one line summary. For example, ""I represent a paragraph of text"".
 
 For the Responsibility part: Three sentences about my main responsibilities - what I do, what I know.
@@ -21,27 +21,39 @@ Internal Representation and Key Implementation Points.
     Implementation Points
 "
 Class {
-	#name : #Moonwalk,
-	#superclass : #Effect,
+	#name : #PermanentCardRecords,
+	#superclass : #Object,
 	#instVars : [
-		'numberOfStepsBack'
+		'permanentCards',
+		'game'
 	],
 	#category : #'IngSoft2-Model'
 }
 
-{ #category : #accessing }
-Moonwalk class >> numberOfStepsBack: aNumber [
-	^ self new 
-	initializeWithNumberOfStepsBack: aNumber; 
-	yourself.
+{ #category : #operations }
+PermanentCardRecords class >> createForGame: aGame [
+	^ self new initializePermanentCardRecordsForGame: aGame; yourself
+]
+
+{ #category : #adding }
+PermanentCardRecords >> addCard: aCard [
+	permanentCards add: aCard.
 ]
 
 { #category : #action }
-Moonwalk >> effectOn: aGame [
-	(aGame restOfPlayers) do: [ :player | aGame move: player anAmountOfBoxes: (numberOfStepsBack negated)  ]
+PermanentCardRecords >> applyEffects [
+	^ permanentCards
+		inject: 0
+		into: [ :sum :card | sum + (card cardOn: game) ]
 ]
 
 { #category : #initialization }
-Moonwalk >> initializeWithNumberOfStepsBack: aNumber [
-	numberOfStepsBack := aNumber.
+PermanentCardRecords >> initializePermanentCardRecordsForGame: aGame [
+	permanentCards := OrderedCollection new.
+	game:= aGame.
+]
+
+{ #category : #removing }
+PermanentCardRecords >> removeCard: aCard [
+	permanentCards remove: aCard.
 ]

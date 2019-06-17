@@ -1,6 +1,6 @@
 "
 Please comment me using the following template inspired by Class Responsibility Collaborator (CRC) design:
-""Avanza un casillero mas despues de tirar""
+""Todos vuelven atras N casilleros""
 For the Class part:  State a one line summary. For example, ""I represent a paragraph of text"".
 
 For the Responsibility part: Three sentences about my main responsibilities - what I do, what I know.
@@ -21,12 +21,27 @@ Internal Representation and Key Implementation Points.
     Implementation Points
 "
 Class {
-	#name : #Acceleration,
-	#superclass : #Cards,
+	#name : #MoonwalkEffect,
+	#superclass : #Effect,
+	#instVars : [
+		'numberOfStepsBack'
+	],
 	#category : #'IngSoft2-Model'
 }
 
+{ #category : #accessing }
+MoonwalkEffect class >> numberOfStepsBack: aNumber [
+	^ self new 
+	initializeWithNumberOfStepsBack: aNumber; 
+	yourself.
+]
+
 { #category : #action }
-Acceleration >> effect [
-	^ 1
+MoonwalkEffect >> effectOn: aGame [
+	(aGame restOfPlayers) do: [ :player | aGame move: player anAmountOfBoxes: (numberOfStepsBack negated)  ]
+]
+
+{ #category : #initialization }
+MoonwalkEffect >> initializeWithNumberOfStepsBack: aNumber [
+	numberOfStepsBack := aNumber.
 ]

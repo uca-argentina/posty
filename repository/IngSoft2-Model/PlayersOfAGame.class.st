@@ -27,16 +27,25 @@ Class {
 	#name : #PlayersOfAGame,
 	#superclass : #Object,
 	#instVars : [
-		'listOfPositionOfPlayers'
+		'listOfPositionOfPlayers',
+		'listOfCardsOfPlayer',
+		'listOfPermanentCardsOfPlayer',
+		'game'
 	],
 	#category : #'IngSoft2-Model'
 }
 
 { #category : #'as yet unclassified' }
-PlayersOfAGame class >> listOfPositionOfPlayers: aListOfPositionOfPlayers [
-	^ self new 
-		initializeWithListOfPositionOfPlayers: aListOfPositionOfPlayers ;
-		yourself
+PlayersOfAGame class >> listOfPositionOfPlayers: aListOfPositionOfPlayers listOfCardsOfPlayers: aListOfCardsOfPlayer listOfPermanentCardsOfPlayers: aListOfPermanentCardsOfPlayer [
+	^ self new
+		initializeWithListOfPositionOfPlayers: aListOfPositionOfPlayers
+		listOfCardsOfPlayers: aListOfCardsOfPlayer
+		listOfPermanentCardsOfPlayers: aListOfPermanentCardsOfPlayer; yourself
+]
+
+{ #category : #cardActions }
+PlayersOfAGame >> addCard: aCard toPlayer: aPlayer [ 
+	(self cardsOfPlayer: aPlayer) addCard: aCard.
 ]
 
 { #category : #playerActions }
@@ -50,14 +59,42 @@ PlayersOfAGame >> allPositionRecord [
 
 ]
 
+{ #category : #description }
+PlayersOfAGame >> amountOfCardsOf: aPlayer [
+	^ (self cardsOfPlayer: aPlayer) amountOfCards.
+]
+
+{ #category : #cardActions }
+PlayersOfAGame >> applyCardTo: aPlayer [ 
+	^ (self permanentCardsOf: aPlayer) applyEffects.
+]
+
+{ #category : #cardActions }
+PlayersOfAGame >> applyCardToAll: aCard [ 
+	listOfPermanentCardsOfPlayer do: [ :eachPermanentCardsOfPlayer | eachPermanentCardsOfPlayer addCard: aCard  ]
+]
+
+{ #category : #cardActions }
+PlayersOfAGame >> cardsOfPlayer: aPlayer [
+	^ listOfCardsOfPlayer do: [ :cardsOfAPlayer | cardsOfAPlayer player = aPlayer ifTrue: [ ^cardsOfAPlayer ] ].
+]
+
 { #category : #playerActions }
 PlayersOfAGame >> hasAnyPlayerReachedPosition: aPosition [ 
 	^ (self allPositionRecord) anySatisfy: [ :eachPositionRecord | eachPositionRecord position > aPosition ]
 ]
 
 { #category : #initialization }
-PlayersOfAGame >> initializeWithListOfPositionOfPlayers: aListOfPositionOfPlayers [
-	listOfPositionOfPlayers := aListOfPositionOfPlayers
+PlayersOfAGame >> initializeWithListOfPositionOfPlayers: aListOfPositionOfPlayers listOfCardsOfPlayers: aListOfCardsOfPlayer listOfPermanentCardsOfPlayers: aListOfPermanentCardsOfPlayers [
+	listOfPositionOfPlayers := aListOfPositionOfPlayers.
+	listOfCardsOfPlayer := aListOfCardsOfPlayer.
+	listOfPermanentCardsOfPlayer := aListOfPermanentCardsOfPlayers.
+]
+
+{ #category : #cardActions }
+PlayersOfAGame >> permanentCardsOf: aPlayer [ 
+	^ listOfPermanentCardsOfPlayer do: [ :permenentCardsOfAPlayer | permenentCardsOfAPlayer player = aPlayer ifTrue: [ ^permenentCardsOfAPlayer allCards ] ].
+
 ]
 
 { #category : #positionActions }
@@ -75,6 +112,11 @@ PlayersOfAGame >> ranking [
 PlayersOfAGame >> rankingPositionOf: aPlayer [
 	(self ranking) doWithIndex: [ :element :index | element = aPlayer 
 		ifTrue: [ ^ index ]].
+]
+
+{ #category : #removing }
+PlayersOfAGame >> removeCard: aCard [
+	listOfPermanentCardsOfPlayer do: [ :eachPermanentCardsOfPlayer | eachPermanentCardsOfPlayer removeCard: aCard  ]
 ]
 
 { #category : #playerActions }

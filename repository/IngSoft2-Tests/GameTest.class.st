@@ -68,8 +68,8 @@ GameTest >> setUp [
 	diceOne := SameFaceDice withFaces: 4.
 	diceOne nextRollNumber: 4.
 	diceTwo := SameFaceDice withFaces: 5.
-	empty := Empty new.
-	card := Card new.
+	empty := EmptyEffect new.
+	card := CardEffect new.
 	boxes := OrderedCollection with: empty with: empty with: empty with: empty with:card with: empty.
 	boxes add: empty.
 	boxes add: empty.

@@ -1,6 +1,6 @@
 "
 Please comment me using the following template inspired by Class Responsibility Collaborator (CRC) design:
-""Avanza 4 casilleros""
+""Todos vuelven al principio""
 For the Class part:  State a one line summary. For example, ""I represent a paragraph of text"".
 
 For the Responsibility part: Three sentences about my main responsibilities - what I do, what I know.
@@ -21,12 +21,14 @@ Internal Representation and Key Implementation Points.
     Implementation Points
 "
 Class {
-	#name : #SpeedUp,
+	#name : #AtomicBombEffect,
 	#superclass : #Effect,
 	#category : #'IngSoft2-Model'
 }
 
 { #category : #action }
-SpeedUp >> effectOn: aGame [ 
-	aGame move: (aGame currentPlayer) anAmountOfBoxes: 4
+AtomicBombEffect >> effectOn: aGame [
+	"when this effect appears every player goes to the begining again"
+
+	aGame sendAllPlayersToInitialPosition
 ]

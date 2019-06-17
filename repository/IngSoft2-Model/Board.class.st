@@ -49,6 +49,11 @@ Board >> doEffectOn: aPlayer in: aGame [
 	(listOfBoxes at: (aGame positionOf: aPlayer)) effectOn: aGame
 ]
 
+{ #category : #actions }
+Board >> doEffectOnLastPosition: aPlayer in: aGame [
+	(listOfBoxes at: (aGame lastPositionOf: aPlayer)) effectOn: aGame
+]
+
 { #category : #initialize }
 Board >> initializeWith: boxes [ 
 	"creates the board"
